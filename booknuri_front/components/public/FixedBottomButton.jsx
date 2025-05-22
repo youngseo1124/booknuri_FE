@@ -14,7 +14,7 @@ const FixedBottomButton = ({ disabled, onPress, label = "다음" }) => {
   const { width } = useWindowDimensions(); // ✅ 진짜 화면 기준 width
 
   return (
-    <View style={[styles.wrapper, { paddingBottom: insets.bottom+fixwidth*0.005,  width: width*1}]}>
+    <View style={[styles.wrapper, { paddingBottom: insets.bottom+fixwidth*0.003,  width: width*1}]}>
       <TouchableOpacity
         style={[styles.button, disabled && styles.disabled]}
         disabled={disabled}
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     backgroundColor: '#fff',
-    paddingHorizontal:fixwidth*0.005,
+    paddingHorizontal:fixwidth*0.003,
   },
   button: {
     height: fixwidth*0.14,
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-/*    fontWeight: 'bold',*/
     fontSize: fixwidth*0.05,
+    fontFamily: 'NanumGothic-',
   }
 });
 

@@ -3,6 +3,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from "react-native-encrypted-storage"; // ✅ 변경된 저장소
 
+
 // Axios 인스턴스 생성
 const api = axios.create({
   baseURL: "http://192.168.122.109:8080",
@@ -31,13 +32,13 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // ✅ EncryptedStorage 에서 refreshToken 꺼내기
+        //  EncryptedStorage 에서 refreshToken 꺼내기
         const refreshToken = await EncryptedStorage.getItem("refreshToken");
         if (!refreshToken) return Promise.reject(error);
 
-        // ✅ refreshToken으로 새 accessToken 요청
+        //  refreshToken으로 새 accessToken 요청
         const res = await axios.post(
-          "http://192.168.166.109:8080/auth/reissue",
+          "http://192.168.122.109:8080/auth/reissue",
           {},
           {
             headers: {
@@ -48,7 +49,7 @@ api.interceptors.response.use(
 
         const newAccessToken = res.data.accessToken;
 
-        // ✅ 새 accessToken 저장
+        //  새 accessToken 저장
         await AsyncStorage.setItem("accessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 

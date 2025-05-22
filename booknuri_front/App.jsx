@@ -1,96 +1,93 @@
 /*
 *
 * <앱 처음 실행시>
- storage에서 islogin true인지+ 그리고 jwt 유효한지 검증->둘다 통과하면 /home으로
- 통과못하면 login 화면으로
+* storage에서 isLogin === true && accessToken 유효하면 → HomeScreen
+* accessToken 없거나 만료 → LoginScreen
+* userInfo.gender / birthYear 없으면 → FirstSettingStep01Screen
 *
 */
 
 import { enableScreens } from 'react-native-screens';
 enableScreens();
 
-
-import React, {useContext, useEffect} from 'react';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import React, { useContext, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { navigationRef, reset } from './navigation/RootNavigation'; // ✅ reset 함수도 가져오기
 
-
-// ✅ 페이지들 import
+// 페이지들
 import LoadingScreen from './pages/LoadingScreen';
 import LoginScreen from './pages/login/LoginScreen';
 import Signup00Screen from './pages/login/Signup00Screen';
-
-import HomeScreen from './pages/HomeScreen';
-
-// 로그인 상태를 관리하는 Context
-import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
-
-
-import { LogBox } from 'react-native';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Signup01Screen from './pages/login/Signup01Screen';
+import FirstSettingStep01Screen from './pages/firstSetting/FirstSettingStep01Screen';
+import FirstSettingStep02Screen from './pages/firstSetting/FirstSettingStep02Screen';
+import HomeScreen from './pages/HomeScreen';
 import MyLibrarySettingScreen from './pages/setting/MyLibrarySettingScreen';
 
+// Context
+import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-
-// Stack Navigator 생성
 const Stack = createStackNavigator();
 
+//  네비게이션 판단담당하는 컴포넌트
 const AppNavigator = () => {
-  const loginContext = useContext(LoginContext);
-  const { isLoading, isLogin } = loginContext;
-  const navigation = useNavigation();
+    const { isLoading, isLogin, userInfo } = useContext(LoginContext);
 
-  // 로딩 중, 로그인 상태에 따라 화면을 조건부로 설정
-  if (isLoading) {
-    return <LoadingScreen/>;
+    useEffect(() => {
+        if (isLoading) return;
 
+        // 로그인 X → 로그인 화면
+        if (!isLogin) {
+            console.log("🌀 로그인 필요 → LoginScreen");
+            reset("LoginScreen");
+            return;
+        }
 
-  }
-  // 콘솔 로그로 상태 확인
-  console.log("isLoading(로딩여부):", isLoading);
-  console.log("isLogin(로그인여부):", isLogin);
+        // 로그인 O → 설정 여부 확인
+        if (userInfo) {
+            const { gender, birthYear } = userInfo;
+            const isIncomplete = !gender || gender === "" || birthYear == null;
 
-  // useEffect로 네비게이션 리셋
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    if (!isLoading) {
-      console.log("Resetting navigation to:", isLogin ? 'HomeScreen' : 'LoginScreen');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: isLogin ? 'HomeScreen' : 'LoginScreen' }],
-      });
-    }
+            if (isIncomplete) {
+                console.log("🔀 설정 필요 → FirstSettingStep01Screen");
+                reset("FirstSettingStep01Screen");
+            } else {
+                console.log("✅ 설정 완료 → HomeScreen");
+                reset("HomeScreen");
+            }
+        }
+    }, [isLoading, isLogin, userInfo]);
 
-  }, [isLoading, isLogin, navigation]);
-
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-
-      <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="Signup00Screen" component={Signup00Screen} />
-      <Stack.Screen name="Signup01Screen" component={Signup01Screen} />
-      <Stack.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen}/>
-
-
-
-
-    </Stack.Navigator>
-  );
+    // 초기에는 아무것도 보여주지 않음 (Splash 역할)
+    return null;
 };
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <SafeAreaProvider>
-        <LoginContextProvider>
-          <AppNavigator />
-        </LoginContextProvider>
-      </SafeAreaProvider>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer ref={navigationRef}> {/*  RootNavigation 연결 */}
+            <SafeAreaProvider>
+                <LoginContextProvider>
+                    <AppNavigator /> {/* ✅ 상태 기반 네비게이션 분기 */}
+                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                        <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
+                        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+
+                        <Stack.Screen name="Signup00Screen" component={Signup00Screen} />
+                        <Stack.Screen name="Signup01Screen" component={Signup01Screen} />
+                        <Stack.Screen name="FirstSettingStep01Screen" component={FirstSettingStep01Screen} />
+                        <Stack.Screen name="FirstSettingStep02Screen" component={FirstSettingStep02Screen} />
+
+                        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+                        <Stack.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
+
+
+                    </Stack.Navigator>
+                </LoginContextProvider>
+            </SafeAreaProvider>
+        </NavigationContainer>
+    );
 };
 
 export default App;

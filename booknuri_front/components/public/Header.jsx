@@ -5,43 +5,39 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  Image,
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const { width } = Dimensions.get('window');
+// FontAwesome 아이콘 관련 import ✨
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
+const { width } = Dimensions.get('window');
 
 const Header = ({ title = '제목', allChecked, onAllCheck }) => {
   const navigation = useNavigation();
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        <SafeAreaView edges={['top']} style={{ backgroundColor: '#fff' }}>
+          <View style={styles.header}>
+            {/* 타이틀 텍스트 */}
+            <Text style={styles.title}>{title}</Text>
 
-      <SafeAreaView edges={['top']} style={{ backgroundColor: '#fff' }}>
-        <View style={styles.header}>
-
-          {/* 타이틀 텍스트 props로 받아오기! */}
-          <Text style={styles.title}>{title}</Text>
-
-          {/* ← 뒤로가기 버튼 */}
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            style={styles.backButton}
-          >
-            <Image
-              source={require('../../image/back.png')}
-              style={styles.backIcon}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </>
+            {/* ← FontAwesome 아이콘으로 뒤로가기 */}
+            <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                style={styles.backButton}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={width * 0.05} color="#111" />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </>
   );
 };
 
@@ -59,10 +55,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: width * 0.06,
     top: width * 0.035,
-  },
-  backIcon: {
-    width: width * 0.057,
-    height: width * 0.057,
   },
   title: {
     position: 'absolute',

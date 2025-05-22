@@ -31,7 +31,6 @@ export const kakaoLoginAPI = (id, nickname) => {
 };
 
 
-
 // 회원가입시 아이디 중복 체크 (GET 요청)
 export const checkUsername = (username) => api.get(`/auth/check/username/${username}`);
 
@@ -39,17 +38,18 @@ export const checkUsername = (username) => api.get(`/auth/check/username/${usern
 export const checkEmail = (email) => api.get(`/auth/check/email/${email}`);
 
 
-
 // 로그인시 회원 정보 가져오기 (GET 요청)
 export const userinfo = () => api.get(`/user/info`);
 
-//  회원 정보 수정 (PUT 요청)
-export const update = (data) => api.put(`/users/update`, data);
-// - `data`에 수정할 정보를 담아서 서버에 보냄 (예: 비밀번호 변경, 프로필 수정 등)
 
-//  회원 탈퇴 (DELETE 요청)
-export const remove = (username) => api.delete(`/users/${username}`);
-// - `username`을 URL에 포함해 특정 사용자를 삭제 요청
+
+
+
+// 성별 및 출생년도 설정 (PATCH 요청)
+export const setUserSexAndBirth = (gender, birthYear) => {
+    return api.patch('/user/sex-birth', { gender, birthYear });
+};
+
 
 
 

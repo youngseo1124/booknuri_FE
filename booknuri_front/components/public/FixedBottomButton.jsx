@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontSize: fixwidth*0.05,
-    fontFamily: 'NanumGothic-',
+    fontFamily: 'NanumGothic-Regular',
   }
 });
 

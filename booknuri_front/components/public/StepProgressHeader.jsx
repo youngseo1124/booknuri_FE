@@ -17,39 +17,36 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Dimensions } from 'react-native';
 const { width: fixwidth } = Dimensions.get('window');
 
-const StepProgressHeader = ({ totalSteps, currentStep }) => {
-    const { width } = useWindowDimensions(); // 내부 동적 계산용
+const StepProgressHeader = ({ totalSteps, currentStep, onBack }) => {
+    const { width } = useWindowDimensions();
     const navigation = useNavigation();
-
-    const progressWidth = width * 0.5 * (currentStep / totalSteps); // 동적으로 계산
+    const progressWidth = width * 0.5 * (currentStep / totalSteps);
 
     return (
-        <>
-            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <SafeAreaView edges={['top']} style={{ backgroundColor: '#fff' }}>
-                <View style={styles.headerContainer}>
-                    {/* ← FontAwesome 뒤로가기 버튼 */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (navigation.canGoBack()) navigation.goBack();
-                            else console.log('뒤로 갈 화면 없음');
-                        }}
-                        style={styles.backButton}
-                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                        <FontAwesomeIcon icon={faChevronLeft} size={fixwidth * 0.05} color="#111" />
-                    </TouchableOpacity>
+      <>
+          <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+          <SafeAreaView edges={['top']} style={{ backgroundColor: '#fff' }}>
+              <View style={styles.headerContainer}>
+                  <TouchableOpacity
+                    onPress={() => {
+                        if (onBack) onBack(); // ✅ props 우선
+                        else if (navigation.canGoBack()) navigation.goBack(); // fallback
+                    }}
+                    style={styles.backButton}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
+                      <FontAwesomeIcon icon={faChevronLeft} size={fixwidth * 0.05} color="#111" />
+                  </TouchableOpacity>
 
-                    {/* 진행률 바 전체 (회색 배경) */}
-                    <View style={[styles.progressBarBackground, { width: width * 0.5 }]}>
-
-                    <View style={[styles.progressBarFill, { width: progressWidth*1}]} />
-                    </View>
-                </View>
-            </SafeAreaView>
-        </>
+                  <View style={[styles.progressBarBackground, { width: width * 0.5 }]}>
+                      <View style={[styles.progressBarFill, { width: progressWidth }]} />
+                  </View>
+              </View>
+          </SafeAreaView>
+      </>
     );
 };
+
 
 const styles = StyleSheet.create({
     headerContainer: {

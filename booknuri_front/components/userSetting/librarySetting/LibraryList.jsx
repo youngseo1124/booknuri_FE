@@ -12,7 +12,7 @@ import {
   getAllLibraries,
   getLibrariesBySi,
   getLibrariesBySiGu,
-} from '../../apis/apiFunction';
+} from '../../../apis/apiFunction';
 
 const { width: fixwidth } = Dimensions.get("window");
 

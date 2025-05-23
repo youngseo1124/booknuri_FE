@@ -5,7 +5,7 @@ import api from "../apis/api";
 import AlertPopup from '../apis/AlertPopup';
 import ConfirmPopup from '../apis/ConfirmPopup';
 import { login as loginAPI, userinfo } from '../apis/apiFunction';
-import { reset } from '../navigation/RootNavigation'; // ✅ reset 함수 사용
+import { reset } from '../navigation/RootNavigation';
 
 export const LoginContext = createContext();
 
@@ -20,7 +20,7 @@ const LoginContextProvider = ({ children }) => {
   const updateUserState = async (userData) => {
     setUserInfo(userData);
     setIsLogin(true);
-    reset("HomeScreen"); // ✅ RootNavigation으로 이동
+    reset("HomeScreen");
   };
 
   const logout = async () => {
@@ -30,7 +30,7 @@ const LoginContextProvider = ({ children }) => {
       message: "로그아웃을 진행합니다.",
       onConfirm: async () => {
         await logoutSetting();
-        reset("LoginScreen_sf"); // ✅ 로그아웃 후 Login 화면 이동
+        reset("LoginScreen_sf");
       },
       onCancel: () => {},
     });
@@ -64,7 +64,13 @@ const LoginContextProvider = ({ children }) => {
     const tryAutoLogin = async () => {
       try {
         const res = await api.get("/users/info");
-        if (res.status === 200) {
+        console.log(" 자동 로그인 userinfo 응답:", res);
+
+        if (typeof res.data !== "object") {
+          throw new Error("응답 데이터가 HTML(스프링 자동 로그인 페이지) ->인증 실패.");
+        }
+
+        else if (res.status === 200) {
           console.log("✅ 자동 로그인 성공!");
           await updateUserState(res.data);
         }

@@ -45,11 +45,15 @@ export const userinfo = () => api.get(`/user/info`);
 
 
 
-// 성별 및 출생년도 설정 (PATCH 요청)
-export const setUserSexAndBirth = (gender, birthYear) => {
-    return api.patch('/user/sex-birth', { gender, birthYear });
+//  성별 설정
+export const setUserGender = (gender) => {
+  return api.patch('/user/sex', { gender });
 };
 
+//  출생년도 설정
+export const setUserBirth = (birth) => {
+  return api.patch('/user/birth', { birth });
+};
 
 
 

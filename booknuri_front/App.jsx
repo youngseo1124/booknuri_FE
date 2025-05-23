@@ -17,17 +17,19 @@ import { navigationRef, reset } from './navigation/RootNavigation'; // ✅ reset
 
 // 페이지들
 import LoadingScreen from './pages/LoadingScreen';
-import LoginScreen from './pages/login/LoginScreen';
-import Signup00Screen from './pages/login/Signup00Screen';
-import Signup01Screen from './pages/login/Signup01Screen';
+import LoginScreen from './pages/login&join/LoginScreen';
+import Signup00Screen from './pages/login&join/Signup00Screen';
+import Signup01Screen from './pages/login&join/Signup01Screen';
 import FirstSettingStep01Screen from './pages/firstSetting/FirstSettingStep01Screen';
 import FirstSettingStep02Screen from './pages/firstSetting/FirstSettingStep02Screen';
+import FirstSettingStep03Screen from './pages/firstSetting/FirstSettingStep03Screen';
 import HomeScreen from './pages/HomeScreen';
 import MyLibrarySettingScreen from './pages/setting/MyLibrarySettingScreen';
 
 // Context
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import FirstSettingScreen from './pages/firstSetting/FirstSettingScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,12 +49,12 @@ const AppNavigator = () => {
 
         // 로그인 O → 설정 여부 확인
         if (userInfo) {
-            const { gender, birthYear } = userInfo;
-            const isIncomplete = !gender || gender === "" || birthYear == null;
+            const { gender, birth } = userInfo;
+            const isIncomplete = !gender || gender === "" || birth == null;
 
             if (isIncomplete) {
-                console.log("🔀 설정 필요 → FirstSettingStep01Screen");
-                reset("FirstSettingStep01Screen");
+                console.log("🔀 설정 필요 → FirstSettingStepScreen");
+                reset("FirstSettingScreen");
             } else {
                 console.log("✅ 설정 완료 → HomeScreen");
                 reset("HomeScreen");
@@ -76,8 +78,10 @@ const App = () => {
 
                         <Stack.Screen name="Signup00Screen" component={Signup00Screen} />
                         <Stack.Screen name="Signup01Screen" component={Signup01Screen} />
+                        <Stack.Screen name="FirstSettingScreen" component={FirstSettingScreen} />
                         <Stack.Screen name="FirstSettingStep01Screen" component={FirstSettingStep01Screen} />
                         <Stack.Screen name="FirstSettingStep02Screen" component={FirstSettingStep02Screen} />
+                        <Stack.Screen name="FirstSettingStep03Screen" component={FirstSettingStep03Screen} />
 
                         <Stack.Screen name="HomeScreen" component={HomeScreen} />
                         <Stack.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />

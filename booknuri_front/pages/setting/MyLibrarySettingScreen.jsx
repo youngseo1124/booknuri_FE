@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { View, StyleSheet, useWindowDimensions, Dimensions, Text } from 'react-native';
 import Header from '../../components/public/Header';
-import LibraryFilter from '../../components/librarySettingComponent/LibraryFilter';
-import LibraryList from '../../components/librarySettingComponent/LibraryList';
+
 import FixedBottomButton from '../../components/public/FixedBottomButton';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 import { setMyLibrary } from '../../apis/apiFunction';
+import LibraryFilter from '../../components/userSetting/librarySetting/LibraryFilter';
+import LibraryList from '../../components/userSetting/librarySetting/LibraryList';
 
 const { width: fixwidth } = Dimensions.get("window");
 

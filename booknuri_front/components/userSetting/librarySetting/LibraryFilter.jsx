@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, useWindowDimensions, Dimensions } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { getRegionList } from '../../apis/apiFunction';
+import { getRegionList } from '../../../apis/apiFunction';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; // 지역 리스트 불러오는 API
 
 // 🧱 스타일 계산용 고정 width
@@ -56,11 +56,13 @@ const LibraryFilter = ({ setFilter }) => {
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={selectedSi}
-          onValueChange={setSelectedSi}
+          onValueChange={(newSi) => {
+            setSelectedSi(newSi);
+            setSelectedGu(''); // ✅ 시 바뀔 때 구 초기화!
+          }}
           style={styles.picker}
-          dropdownIconColor="#000" // ← 화살표 색 검정으로
-          mode="dropdown" // 이거 안 넣으면 적용 안될 수도 있음!
         >
+
 
         <Picker.Item label="지역 선택" value="" />
           {siList.map(si => (
@@ -76,12 +78,11 @@ const LibraryFilter = ({ setFilter }) => {
           onValueChange={setSelectedGu}
           style={styles.picker}
           dropdownIconColor="#000"
-          mode="dropdown"
         >
 
         <Picker.Item label="시군구 선택" value="" />
           {guList.map(gu => (
-            <Picker.Item key={gu} label={gu} value={gu}  mode="dropdown"  />
+            <Picker.Item key={gu} label={gu} value={gu}   />
           ))}
         </Picker>
       </View>

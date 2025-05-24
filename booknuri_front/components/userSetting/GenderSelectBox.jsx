@@ -17,7 +17,7 @@ const GenderSelectBox = ({ label, selected, onPress }) => {
 
 const styles = StyleSheet.create({
   box: {
-    width: fixwidth * 0.88,
+    width: "97%",
     paddingVertical: fixwidth * 0.04,
     borderRadius: fixwidth * 0.02,
     backgroundColor: '#FBF8F5',

@@ -25,6 +25,7 @@ import FirstSettingStep02Screen from './pages/firstSetting/FirstSettingStep02Scr
 import FirstSettingStep03Screen from './pages/firstSetting/FirstSettingStep03Screen';
 import HomeScreen from './pages/HomeScreen';
 import MyLibrarySettingScreen from './pages/setting/MyLibrarySettingScreen';
+import TabNavigator from './navigation/TabNavigator';
 
 // Context
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
@@ -49,15 +50,15 @@ const AppNavigator = () => {
 
         // 로그인 O → 설정 여부 확인
         if (userInfo) {
-            const { gender, birth } = userInfo;
-            const isIncomplete = !gender || gender === "" || birth == null;
+            const { gender, birth,myLibrary } = userInfo;
+            const isIncomplete = !gender || gender === "" || birth == null|| myLibrary == null;
 
             if (isIncomplete) {
                 console.log("🔀 설정 필요 → FirstSettingStepScreen");
                 reset("FirstSettingScreen");
             } else {
                 console.log("✅ 설정 완료 → HomeScreen");
-                reset("HomeScreen");
+                reset("MainTab");
             }
         }
     }, [isLoading, isLogin, userInfo]);
@@ -86,6 +87,8 @@ const App = () => {
                         <Stack.Screen name="HomeScreen" component={HomeScreen} />
                         <Stack.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
 
+
+                        <Stack.Screen name="MainTab" component={TabNavigator} />
 
                     </Stack.Navigator>
                 </LoginContextProvider>

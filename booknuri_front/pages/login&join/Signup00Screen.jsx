@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+} from 'react-native';
 import Header from '../../components/public/Header';
-import AgreeSection from    '../../components/Login/AgreeSection'
+import AgreeSection from '../../components/Login/AgreeSection';
 import FixedBottomButton from '../../components/public/FixedBottomButton';
 import { useNavigation } from '@react-navigation/native';
+
+// 📐 고정 width (스타일 계산용)
+const { width: fixwidth, height } = Dimensions.get('window');
 
 const Signup00Screen = () => {
   const [termsChecked, setTermsChecked] = useState(true);
@@ -17,7 +26,6 @@ const Signup00Screen = () => {
     navigation.navigate("Signup01Screen");
   };
 
-
   const handleAllCheck = (value) => {
     setTermsChecked(value);
     setPrivacyChecked(value);
@@ -25,14 +33,19 @@ const Signup00Screen = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="이용동의" allChecked={allChecked} onAllCheck={handleAllCheck} />
+      {/* ✅ 상단 SafeArea X, 하단만 적용 */}
+      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+        <Header title="이용동의" allChecked={allChecked} onAllCheck={handleAllCheck} />
 
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <AgreeSection
-          title="이용약관 동의 (필수)"
-          checked={termsChecked}
-          onToggle={() => setTermsChecked(!termsChecked)}
-          content={`제1장 총칙
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={false}
+        >
+          <AgreeSection
+            title="이용약관 동의 (필수)"
+            checked={termsChecked}
+            onToggle={() => setTermsChecked(!termsChecked)}
+            content={`제1장 총칙
 
 제1조 (목적)  
 본 약관은 ‘책누리’ 앱(이하 ‘서비스’)의 이용조건 및 절차, 이용자와 서비스 제공자 간의 권리·의무·책임사항을 규정함을 목적으로 합니다.
@@ -65,12 +78,12 @@ const Signup00Screen = () => {
 제9조 (책임의 제한)  
 서비스 제공자는 천재지변, 시스템 장애 등 불가항력 사유로 인한 손해에 대해 책임지지 않습니다.
 `}
-        />
-        <AgreeSection
-          title="개인정보 수집 및 이용 동의 (필수)"
-          checked={privacyChecked}
-          onToggle={() => setPrivacyChecked(!privacyChecked)}
-          content={`1. 수집하는 개인정보 항목
+          />
+          <AgreeSection
+            title="개인정보 수집 및 이용 동의 (필수)"
+            checked={privacyChecked}
+            onToggle={() => setPrivacyChecked(!privacyChecked)}
+            content={`1. 수집하는 개인정보 항목  
 필수 항목: 이름, 이메일, 닉네임, 로그인 ID  
 선택 항목: 관심 장르, 독서 이력
 
@@ -92,22 +105,28 @@ const Signup00Screen = () => {
 6. 동의 거부 시 불이익  
 이용자는 개인정보 수집 및 이용에 대한 동의를 거부할 수 있으며, 동의하지 않을 경우 회원가입 및 일부 서비스 이용이 제한될 수 있습니다.
 `}
-        />
-      </ScrollView>
-      <FixedBottomButton disabled={!allChecked} onPress={goNext} />
+          />
+        </ScrollView>
 
+        {/* ✅ 하단 고정 버튼 */}
+        <FixedBottomButton disabled={!allChecked} onPress={goNext} />
+      </SafeAreaView>
     </View>
   );
 };
 
-const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   scroll: {
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: '5%', // ✅ 퍼센트로 조정 (부모 따라감)
+    paddingBottom: fixwidth * 0.2, // 아래 버튼 영역 확보
   },
 });
 

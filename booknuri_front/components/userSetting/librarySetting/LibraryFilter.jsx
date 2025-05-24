@@ -1,77 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, useWindowDimensions, Dimensions } from 'react-native';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  useWindowDimensions,
+  Dimensions,
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { getRegionList } from '../../../apis/apiFunction';
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; // 지역 리스트 불러오는 API
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-// 🧱 스타일 계산용 고정 width
-const { width: fixwidth } = Dimensions.get("window");
+const { width: fixwidth } = Dimensions.get('window');
 
 const LibraryFilter = ({ setFilter }) => {
-
   const { width } = useWindowDimensions();
 
-  // 📦 시/군구 리스트를 담을 배열 상태
   const [regions, setRegions] = useState([]);
-  const [selectedSi, setSelectedSi] = useState('');  // 선택된 시
-  const [selectedGu, setSelectedGu] = useState('');  // 선택된 구
-  const [keyword, setKeyword] = useState('');        // 검색어 (도서관명)
+  const [selectedSi, setSelectedSi] = useState('');
+  const [selectedGu, setSelectedGu] = useState('');
+  const [keyword, setKeyword] = useState('');
 
-  // 🔁 컴포넌트 처음 렌더링될 때 지역 리스트 받아오기
   useEffect(() => {
     const fetchRegions = async () => {
       try {
         const res = await getRegionList();
-        //console.log(" 서버에서 받아온 지역 리스트:", res.data);
-
         const data = res.data;
-        // 배열인지 먼저 확인 후 저장
-        if (Array.isArray(data)) {
-          setRegions(data);
-        } else {
-          //console.warn("❗받아온 데이터가 배열이 아님:", data);
-          setRegions([]); // 안전하게 빈 배열로
-        }
+        if (Array.isArray(data)) setRegions(data);
+        else setRegions([]);
       } catch (err) {
-        //console.error("❌ 지역 리스트 불러오기 실패:", err);
-        setRegions([]); // 에러 났을 때도 안전하게
+        setRegions([]);
       }
     };
     fetchRegions();
   }, []);
 
-
-  //  시/구/검색어가 바뀔 때마다 필터 값을 상위 컴포넌트로 전달
   useEffect(() => {
     setFilter({ si: selectedSi, gu: selectedGu, keyword });
   }, [selectedSi, selectedGu, keyword]);
 
-  //  중복 제거한 시 목록 추출
-  const siList = [...new Set((regions || []).map(r => r.si))]; // 방어적 코딩
-  const guList = (regions || []).filter(r => r.si === selectedSi).map(r => r.gu);
+  const siList = [...new Set((regions || []).map((r) => r.si))];
+  const guList = (regions || []).filter((r) => r.si === selectedSi).map((r) => r.gu);
 
   return (
-    <View style={[styles.filterContainer]}>
-      {/*  시(지역) 선택 드롭다운 */}
+    <View style={styles.filterContainer}>
+      {/* 시 선택 */}
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={selectedSi}
           onValueChange={(newSi) => {
             setSelectedSi(newSi);
-            setSelectedGu(''); // ✅ 시 바뀔 때 구 초기화!
+            setSelectedGu('');
           }}
           style={styles.picker}
+          dropdownIconColor="#000"
         >
-
-
-        <Picker.Item label="지역 선택" value="" />
-          {siList.map(si => (
-            <Picker.Item key={si} label={si} value={si}/>
+          <Picker.Item label="지역 선택" value="" />
+          {siList.map((si) => (
+            <Picker.Item key={si} label={si} value={si} />
           ))}
         </Picker>
       </View>
 
-      {/* 구(시군구) 선택 드롭다운 */}
+      {/* 구 선택 */}
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={selectedGu}
@@ -79,15 +69,14 @@ const LibraryFilter = ({ setFilter }) => {
           style={styles.picker}
           dropdownIconColor="#000"
         >
-
-        <Picker.Item label="시군구 선택" value="" />
-          {guList.map(gu => (
-            <Picker.Item key={gu} label={gu} value={gu}   />
+          <Picker.Item label="시군구 선택" value="" />
+          {guList.map((gu) => (
+            <Picker.Item key={gu} label={gu} value={gu} />
           ))}
         </Picker>
       </View>
 
-      {/*  검색어 입력창 */}
+      {/* 검색어 입력 */}
       <View style={styles.searchWrapper}>
         <TextInput
           style={styles.input}
@@ -105,7 +94,24 @@ const LibraryFilter = ({ setFilter }) => {
 const styles = StyleSheet.create({
   filterContainer: {
     paddingVertical: fixwidth * 0.03,
+    width: '100%', // 💯 부모 기준 너비
     alignItems: 'center',
+  },
+  pickerWrapper: {
+    width: '100%', // 💯 부모 기준 너비
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: fixwidth * 0.02,
+    marginBottom: fixwidth * 0.02,
+    paddingHorizontal: fixwidth * 0.02,
+    backgroundColor: '#fff',
+    height: fixwidth * 0.14,
+    justifyContent: 'center',
+  },
+  picker: {
+    width: '100%',
+    color: '#000',
+    fontSize: fixwidth * 0.04,
   },
   searchWrapper: {
     flexDirection: 'row',
@@ -113,8 +119,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#ccc',
     marginTop: fixwidth * 0.02,
-    width: fixwidth * 0.88,
-    paddingHorizontal: fixwidth * 0.01
+    width: '98%',
+    paddingHorizontal: fixwidth * 0.01,
   },
   input: {
     flex: 1,
@@ -122,20 +128,6 @@ const styles = StyleSheet.create({
     paddingVertical: fixwidth * 0.02,
     color: '#000',
   },
-  pickerWrapper: {
-    width: fixwidth * 0.9,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: fixwidth * 0.02,   // 모서리 둥글게
-    marginBottom: fixwidth * 0.02,
-    paddingHorizontal: fixwidth * 0.02,
-    backgroundColor: '#fff',
-    height: fixwidth * 0.14,
-  },
-  picker: {
-    color: '#000',
-  }
-
 });
 
 export default LibraryFilter;

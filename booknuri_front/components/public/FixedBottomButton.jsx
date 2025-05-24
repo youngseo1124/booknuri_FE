@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  useWindowDimensions, Dimensions,
+  useWindowDimensions,
+  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
+const { width: fixwidth } = Dimensions.get('window');
+
 const FixedBottomButton = ({ disabled, onPress, label = "다음" }) => {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions(); // ✅ 진짜 화면 기준 width
+  const { width } = useWindowDimensions();
 
   return (
-    <View style={[styles.wrapper, { paddingBottom: insets.bottom+fixwidth*0.003,  width: width*1}]}>
+    <View style={[styles.wrapper, { paddingBottom: insets.bottom  }]}>
       <TouchableOpacity
         style={[styles.button, disabled && styles.disabled]}
         disabled={disabled}
@@ -26,31 +29,30 @@ const FixedBottomButton = ({ disabled, onPress, label = "다음" }) => {
   );
 };
 
-const { width:fixwidth } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     bottom: 0,
+    width: '100%',
     backgroundColor: '#fff',
-    paddingHorizontal:fixwidth*0.003,
+    alignItems: 'center',
   },
   button: {
-    height: fixwidth*0.14,
-    backgroundColor: "#bca48e",
-    borderRadius: fixwidth*0.007,
+    width: '100%',
+    height: fixwidth * 0.14,
+    backgroundColor: '#bca48e',
+    borderRadius: fixwidth * 0.01,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   disabled: {
     backgroundColor: '#ccc',
   },
   text: {
     color: '#fff',
-    fontSize: fixwidth*0.05,
+    fontSize: fixwidth * 0.045,
     fontFamily: 'NanumGothic-Regular',
-  }
+  },
 });
 
 export default FixedBottomButton;

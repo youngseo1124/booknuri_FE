@@ -1,6 +1,14 @@
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, BackHandler } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  Dimensions,
+  Platform,
+  StatusBar,
+} from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import StepProgressHeader from '../../components/public/StepProgressHeader';
 import Step01 from '../../components/userSetting/firstsetting/FirstSettingStep01';
@@ -10,8 +18,12 @@ import Step04 from '../../components/userSetting/firstsetting/FirstSettingStep04
 import Step05 from '../../components/userSetting/firstsetting/FirstSettingStep05';
 import Step06 from '../../components/userSetting/firstsetting/FirstSettingStep06';
 
+const { width: fixwidth } = Dimensions.get('window');
+
 const FirstSettingScreen = () => {
   const [step, setStep] = useState(1);
+  const navigation = useNavigation();
+
 
   const handleBack = () => {
     if (step > 1) {
@@ -29,21 +41,28 @@ const FirstSettingScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <StepProgressHeader totalSteps={6} currentStep={step} onBack={handleBack} />
+    <View style={{ flex: 1 }}>
+      {/* ✅ 헤더 고정 */}
+      <View style={{ zIndex: 10 }}>
+        <StepProgressHeader totalSteps={6} currentStep={step} onBack={handleBack} />
+      </View>
 
-      {step === 1 && <Step01 onNext={() => setStep(2)} />}
-      {step === 2 && <Step02 onNext={() => setStep(3)} />}
-      {step === 3 && <Step03 onNext={() => setStep(4)} />}
-      {step === 4 && <Step04 onNext={() => setStep(5)} />}
-      {step === 5 && <Step05 onNext={() => setStep(6)} />}
-      {step === 6 && <Step06 />}
+
+      <View style={styles.Area}>
+        {step === 1 && <Step01 onNext={() => setStep(2)} />}
+        {step === 2 && <Step02 onNext={() => setStep(3)} />}
+        {step === 3 && <Step03 onNext={() => setStep(4)} />}
+        {step === 4 && <Step04 onNext={() => setStep(5)} />}
+        {step === 5 && <Step05 onNext={() => setStep(6)} />}
+        {step === 6 && <Step06 onNext={() => navigation.navigate('HomeScreen')} />}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  Area: {
+    paddingTop: fixwidth * 0.15,
     flex: 1,
     backgroundColor: '#fff',
   },

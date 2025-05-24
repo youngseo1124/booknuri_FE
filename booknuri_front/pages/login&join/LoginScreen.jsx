@@ -17,19 +17,16 @@ import JoinLinkComponent from "../../components/Login/JoinLinkComponent";
 import KakaoLoginButton from "../../components/Login/KakaoLoginButton";
 import GoogleLoginButton from "../../components/Login/GoogleLoginButton";
 
-const { width, height } = Dimensions.get("window");
+// ✅ 고정 width만 가져오기 (폰트나 스타일 계산용)
+const { width: fixwidth, height } = Dimensions.get("window");
 
 const LoginScreen = () => {
     return (
       <>
-          {/*  상태바 스타일 지정 (아이콘 검정) */}
           <StatusBar barStyle="dark-content" backgroundColor="#e0d6ce" />
+          <SafeAreaView edges={["top"]} style={{ backgroundColor: "#e0d6ce" }} />
 
-          {/*  SafeAreaView로 상단 보호 */}
-          <SafeAreaView edges={['top']} style={{ backgroundColor: "#e0d6ce" }} />
-
-          {/* 하단 영역까지 포함하는 SafeAreaView */}
-          <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.safeArea}>
+          <SafeAreaView edges={["left", "right", "bottom"]} style={styles.safeArea}>
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                   <ScrollView
                     contentContainerStyle={styles.scrollContainer}
@@ -79,53 +76,53 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#e0d6ce",
-        paddingVertical: width * 0.1,
+        paddingVertical: fixwidth * 0.07,
     },
     formWrapper: {
-        width: width * 0.85,
+        width: '87%',
         backgroundColor: "#ffffff",
-        minHeight: width * 1,
-        height: height * 0.77,
+        height: height * 0.79,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: width * 0.04,
-        marginTop: height * 0.01,
-        marginBottom: height * 0.01,
-    },
-    logo: {
-        width: width * 0.4,
-        height: width * 0.4,
-        resizeMode: "contain",
+        borderRadius: fixwidth * 0.04,
+        marginTop: fixwidth * 0.01,
+        marginBottom: fixwidth * 0.01,
     },
     logoWrapper: {
-        paddingBottom: width * 0.07,
+        paddingBottom: fixwidth * 0.07,
+    },
+    logo: {
+        width: fixwidth * 0.4,
+        height: fixwidth * 0.4,
+        resizeMode: "contain",
     },
     snsSection: {
-        paddingTop: width * 0.2,
-        alignItems: 'center',
-        width: '90%',
+        paddingTop: fixwidth * 0.2,
+        alignItems: "center",
+        width: "90%", // ✅ 반응형
     },
     dividerWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: width * 0.04,
-        paddingHorizontal: width * 0.05,
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: fixwidth * 0.04,
+        paddingHorizontal: fixwidth * 0.05,
+        width: "100%",
     },
     divider: {
         flex: 1,
         height: 1,
-        backgroundColor: '#ccc',
+        backgroundColor: "#ccc",
     },
     snsText: {
-        marginHorizontal: width * 0.01,
-        color: '#999',
-        fontSize: width * 0.033,
+        marginHorizontal: fixwidth * 0.01,
+        color: "#999",
+        fontSize: fixwidth * 0.033, // ✅ 반응형 글자크기
     },
     snsButtonsWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 12,
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: fixwidth * 0.03, // ✅ 여백도 반응형
     },
 });
 

@@ -23,22 +23,17 @@ const LibraryList = ({ onSelectLibrary, selectedLibrary, filter }) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  //  필터에 맞춰 API 호출 함수 정리
   const getDataByFilter = async ({ si, gu, keyword, offset }) => {
-    if (si && gu)
-      return await getLibrariesBySiGu({ si, gu, keyword, offset });
-    if (si)
-      return await getLibrariesBySi({ si, keyword, offset });
+    if (si && gu) return await getLibrariesBySiGu({ si, gu, keyword, offset });
+    if (si) return await getLibrariesBySi({ si, keyword, offset });
     return await getAllLibraries({ keyword, offset });
   };
 
-  //  리스트 추가 로딩
   const loadMoreLibraries = async () => {
     if (!hasMore) return;
 
     try {
       const res = await getDataByFilter({ ...filter, offset });
-
       if (res.data.length < 20) setHasMore(false);
       setLibraries(prev => [...prev, ...res.data]);
       setOffset(prev => prev + 20);
@@ -47,14 +42,12 @@ const LibraryList = ({ onSelectLibrary, selectedLibrary, filter }) => {
     }
   };
 
-  //  필터 바뀔 때 초기화 + 새로 불러오기
   useEffect(() => {
     const fetchInitial = async () => {
       try {
         setOffset(0);
         setHasMore(true);
         const res = await getDataByFilter({ ...filter, offset: 0 });
-
         setLibraries(res.data);
         if (res.data.length < 20) setHasMore(false);
         setOffset(20);
@@ -63,7 +56,6 @@ const LibraryList = ({ onSelectLibrary, selectedLibrary, filter }) => {
         setLibraries([]);
       }
     };
-
     fetchInitial();
   }, [filter]);
 
@@ -71,7 +63,6 @@ const LibraryList = ({ onSelectLibrary, selectedLibrary, filter }) => {
     <TouchableOpacity
       style={[
         styles.item,
-        { width: fixwidth * 0.9 },
         selectedLibrary?.libCode === item.libCode && styles.selectedItem,
       ]}
       onPress={() => onSelectLibrary(item)}
@@ -88,12 +79,15 @@ const LibraryList = ({ onSelectLibrary, selectedLibrary, filter }) => {
       keyExtractor={(item, index) => `${item.libCode}_${index}`}
       onEndReached={loadMoreLibraries}
       onEndReachedThreshold={0.5}
-      contentContainerStyle={{ alignItems: 'center' }}
+      contentContainerStyle={styles.listContainer}
     />
   );
 };
 
 const styles = StyleSheet.create({
+  listContainer: {
+    width: '100%',
+  },
   item: {
     padding: fixwidth * 0.04,
     borderBottomColor: '#eee',
@@ -103,7 +97,6 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: '#e0f7fa',
-
   },
   name: {
     fontWeight: 'bold',

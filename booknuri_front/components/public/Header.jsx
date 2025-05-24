@@ -43,7 +43,7 @@ const Header = ({ title = '제목', allChecked, onAllCheck }) => {
 
 const styles = StyleSheet.create({
   header: {
-    paddingVertical: width * 0.04,
+    paddingVertical: width * 0.02,
     paddingHorizontal: width * 0.07,
     backgroundColor: '#fff',
     justifyContent: 'center',

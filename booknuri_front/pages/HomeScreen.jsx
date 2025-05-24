@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect,useContext } from "react";
 import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ScrollView, SafeAreaView, Image, FlatList } from 'react-native';
-import BottomNavigation from "../components/public/BottomNavigation";
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const { width,height} = Dimensions.get("window");
 import { LoginContext } from "../contexts/LoginContextProvider";
@@ -37,8 +37,8 @@ const HomeScreen = ({ navigation }) => {
 
           </ScrollView>
 
-          {/* ✅ 하단 네비게이션 */}
-          <BottomNavigation />
+     {/*      ✅ 하단 네비게이션
+          <BottomNavigation />*/}
       </View>
     );
 };

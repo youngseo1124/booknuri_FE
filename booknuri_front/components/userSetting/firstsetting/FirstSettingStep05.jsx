@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { View, StyleSheet, useWindowDimensions, Dimensions } from 'react-native';
 import FixedBottomButton from '../../public/FixedBottomButton';
 import { LoginContext } from '../../../contexts/LoginContextProvider';
-import {setMyLibrary, userinfo} from '../../../apis/apiFunction';
+import { setMyLibrary } from '../../../apis/apiFunction';
 import LibraryFilter from '../../userSetting/librarySetting/LibraryFilter';
 import LibraryList from '../../userSetting/librarySetting/LibraryList';
 
@@ -19,7 +19,7 @@ const Step05 = ({ onNext }) => {
     try {
       const res = await setMyLibrary(selectedLibrary.libCode);
       if (res.status === 200) {
-        onNext(); //
+        onNext(); // 다음 단계로
       }
     } catch (err) {
       console.error('❌ 도서관 설정 실패', err);
@@ -27,18 +27,39 @@ const Step05 = ({ onNext }) => {
   };
 
   return (
-    <View style={[styles.container, { paddingHorizontal: width * 0.0 }]}>
+    <View style={styles.container}>
+      {/*  필터 + 리스트 묶고 여백 확보 */}
+      <View style={styles.listWrapper}>
+        <LibraryFilter setSelectedLibrary={setSelectedLibrary} setFilter={setFilter} />
+        <LibraryList
+          filter={filter}
+          onSelectLibrary={setSelectedLibrary}
+          selectedLibrary={selectedLibrary}
+        />
+      </View>
 
-      <LibraryFilter setSelectedLibrary={setSelectedLibrary} setFilter={setFilter} />
-      <LibraryList filter={filter} onSelectLibrary={setSelectedLibrary} selectedLibrary={selectedLibrary} />
-      <FixedBottomButton label="완료" onPress={handleSubmit} disabled={!selectedLibrary} />
+      {/* 하단 고정 버튼 */}
+      <FixedBottomButton
+        label="완료"
+        onPress={handleSubmit}
+        disabled={!selectedLibrary}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' ,paddingVertical: fixwidth * 0.037 },
-
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: fixwidth*0.03,
+    alignItems: 'center',
+  },
+  listWrapper: {
+    flex: 1,
+    paddingBottom: fixwidth * 0.15,
+    width: '90%',
+  },
 });
 
 export default Step05;

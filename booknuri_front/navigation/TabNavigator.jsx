@@ -18,7 +18,7 @@ const TabNavigator = () => {
     >
       <Tab.Screen name="HomeScreen" component={HomeScreen} />
       <Tab.Screen name="Recommend" component={RecommendScreen} />
-      <Tab.Screen name="ScanScreen" component={ScanScreen} />
+    
       <Tab.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
       <Tab.Screen name="MyPage" component={MyPageScreen} />
     </Tab.Navigator>

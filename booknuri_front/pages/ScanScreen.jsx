@@ -35,7 +35,7 @@ const ScanScreen = () => {
     const handleMessage = (event) => {
         const data = event.nativeEvent.data;
         if (/^97[89][0-9]{10}$/.test(data)) {
-            console.log('📚 유효한 ISBN 스캔됨:', data);
+            console.log(' 유효한 ISBN 스캔됨:', data);
             setScannedData(data);
             setHasScanned(true); //  터치 대기 상태
         }

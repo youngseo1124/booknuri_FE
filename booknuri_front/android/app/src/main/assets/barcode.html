@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>바코드 스캐너</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        #reader-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #reader {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #reader video {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            background-color: #000000;
+        }
+
+        #reader__scan_region > div:nth-child(1) {
+            transform: none !important;
+            scale: 1 !important;
+        }
+
+        .overlay-text {
+            position: absolute;
+            top: 33px;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 0 6px rgba(0,0,0,0.6);
+        }
+    </style>
+</head>
+<body>
+<div id="reader-container">
+    <div class="overlay-text">
+         ISBN 바코드만 박스에 들어오도록 위치를 맞춰주세요<br />
+        ※ 가격 바코드까지 들어오면 인식이 실패할 수 있어요
+
+    </div>
+    <div id="reader"></div>
+</div>
+
+<script>
+    function onScanSuccess(decodedText, decodedResult) {
+        window.ReactNativeWebView?.postMessage(decodedText);
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode
+        .start(
+            { facingMode: "environment" },
+            {
+                fps: 15,
+                qrbox: { width: 180, height: 130 },
+                disableFlip: true
+            },
+            onScanSuccess
+        )
+        .catch(err => {
+            console.error("카메라 시작 실패 ❌", err);
+        });
+</script>
+</body>
+</html>

@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  PermissionsAndroid,
+  Platform,
+  Alert,
+} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faBook,
@@ -12,107 +21,109 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const CurvedTabBar = ({ state, descriptors, navigation }) => {
+const CurvedTabBar = ({ state, navigation }) => {
   const insets = useSafeAreaInsets();
 
-  const tabIcons = {
-    HomeScreen: { label: '홈', icon: faBook },
-    Recommend: { label: '추천', icon: faComments },
-    MyLibrarySettingScreen: { label: '도서관', icon: faBuilding },
-    MyPage: { label: '마이페이지', icon: faUser },
+  const handleScanPress = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: '카메라 권한 요청',
+            message: '스캔 기능을 사용하려면 카메라 권한이 필요해요!',
+            buttonPositive: '허용',
+            buttonNegative: '거부',
+          }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        navigation.navigate('ScanScreen');
+      } else {
+        Alert.alert('📛 권한 거부됨', '카메라 권한이 없으면 스캔을 사용할 수 없어요!');
+      }
+    } else {
+      // iOS는 자동 허용
+      navigation.navigate('ScanScreen');
+    }
   };
 
-  const leftTabs = ['HomeScreen', 'Recommend'];
-  const rightTabs = ['MyLibrarySettingScreen', 'MyPage'];
+  // 탭 정보 수동 배열
+  const tabOrder = [
+    { name: 'HomeScreen', icon: faBook, label: '홈' },
+    { name: 'Recommend', icon: faComments, label: '추천' },
+    null, // 👉 중앙 빈 공간 (스캔 자리)
+    { name: 'MyLibrarySettingScreen', icon: faBuilding, label: '도서관' },
+    { name: 'MyPage', icon: faUser, label: '마이페이지' },
+  ];
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        height: fixwidth * 0.3,
-        backgroundColor: '#fff',
-        paddingBottom: insets.bottom,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        elevation: 8,
-      }}
-    >
-      {/* 🔘 중앙 버튼 */}
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => navigation.navigate('ScanScreen')}
-      >
-        <FontAwesomeIcon icon={faBarcode} size={fixwidth * 0.07} color="#fff" />
-      </TouchableOpacity>
+      <View style={[styles.wrapper, { paddingBottom: insets.bottom + fixwidth * 0.02 }]}>
+        {/*  중앙 스캔 버튼 */}
+        <TouchableOpacity
+            activeOpacity={1}
+            style={styles.fab}
+            onPress={handleScanPress}
+        >
+          <FontAwesomeIcon icon={faBarcode} size={fixwidth * 0.077} color="#fff" />
+        </TouchableOpacity>
 
-      {/* 🔲 좌측 탭 */}
-      <View style={styles.tabGroup}>
-        {leftTabs.map((routeName) => {
-          const index = state.routes.findIndex((r) => r.name === routeName);
-          const isFocused = state.index === index;
-          const tabInfo = tabIcons[routeName];
+        {/* 탭 전체 */}
+        <View style={styles.tabContainer}>
+          {tabOrder.map((tab, index) => {
+            if (tab === null) {
+              return <View key={`empty-${index}`} style={styles.emptySpace} />;
+            }
 
-          return (
-            <TouchableOpacity
-              key={routeName}
-              onPress={() => navigation.navigate(routeName)}
-              style={styles.tabBtn}
-            >
-              <FontAwesomeIcon
-                icon={tabInfo.icon}
-                size={fixwidth * 0.06}
-                color={isFocused ? '#4B4B4B' : '#C9C9C9'}
-              />
-              <Text style={[styles.label, isFocused && styles.activeLabel]}>
-                {tabInfo.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+            const routeIndex = state.routes.findIndex(r => r.name === tab.name);
+            const isFocused = state.index === routeIndex;
+
+            return (
+                <TouchableOpacity
+                    activeOpacity={1}
+                    key={tab.name}
+                    onPress={() => navigation.navigate(tab.name)}
+                    style={styles.tabBtn}
+                >
+                  <FontAwesomeIcon
+                      icon={tab.icon}
+                      size={fixwidth * 0.06}
+                      color={isFocused ? '#4B4B4B' : '#C9C9C9'}
+                  />
+                  <Text style={[styles.label, isFocused && styles.activeLabel]}>
+                    {tab.label}
+                  </Text>
+                </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
-
-      {/* 🔲 우측 탭 */}
-      <View style={styles.tabGroup}>
-        {rightTabs.map((routeName) => {
-          const index = state.routes.findIndex((r) => r.name === routeName);
-          const isFocused = state.index === index;
-          const tabInfo = tabIcons[routeName];
-
-          return (
-            <TouchableOpacity
-              key={routeName}
-              onPress={() => navigation.navigate(routeName)}
-              style={styles.tabBtn}
-            >
-              <FontAwesomeIcon
-                icon={tabInfo.icon}
-                size={fixwidth * 0.06}
-                color={isFocused ? '#4B4B4B' : '#C9C9C9'}
-              />
-              <Text style={[styles.label, isFocused && styles.activeLabel]}>
-                {tabInfo.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  tabGroup: {
+  wrapper: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: fixwidth * 0.05,
+  },
+  tabContainer: {
     flexDirection: 'row',
-    flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    paddingHorizontal: fixwidth * 0.03,
   },
   tabBtn: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 5,
+    flex: 1,
+  },
+  emptySpace: {
     flex: 1,
   },
   label: {
@@ -126,16 +137,16 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    top: -fixwidth * 0.09,
-    left: fixwidth / 2 - fixwidth * 0.09,
-    width: fixwidth * 0.18,
-    height: fixwidth * 0.18,
-    borderRadius: fixwidth * 0.09,
+    top: -fixwidth * 0.067,
+    width: fixwidth * 0.21,
+    height: fixwidth * 0.21,
+    borderRadius: fixwidth * 0.07,
     backgroundColor: '#b0957d',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
     zIndex: 10,
+    borderWidth: fixwidth * 0.022,
+    borderColor: '#fff',
   },
 });
 

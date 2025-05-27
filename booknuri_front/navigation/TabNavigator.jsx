@@ -6,7 +6,7 @@ import RecommendScreen from '../pages/dummy/RecommendScreen';
 import ScanScreen from '../pages/dummy/ScanScreen';
 import MyLibrarySettingScreen from '../pages/setting/MyLibrarySettingScreen';
 import MyPageScreen from '../pages/dummy/MyPageScreen';
-import CurvedTabBar from '../components/public/CurvedTabBar';
+import CurvedTabBar from '../components/CurvedTabBar';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +18,7 @@ const TabNavigator = () => {
     >
       <Tab.Screen name="HomeScreen" component={HomeScreen} />
       <Tab.Screen name="Recommend" component={RecommendScreen} />
-    
+
       <Tab.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
       <Tab.Screen name="MyPage" component={MyPageScreen} />
     </Tab.Navigator>

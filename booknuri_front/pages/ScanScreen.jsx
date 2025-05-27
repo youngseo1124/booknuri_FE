@@ -8,9 +8,12 @@ import {
     PermissionsAndroid,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
-import ConfirmPopup from '../../apis/ConfirmPopup';
+import ConfirmPopup from '../components/public/ConfirmPopup';
+import { useNavigation } from '@react-navigation/native';
+
 
 const ScanScreen = () => {
+    const navigation = useNavigation();
     const [hasPermission, setHasPermission] = useState(false);
     const [scannedData, setScannedData] = useState('');
     const [hasScanned, setHasScanned] = useState(false);
@@ -32,6 +35,8 @@ const ScanScreen = () => {
         requestPermission();
     }, []);
 
+
+
     const handleMessage = (event) => {
         const data = event.nativeEvent.data;
         if (/^97[89][0-9]{10}$/.test(data)) {
@@ -44,6 +49,8 @@ const ScanScreen = () => {
     const handleConfirm = () => {
         setPopupVisible(false);
         console.log('사용자 확인 → 처리 시작:', scannedData);
+        navigation.replace('BookDetailScreen', { isbn: scannedData });
+
     };
 
     const handleCancel = () => {

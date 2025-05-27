@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import {
-  View,
   ScrollView,
   StyleSheet,
   Dimensions,
-  SafeAreaView,
 } from 'react-native';
 import Header from '../../components/public/Header';
 import AgreeSection from '../../components/Login/AgreeSection';
 import FixedBottomButton from '../../components/public/FixedBottomButton';
 import { useNavigation } from '@react-navigation/native';
+import CommonLayout from '../../components/public/CommonLayout';
 
-// 📐 고정 width (스타일 계산용)
-const { width: fixwidth, height } = Dimensions.get('window');
+const { width: fixwidth } = Dimensions.get('window');
 
 const Signup00Screen = () => {
   const [termsChecked, setTermsChecked] = useState(true);
@@ -32,20 +30,18 @@ const Signup00Screen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* ✅ 상단 SafeArea X, 하단만 적용 */}
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+      <CommonLayout> {/* ✅ SafeAreaView + StatusBar 처리됨 */}
         <Header title="이용동의" allChecked={allChecked} onAllCheck={handleAllCheck} />
 
         <ScrollView
-          contentContainerStyle={styles.scroll}
-          showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scroll}
+            showsVerticalScrollIndicator={false}
         >
           <AgreeSection
-            title="이용약관 동의 (필수)"
-            checked={termsChecked}
-            onToggle={() => setTermsChecked(!termsChecked)}
-            content={`제1장 총칙
+              title="이용약관 동의 (필수)"
+              checked={termsChecked}
+              onToggle={() => setTermsChecked(!termsChecked)}
+              content={`제1장 총칙
 
 제1조 (목적)  
 본 약관은 ‘책누리’ 앱(이하 ‘서비스’)의 이용조건 및 절차, 이용자와 서비스 제공자 간의 권리·의무·책임사항을 규정함을 목적으로 합니다.
@@ -80,10 +76,10 @@ const Signup00Screen = () => {
 `}
           />
           <AgreeSection
-            title="개인정보 수집 및 이용 동의 (필수)"
-            checked={privacyChecked}
-            onToggle={() => setPrivacyChecked(!privacyChecked)}
-            content={`1. 수집하는 개인정보 항목  
+              title="개인정보 수집 및 이용 동의 (필수)"
+              checked={privacyChecked}
+              onToggle={() => setPrivacyChecked(!privacyChecked)}
+              content={`1. 수집하는 개인정보 항목  
 필수 항목: 이름, 이메일, 닉네임, 로그인 ID  
 선택 항목: 관심 장르, 독서 이력
 
@@ -108,25 +104,15 @@ const Signup00Screen = () => {
           />
         </ScrollView>
 
-        {/* ✅ 하단 고정 버튼 */}
         <FixedBottomButton disabled={!allChecked} onPress={goNext} />
-      </SafeAreaView>
-    </View>
+      </CommonLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   scroll: {
-    paddingHorizontal: '5%', // ✅ 퍼센트로 조정 (부모 따라감)
-    paddingBottom: fixwidth * 0.2, // 아래 버튼 영역 확보
+    paddingHorizontal: '5%',
+    paddingBottom: fixwidth * 0.2,
   },
 });
 

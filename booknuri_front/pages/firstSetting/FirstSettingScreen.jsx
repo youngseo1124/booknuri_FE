@@ -42,7 +42,7 @@ const FirstSettingScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* ✅ 헤더 고정 */}
+      {/*  헤더 고정 */}
       <View style={{ zIndex: 10 }}>
         <StepProgressHeader totalSteps={6} currentStep={step} onBack={handleBack} />
       </View>
@@ -54,7 +54,7 @@ const FirstSettingScreen = () => {
         {step === 3 && <Step03 onNext={() => setStep(4)} />}
         {step === 4 && <Step04 onNext={() => setStep(5)} />}
         {step === 5 && <Step05 onNext={() => setStep(6)} />}
-        {step === 6 && <Step06 onNext={() => navigation.navigate('HomeScreen')} />}
+        {step === 6 && <Step06 />}
       </View>
     </View>
   );

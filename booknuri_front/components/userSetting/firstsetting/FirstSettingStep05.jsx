@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: fixwidth*0.03,
+    paddingTop: fixwidth*0.02,
     alignItems: 'center',
   },
   listWrapper: {

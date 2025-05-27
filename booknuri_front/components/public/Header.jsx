@@ -8,7 +8,6 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 // FontAwesome 아이콘 관련 import ✨
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -22,21 +21,19 @@ const Header = ({ title = '제목', allChecked, onAllCheck }) => {
   return (
       <>
         <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-        <SafeAreaView edges={['top']} style={{ backgroundColor: '#fff' }}>
-          <View style={styles.header}>
-            {/* 타이틀 텍스트 */}
-            <Text style={styles.title}>{title}</Text>
+        <View style={styles.header}>
+          {/* 타이틀 텍스트 */}
+          <Text style={styles.title}>{title}</Text>
 
-            {/* ← FontAwesome 아이콘으로 뒤로가기 */}
-            <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                style={styles.backButton}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} size={width * 0.05} color="#111" />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
+          {/* ← FontAwesome 아이콘으로 뒤로가기 */}
+          <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              style={styles.backButton}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} size={width * 0.05} color="#111" />
+          </TouchableOpacity>
+        </View>
       </>
   );
 };
@@ -64,8 +61,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     transform: [{ translateY: -10 }],
     fontSize: width * 0.047,
-    fontWeight: 'bold',
     color: '#111',
+    fontFamily: 'NotoSansKR-SemiBold',
+    lineHeight: width * 0.05,
+
   },
 });
 

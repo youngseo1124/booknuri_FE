@@ -1,26 +1,19 @@
-// Signup01Screen.js
-
 import React, { useState } from "react";
 import {
-  View,
   ScrollView,
   StyleSheet,
   Dimensions,
-  Keyboard,
-  TouchableWithoutFeedback,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Header from '../../components/public/Header';
 import SignupFormStep01 from "../../components/Login/SignupFormStep01";
 import FixedBottomButton from "../../components/public/FixedBottomButton";
 import { join } from "../../apis/apiFunction";
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import CommonLayout from '../../components/public/CommonLayout'; // ✅ 공통 레이아웃
 
 const { width } = Dimensions.get("window");
-const HEADER_HEIGHT = width * 0.12;
 
 const Signup01Screen = () => {
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
   const [form, setForm] = useState({
@@ -52,7 +45,7 @@ const Signup01Screen = () => {
         message: "회원가입 완료!",
         onClose: () => {
           setAlert((prev) => ({ ...prev, visible: false }));
-          navigation.replace("LoginScreen"); // ✅ 이동 여기서 실행됨
+          navigation.replace("LoginScreen");
         },
       });
     } catch (err) {
@@ -65,65 +58,46 @@ const Signup01Screen = () => {
   };
 
   const isValid =
-    form.nickname &&
-    form.emailId &&
-    form.password &&
-    form.confirmPassword &&
-    !error.confirmPassword;
+      form.nickname &&
+      form.emailId &&
+      form.password &&
+      form.confirmPassword &&
+      !error.confirmPassword;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerWrapper}>
+      <CommonLayout>
         <Header title="회원가입" />
-      </View>
 
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={[
-            styles.content,
-            { paddingTop: HEADER_HEIGHT + insets.top },
-          ]}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
         >
           <SignupFormStep01
-            form={form}
-            setForm={setForm}
-            error={error}
-            setError={setError}
-            alert={alert}
-            setAlert={setAlert}
+              form={form}
+              setForm={setForm}
+              error={error}
+              setError={setError}
+              alert={alert}
+              setAlert={setAlert}
           />
         </ScrollView>
-      </TouchableWithoutFeedback>
 
-      {/* 🔥 하단 고정 버튼 */}
-      <FixedBottomButton
-        disabled={!isValid}
-        onPress={handleSignup}
-        label="회원가입 완료"
-      />
-    </View>
+        <FixedBottomButton
+            disabled={!isValid}
+            onPress={handleSignup}
+            label="회원가입 완료"
+        />
+      </CommonLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  headerWrapper: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    backgroundColor: "#fff",
-  },
   content: {
     alignItems: "center",
     paddingHorizontal: width * 0.05,
+    paddingBottom: width * 0.2, // 버튼 공간 확보
   },
 });
 

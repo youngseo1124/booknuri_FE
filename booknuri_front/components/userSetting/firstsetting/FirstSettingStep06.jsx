@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
@@ -7,60 +7,70 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import FixedBottomButton from '../../public/FixedBottomButton';
 import StepOneImage from '../../../image/firstSetting/stepOne.png';
 import LottieView from 'lottie-react-native';
+import { LoginContext } from '../../../contexts/LoginContextProvider';
 
-const { height,width: fixwidth } = Dimensions.get('window');
+const { height, width: fixwidth } = Dimensions.get('window');
 
-const Step01 = ({ onNext }) => {
+const Step01 = () => {
+  const { setUserInfo } = useContext(LoginContext);
+  const navigation = useNavigation(); // ✅ navigation 사용하려면 필요함
+
+  const onNext = () => {
+    setUserInfo(prev => ({
+      ...prev,
+      gender: 'male', // or 실제 선택된 값
+      birth: 2001,
+      myLibrary: { id: 1, name: '대구중앙도서관' },
+    }));
+
+    navigation.navigate('MainTab');
+  };
 
   return (
-    <View style={styles.wrapper}>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: fixwidth * 0.07,
-          paddingTop: fixwidth * 0.18,
-          maxHeight:height*1,
-
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* 콘텐츠 영역 */}
-        <View style={styles.flexContainer}>
-          <View style={styles.centerContent}>
-            <Text style={styles.guideText}>모든 준비가 끝났어요!</Text>
-            <Text style={styles.guideSubText}>
-              이제 책누리가 여러분의 독서 여정을 도와드릴게요 {'\n'}😊
-            </Text>
-          </View>
-
-          <LottieView
-            source={require('../../../assets/lottie/cofetti.json')}
-            autoPlay
-            loop={false}
-            style={{
-              width: fixwidth * 1,
-              height: height*0.5,
-              alignSelf: 'center',
-              position: 'absolute',
-              top: 0,
-              zIndex: 10,
+      <View style={styles.wrapper}>
+        <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingHorizontal: fixwidth * 0.07,
+              paddingTop: fixwidth * 0.18,
+              maxHeight: height * 1,
             }}
-          />
+            showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.flexContainer}>
+            <View style={styles.centerContent}>
+              <Text style={styles.guideText}>모든 준비가 끝났어요!</Text>
+              <Text style={styles.guideSubText}>
+                이제 책누리가 여러분의 독서 여정을 도와드릴게요 {'\n'}😊
+              </Text>
+            </View>
 
-          {/*  이미지: 맨 아래로 */}
-          <View style={styles.imageWrapper}>
-            <Image source={StepOneImage} style={styles.image} resizeMode="contain" />
+            <LottieView
+                source={require('../../../assets/lottie/cofetti.json')}
+                autoPlay
+                loop={false}
+                style={{
+                  width: fixwidth * 1,
+                  height: height * 0.5,
+                  alignSelf: 'center',
+                  position: 'absolute',
+                  top: 0,
+                  zIndex: 10,
+                }}
+            />
+
+            <View style={styles.imageWrapper}>
+              <Image source={StepOneImage} style={styles.image} resizeMode="contain" />
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
 
-      {/*  하단 버튼 */}
-      <FixedBottomButton label="시작하기" onPress={onNext} />
-    </View>
+        <FixedBottomButton label="시작하기" onPress={onNext} />
+      </View>
   );
 };
 
@@ -71,12 +81,12 @@ const styles = StyleSheet.create({
   },
   flexContainer: {
     flex: 1,
-    justifyContent: 'space-between', // 텍스트 위, 이미지 아래로 떨어뜨림
+    justifyContent: 'space-between',
   },
   centerContent: {
-    paddingTop: fixwidth*0.45,
+    paddingTop: fixwidth * 0.4,
     alignItems: 'center',
-    minHeight:fixwidth * 0.4,
+    minHeight: fixwidth * 0.4,
   },
   guideText: {
     fontSize: fixwidth * 0.067,

@@ -11,7 +11,7 @@ const BookInfoHeaderBlock = ({ bookInfo }) => {
 
   const categoryColors = {
     문학: '#ffecf1',
-    사회과학: '#e6fae4',
+    사회과학: '#e3f5e1',
     역사: '#fff3e0',
     예술: '#ede7f6',
     철학: '#f0e5f5',
@@ -20,7 +20,7 @@ const BookInfoHeaderBlock = ({ bookInfo }) => {
     자연과학: '#e1f5fe',
     언어: '#f9fbe7',
     종교: '#fbe9e7',
-    default: '#e2e2e2', // 널 또는 매칭 안되는 경우
+    default: '#ece5e5', // 널 또는 매칭 안되는 경우
   };
 
 
@@ -112,7 +112,10 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: '67%'
+    width: '67%',
+    borderWidth: fixwidth*0.0017,
+    borderColor: '#878787',
+    borderRadius:fixwidth*0.0099,
   },
   textBlock: {
     width: '90%',

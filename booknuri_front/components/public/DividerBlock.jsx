@@ -15,6 +15,6 @@ export default DividerBlock;
 const styles = StyleSheet.create({
   divider: {
     width: '100%',
-    backgroundColor: '#eeeeee',
+    backgroundColor: '#f3f3f3',
   },
 });

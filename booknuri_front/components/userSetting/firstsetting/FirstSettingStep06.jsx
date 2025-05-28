@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   centerContent: {
-    paddingTop: fixwidth * 0.4,
+    paddingTop: fixwidth * 0.5,
     alignItems: 'center',
     minHeight: fixwidth * 0.4,
   },

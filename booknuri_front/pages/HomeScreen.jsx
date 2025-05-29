@@ -1,99 +1,88 @@
-import React, { useState, useRef, useEffect,useContext } from "react";
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ScrollView, SafeAreaView, Image, FlatList } from 'react-native';
-
+import React, { useState, useContext } from "react";
+import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-const { width,height} = Dimensions.get("window");
 import { LoginContext } from "../contexts/LoginContextProvider";
+import ToastPopup from '../components/public/ToastPopup'; // ✅ 토스트 불러오기
 
-
+const { width, height } = Dimensions.get("window");
 
 const HomeScreen = ({ navigation }) => {
-
     const { logout } = useContext(LoginContext);
-
     const insets = useSafeAreaInsets();
 
+    const [showToast, setShowToast] = useState(false); // ✅ 토스트 상태 추가
+
+    // ✅ 버튼 클릭 시 토스트 보이게
+    const handleShowToast = () => {
+        setShowToast(true);
+    };
 
     return (
       <View style={[styles.safeContainer, { paddingTop: insets.top, backgroundColor: "#000000" }]}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-
+              {/* 로그아웃 버튼 */}
               <TouchableOpacity
                 onPress={logout}
-                style={{
-                    backgroundColor: "#ff4444",
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    borderRadius: 10,
-                    marginTop: 20,
-                }}
+                style={styles.logoutButton}
               >
-                  <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>
-                       로그아웃 하기
-                  </Text>
+                  <Text style={styles.logoutText}>로그아웃 하기</Text>
               </TouchableOpacity>
 
+              {/* ✅ 토스트 테스트용 버튼 */}
+              <TouchableOpacity
+                onPress={handleShowToast}
+                style={styles.toastButton}
+              >
+                  <Text style={styles.toastText}>토스트 테스트 버튼</Text>
+              </TouchableOpacity>
 
           </ScrollView>
 
-     {/*      ✅ 하단 네비게이션
-          <BottomNavigation />*/}
+          {/* ✅ 토스트 컴포넌트 (조건부 렌더링) */}
+          {showToast && (
+            <ToastPopup
+              message="✅ 테스트 성공! 토스트 떴지롱~"
+              onClose={() => setShowToast(false)}
+            />
+          )}
       </View>
     );
 };
 
 const styles = StyleSheet.create({
+    safeContainer: {
+        flex: 1,
+    },
     scrollContainer: {
         alignItems: "center",
         paddingTop: width * 0.04,
-        backgroundColor:"#faf5f2",
-        minHeight:height*1
+        backgroundColor: "#faf5f2",
+        minHeight: height * 1,
     },
-
-    bannerContainer: {
-        width: width * 0.9,
-        height: width * 0.4,
-        alignItems: "center",
-        justifyContent: "center",
-        margin:width * 0.07
+    logoutButton: {
+        backgroundColor: "#ff4444",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginTop: 20,
     },
-    bannerImage: {
-        width: width * 0.9,
-        height: width * 0.35,
-        resizeMode: "contain",
-        borderRadius: width * 0.01,
-        borderWidth: width * 0.003,
-        borderColor: "rgba(0,0,0,0.11)",
-        shadowColor: "#0e0e0e",
-        shadowOffset: { width: 2, height: 3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 7,
-        elevation: 9,
+    logoutText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
-    indicatorContainer: {
-        flexDirection: "row",
-        position: "absolute",
-        bottom: 5,
+    toastButton: {
+        backgroundColor: "#4444ff",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginTop: 30,
     },
-    indicator: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginHorizontal: 4,
-    },
-    testButtonImage: {
-        borderWidth: width * 0.002,
-        borderColor: "rgba(0,0,0,0.73)",
-        width: width * 0.9,
-        height: width * 0.333,
-        marginBottom: 40,
-        borderRadius: width * 0.06,
-        shadowColor: "#0e0e0e",
-        shadowOffset: { width: 5, height: 3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 15,
-        elevation: 6,
+    toastText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 

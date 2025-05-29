@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import BookFallbackCover from './BookFallbackCover';
+import AddToBookshelfButton from './AddToBookshelfButton';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookInfoHeaderBlock = ({ bookInfo }) => {
+const BookInfoHeaderBlock = ({ bookInfo, onAddToBookshelf }) => {
   const [aspectRatio, setAspectRatio] = useState(0.7); // 📐 기본 비율
 
 
 
   const categoryColors = {
-    문학: '#ffecf1',
+    문학: '#cdf3ee',
     사회과학: '#e3f5e1',
     역사: '#fff3e0',
     예술: '#ede7f6',
@@ -79,10 +80,17 @@ const BookInfoHeaderBlock = ({ bookInfo }) => {
         ) : (
           <BookFallbackCover title={bookname} />
         )}
+
+        {/*책장담기버튼*/}
+        <AddToBookshelfButton onPress={onAddToBookshelf} />
+
+
+
       </View>
 
       {/*  책 기본 정보 텍스트 */}
       <View style={styles.textBlock}>
+
         <Text style={styles.title}>{bookname}</Text>
         <Text style={styles.author}>{authors}</Text>
         <Text style={styles.publisher}>
@@ -103,8 +111,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageWrapper: {
-    width: '93%',
-    borderRadius: fixwidth*0.02,
+    width: '100%',
+    borderRadius: fixwidth*0.0,
     overflow: 'hidden',
     backgroundColor: '#e0f3de',
     alignItems: 'center',

@@ -1,86 +1,117 @@
-// pages/book/BookDetailScreen.jsx
-
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import CommonLayout from '../components/public/CommonLayout';
 import Header from '../components/public/Header';
-import {getBookTotalInfo,  toggleLikeReview} from '../apis/apiFunction_book';
+import { getBookTotalInfo, getBookReviewList, toggleLikeReview } from '../apis/apiFunction_book';
 import BookInfoHeaderBlock from '../components/bookDetailpage/BookInfoHeaderBlock';
 import BookInfoContentBlock from '../components/bookDetailpage/BookInfoContentBlock';
 import DividerBlock from '../components/public/DividerBlock';
 import BookRatingSummaryBlock from '../components/bookDetailpage/BookRatingSummaryBlock';
-import BookReviewsBlock from '../components/bookDetailpage/BookReviewsBlock.';
-const { width: fixwidth } = Dimensions.get('window');
 
+import ToastPopup from '../components/public/ToastPopup';
+import BookReviewsBlock from '../components/bookDetailpage/BookReviewsBlock.';
+
+const { width: fixwidth } = Dimensions.get('window');
 
 const BookDetailScreen = ({ route }) => {
     const { isbn } = route.params;
-    const [bookData, setBookData] = useState(null);
+
+    const [bookData, setBookData] = useState(null);         // 책 정보
+    const [sortedReviews, setSortedReviews] = useState([]); // 정렬된 리뷰 목록
+    const [reviewSort, setReviewSort] = useState('new');    // 현재 정렬 기준
     const [loading, setLoading] = useState(true);
+    const [showToast, setShowToast] = useState(false);
+    const [averageRating, setAverageRating] = useState(0);
+    const [ratingDistribution, setRatingDistribution] = useState({});
+    // 책 정보 불러오기
+    const fetchBookData = async () => {
+        try {
+            const res = await getBookTotalInfo(isbn);
+            setBookData(res.data);
+        } catch (error) {
+            console.error('X 책 상세 정보 가져오기 실패:', error);
+        }
+    };
 
+    // 리뷰 리스트 불러오기
+    const fetchSortedReviews = async (sort = 'new') => {
+        try {
+            const res = await getBookReviewList(isbn, sort);
+            setSortedReviews(res.data.reviews);
+            setReviewSort(sort);
+
+            //  새로 추가된 리뷰 통계 값들 설정
+            setAverageRating(res.data.averageRating);
+            setRatingDistribution(res.data.ratingDistribution);
+        } catch (err) {
+            console.error('X 리뷰 목록 가져오기 실패:', err);
+        }
+    };
+
+    // 초기 로딩
     useEffect(() => {
-        const fetchBookData = async () => {
-            try {
-                const res = await getBookTotalInfo(isbn);
-                setBookData(res.data);
-            } catch (error) {
-                console.error('X 책 상세 정보 가져오기 실패:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchBookData();
+        fetchSortedReviews(); // 기본 정렬: 최신순
     }, [isbn]);
 
-    // 좋아요 누르기 함수
+    // 리뷰 좋아요 핸들러
     const handleLike = async (reviewId) => {
         try {
             await toggleLikeReview(reviewId);
-            // 서버에서 전체 데이터 다시 불러옴
-            const res = await getBookTotalInfo(isbn);
-            setBookData(res.data);
+            await fetchSortedReviews(reviewSort); // 좋아요 후 같은 정렬로 다시 fetch
         } catch (err) {
             console.error('좋아요 실패:', err);
         }
     };
 
-
+    //  책장 담기 핸들러
+    const handleAddToBookshelf = () => {
+        setShowToast(true); // 토스트 띄우기
+    };
 
     return (
-        <CommonLayout>
-            <Header title="책 상세 페이지"/>
-            <ScrollView
-              style={{ flex: 1 }}
-              contentContainerStyle={styles.content}
-              showsVerticalScrollIndicator={false}
-            >
+      <CommonLayout>
+          <Header title="책 상세 페이지" />
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
+              <BookInfoHeaderBlock
+                bookInfo={bookData?.bookInfo}
+                onAddToBookshelf={handleAddToBookshelf}
+              />
 
-                <BookInfoHeaderBlock bookInfo={bookData?.bookInfo} />
+              <DividerBlock />
 
-                <DividerBlock />
+              <BookInfoContentBlock description={bookData?.bookInfo?.description} />
 
-                <BookInfoContentBlock description={bookData?.bookInfo?.description}/>
+              <DividerBlock />
 
-                <DividerBlock />
+              <BookRatingSummaryBlock
+                reviewRating={averageRating}
+                ratingDistribution={ratingDistribution}
+              />
 
-                <BookRatingSummaryBlock
-                  reviewRating={bookData?.averageReviewRating}
-                />
+              <DividerBlock />
 
-                <DividerBlock />
+              <BookReviewsBlock
+                reviews={sortedReviews}
+                onLikePress={handleLike}
+                onSortChange={fetchSortedReviews}
+                currentSort={reviewSort}
+              />
 
-                <BookReviewsBlock
-                  reviews={bookData?.reviews}
-                  onLikePress={handleLike}
-               /*   onReportPress={handleReport}*/
-                />
+              <DividerBlock />
+          </ScrollView>
 
-
-
-                {/*  이후 책 제목, 저자, 출판사, 줄거리 등 추가해도 스크롤됨 */}
-            </ScrollView>
-        </CommonLayout>
+          {showToast && (
+            <ToastPopup
+              message="내 책장에 담겼습니다!"
+              onClose={() => setShowToast(false)}
+            />
+          )}
+      </CommonLayout>
     );
 };
 
@@ -91,7 +122,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: fixwidth * 0.02,
     },
-
     divider: {
         width: '100%',
         height: fixwidth * 0.057,

@@ -67,9 +67,10 @@ const styles = StyleSheet.create({
   reviewCard: {
     backgroundColor: '#fff',
     borderRadius: fixwidth * 0.03,
-    padding: fixwidth * 0.04,
+    paddingVertical: fixwidth * 0.035,
+    paddingHorizontal: fixwidth * 0.042,
     borderWidth: 1,
-    borderColor: '#f2f2f2',
+    borderColor: '#dddcdc',
   },
   stars: {
     flexDirection: 'row',
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     paddingVertical: fixwidth * 0.011,
   },
   username: {
-    fontSize: fixwidth * 0.032,
+    fontSize: fixwidth * 0.029,
     fontFamily: 'NotoSansKR-Bold',
     lineHeight: fixwidth * 0.05,
     color: '#000',
@@ -120,8 +121,8 @@ const styles = StyleSheet.create({
     gap: fixwidth * 0.015,
     borderWidth: fixwidth * 0.002,
     borderColor:  '#f3f3f3',
-    paddingHorizontal: fixwidth * 0.017,
-    paddingVertical: fixwidth * 0.01,
+    paddingHorizontal: fixwidth * 0.0177,
+    paddingVertical: fixwidth * 0.007,
     borderRadius: fixwidth * 0.011,
     backgroundColor: '#f5f5f5',
   },

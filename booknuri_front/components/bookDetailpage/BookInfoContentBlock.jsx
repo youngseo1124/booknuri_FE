@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
-import SectionHeader from './common/SectionHeader';
+import SectionHeader from './public/SectionHeader';
 
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -14,7 +14,7 @@ const BookInfoContentBlock = ({ description }) => {
     <View style={styles.container}>
       <View style={styles.divider} />
       <SectionHeader label="책 소개" />
-      <Text style={styles.description}>{description}</Text>
+      <Text style={styles.description}>   {description}</Text>
       <View style={styles.divider} />
     </View>
   );

@@ -1,30 +1,25 @@
-
-//기본 알림창
-
-// ✅ 필요한 라이브러리 불러오기
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
-// ✅ AlertPopup 컴포넌트 정의
+const { width: fixwidth } = Dimensions.get('window');
+
 const AlertPopup = ({ visible, title, message, onClose }) => {
     return (
-        <Modal visible={visible} transparent animationType="fade">
-            <View style={styles.overlay}>
-                <View style={styles.popup}>
-                    <Text style={styles.title}>{String(title)}</Text>
-                    <Text style={styles.message}>{String(message)}</Text>
+      <Modal visible={visible} transparent animationType="fade">
+          <View style={styles.overlay}>
+              <View style={styles.popup}>
+                  <Text style={styles.title}>{String(title)}</Text>
+                  <Text style={styles.message}>{String(message)}</Text>
 
-
-                    <TouchableOpacity style={styles.button} onPress={onClose}>
-                        <Text style={styles.buttonText}>확인</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
+                  <TouchableOpacity style={styles.button} onPress={onClose}>
+                      <Text style={styles.buttonText}>확인</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      </Modal>
     );
 };
 
-// ✅ 스타일 정의
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
@@ -34,31 +29,41 @@ const styles = StyleSheet.create({
     },
     popup: {
         backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10,
-        width: 300,
+        paddingVertical: fixwidth * 0.06,
+        paddingHorizontal: fixwidth * 0.06,
+        borderRadius: fixwidth * 0.03,
+        width: fixwidth * 0.8,
         alignItems: 'center',
     },
     title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color:'#000000',
+        fontSize: fixwidth * 0.045,
+        fontFamily: 'NotoSansKR-SemiBold',
+        color: '#000000',
+        marginBottom: fixwidth * 0.02,
+        textAlign: 'center',
+        lineHeight: fixwidth * 0.05,
+        paddingVertical: fixwidth * 0.02,
     },
     message: {
-        fontSize: 16,
-        marginVertical: 10,
+        fontSize: fixwidth * 0.037,
+        fontFamily: 'NotoSansKR-Regular',
+        color: '#333333',
+        marginBottom: fixwidth * 0.04,
+        textAlign: 'center',
+        lineHeight: fixwidth * 0.05,
     },
     button: {
-        marginTop: 10,
-        backgroundColor: '#3085d6',
-        padding: 10,
-        borderRadius: 5,
-        width: 80,
+        backgroundColor: 'rgba(97,156,245,0.95)',
+        paddingVertical: fixwidth * 0.025,
+        borderRadius: fixwidth * 0.02,
+        width: fixwidth * 0.2,
         alignItems: 'center',
     },
     buttonText: {
         color: 'white',
-        fontSize: 16,
+        fontSize: fixwidth * 0.038,
+        lineHeight: fixwidth * 0.05,
+        fontFamily: 'NotoSansKR-Medium',
     },
 });
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
-import SectionHeader from './public/SectionHeader';
+import SectionHeader from '../bookpublic/SectionHeader';
 
 
 const { width: fixwidth } = Dimensions.get('window');

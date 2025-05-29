@@ -15,9 +15,8 @@ export default MoreButton;
 
 const styles = StyleSheet.create({
   button: {
-    width: '100%',
+    width: '99.5%',
     alignSelf: 'center',
-    marginTop: fixwidth * 0.05,
     paddingVertical: fixwidth * 0.022,
     borderRadius: fixwidth * 0.017,
     borderWidth: fixwidth * 0.005,

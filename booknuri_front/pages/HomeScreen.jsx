@@ -42,7 +42,7 @@ const HomeScreen = ({ navigation }) => {
           {/* ✅ 토스트 컴포넌트 (조건부 렌더링) */}
           {showToast && (
             <ToastPopup
-              message="✅ 테스트 성공! 토스트 떴지롱~"
+              message="테스트 테스트 "
               onClose={() => setShowToast(false)}
             />
           )}

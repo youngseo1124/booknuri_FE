@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+
+const { width: fixwidth } = Dimensions.get('window');
 
 const TitleOnlyPopup = ({ visible, title, onConfirm, onCancel }) => {
   return (
@@ -23,6 +32,8 @@ const TitleOnlyPopup = ({ visible, title, onConfirm, onCancel }) => {
   );
 };
 
+export default TitleOnlyPopup;
+
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
@@ -32,41 +43,44 @@ const styles = StyleSheet.create({
   },
   popup: {
     backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: 300,
+    paddingVertical: fixwidth * 0.077,
+    paddingHorizontal: fixwidth * 0.08,
+    borderRadius: fixwidth * 0.03,
+    width: fixwidth * 0.8,
     alignItems: 'center',
   },
   title: {
-    fontSize: 17,
-    fontWeight: 'bold',
+    fontSize: fixwidth * 0.045,
+    fontFamily: 'NotoSansKR-SemiBold',
     color: '#000000',
     textAlign: 'center',
-    marginBottom: 10,
+    lineHeight: fixwidth * 0.07,
+    paddingBottom: fixwidth * 0.05,
   },
   buttonContainer: {
     flexDirection: 'row',
-    marginTop: 5,
+    justifyContent: 'center',
+    marginTop: fixwidth * 0.03,
+    gap: fixwidth * 0.03,
   },
   cancelButton: {
-    backgroundColor: '#4da6ff',
-    padding: 10,
-    borderRadius: 5,
-    width: 80,
+    backgroundColor: '#d9d9d9',
+    paddingVertical: fixwidth * 0.025,
+    borderRadius: fixwidth * 0.02,
+    width: fixwidth * 0.2,
     alignItems: 'center',
-    marginRight: 10,
   },
   confirmButton: {
-    backgroundColor: '#4da6ff',
-    padding: 10,
-    borderRadius: 5,
-    width: 80,
+    backgroundColor: 'rgba(97,156,245,0.95)',
+    paddingVertical: fixwidth * 0.025,
+    borderRadius: fixwidth * 0.02,
+    width: fixwidth * 0.2,
     alignItems: 'center',
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: fixwidth * 0.038,
+    lineHeight: fixwidth * 0.05,
+    fontFamily: 'NotoSansKR-Medium',
   },
 });
-
-export default TitleOnlyPopup;

@@ -21,6 +21,8 @@ import MyLibrarySettingScreen from './pages/setting/MyLibrarySettingScreen';
 import TabNavigator from './navigation/TabNavigator';
 import ScanScreen from './pages/ScanScreen.jsx';
 import BookDetailScreen from './pages/BookDetailScreen';
+import ReviewCreateScreen from './pages/review/ReviewCreateScreen';
+import ReviewEditScreen from './pages/review/ReviewEditScreen';
 
 const Stack = createStackNavigator();
 
@@ -57,6 +59,8 @@ const AppInner = () => {
                     <Stack.Screen name="HomeScreen" component={HomeScreen} />
                     <Stack.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
                     <Stack.Screen name="BookDetailScreen" component={BookDetailScreen} />
+                    <Stack.Screen name="ReviewCreateScreen" component={ReviewCreateScreen} />
+                    <Stack.Screen name="ReviewEditScreen" component={ReviewEditScreen} />
                 </>
             )}
         </Stack.Navigator>

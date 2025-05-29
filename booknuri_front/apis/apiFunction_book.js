@@ -6,6 +6,17 @@ export const getBookTotalInfo = (isbn13) => {
 };
 
 
+
+/**
+ * ❓ 리뷰 작성 여부 확인
+ * @param {string} isbn13 - 확인할 책 ISBN13
+ * @returns {Promise} alreadyReviewed: true | false
+ */
+export const checkAlreadyReviewed = (isbn13) => {
+  return api.get(`/book/review/exist/${isbn13}`);
+};
+
+
 /**
  * ✍️ 리뷰 작성 (유저 1명당 책 1개만 작성 가능)
  * @param {object} data - 리뷰 작성 정보
@@ -18,6 +29,17 @@ export const getBookTotalInfo = (isbn13) => {
 export const createReview = (data) => {
   return api.post('/book/review', data);
 };
+
+
+/**
+ * ✍️ 특정 책에 대한 내가 작성한 리뷰 조회 (리뷰 수정용)
+ * @param {string} isbn13 - 책 ISBN13
+ * @returns {Promise} BookReviewResponseDto
+ */
+export const getMyReviewByIsbn = (isbn13) => {
+  return api.get(`/book/review/my/${isbn13}`);
+};
+
 
 /**
  * 🛠️ 리뷰 수정 (본인만 가능)

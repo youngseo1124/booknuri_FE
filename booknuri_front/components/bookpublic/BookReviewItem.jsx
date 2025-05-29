@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import {faHeart, faStar as solidStar, faThumbsUp} from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookReviewItem = ({ item, onLikePress, onReportPress }) => {
+const BookReviewItem = ({ item, onLikePress, onReportPress, onEditPress, onDeletePress }) => {
   const renderStars = (rating) => {
     const fullStars = Math.round(rating / 2);
     return [...Array(5)].map((_, i) => (
@@ -36,23 +36,38 @@ const BookReviewItem = ({ item, onLikePress, onReportPress }) => {
       {/* 닉네임 */}
       <Text style={styles.username}>{maskUsername(item.reviewerUsername)}</Text>
 
-      {/* 날짜 | 신고   👍따봉 */}
+      {/* 날짜 + 신고/수정/삭제 + 좋아요 */}
       <View style={styles.footerRow}>
         <View style={styles.leftBox}>
           <Text style={styles.date}>
             {item.createdAt?.slice(0, 10).replace(/-/g, '.')}
           </Text>
           <Text style={styles.separator}>|</Text>
-          <TouchableOpacity onPress={() => onReportPress(item.id)}>
-            <Text style={styles.reportText}>신고</Text>
-          </TouchableOpacity>
+
+          {/*  작성자 본인 여부에 따라 버튼 분기 */}
+          {item.writtenByCurrentUser ? (
+            <>
+              <TouchableOpacity onPress={() => onEditPress(item)}>
+                <Text style={styles.reportText}>수정</Text>
+              </TouchableOpacity>
+              <Text style={styles.separator}>|</Text>
+              <TouchableOpacity onPress={() => onDeletePress(item.id)}>
+                <Text style={styles.reportText}>삭제</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity onPress={() => onReportPress(item.id)}>
+              <Text style={styles.reportText}>신고</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
+        {/* 좋아요 버튼 */}
         <TouchableOpacity onPress={() => onLikePress(item.id)} style={styles.likeBox}>
           <FontAwesomeIcon
-            icon={faHeart} // ✅ 하트로 교체!
+            icon={faHeart}
             size={fixwidth * 0.04}
-            color={item.likedByCurrentUser ? '#FF6363' : '#d0d0d0'} // 빨간 하트
+            color={item.likedByCurrentUser ? '#FF6363' : '#d0d0d0'}
           />
           <Text style={styles.actionText}>{item.likeCount}</Text>
         </TouchableOpacity>
@@ -120,7 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: fixwidth * 0.015,
     borderWidth: fixwidth * 0.002,
-    borderColor:  '#f3f3f3',
+    borderColor: '#f3f3f3',
     paddingHorizontal: fixwidth * 0.0177,
     paddingVertical: fixwidth * 0.007,
     borderRadius: fixwidth * 0.011,

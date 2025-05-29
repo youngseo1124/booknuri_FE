@@ -7,7 +7,7 @@ import SectionHeader from '../bookpublic/SectionHeader';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookInfoContentBlock = ({ description }) => {
+const DPBookInfoContentBlock = ({ description }) => {
   if (!description) return null;
 
   return (
@@ -20,7 +20,7 @@ const BookInfoContentBlock = ({ description }) => {
   );
 };
 
-export default BookInfoContentBlock;
+export default DPBookInfoContentBlock;
 
 const styles = StyleSheet.create({
   container: {

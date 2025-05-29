@@ -1,79 +1,233 @@
-// screens/book/BookReviewListScreen.jsx
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
   Dimensions,
   ActivityIndicator,
+  FlatList,
+  TouchableWithoutFeedback,
+  Keyboard, ScrollView,
 } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 
-import CommonLayout from '../../components/public/CommonLayout';
 import Header from '../../components/public/Header';
+import CommonLayout from '../../components/public/CommonLayout';
+import SortTabs from '../../components/bookpublic/SortTabs';
+import BookReviewItem from '../../components/bookpublic/BookReviewItem';
+import {checkAlreadyReviewed, getBookReviewList, toggleLikeReview} from '../../apis/apiFunction_book';
+import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
+import WriteButton from '../../components/bookpublic/WriteButton';
+import AlertPopup from '../../components/public/AlertPopup';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookReviewListScreen = ({ route, navigation }) => {
   const { isbn13 } = route.params;
 
+  const [reviews, setReviews] = useState([]);
+  const [sort, setSort] = useState('like');
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
+  const [ratingDistribution, setRatingDistribution] = useState({});
+  const [alertVisible, setAlertVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const LIMIT = 20;
+
+
+
+
+  const fetchReviews = async (reset = false) => {
+    if (loading || (!hasMore && !reset)) return;
+    setLoading(true);
+    try {
+      const res = await getBookReviewList(isbn13, sort, reset ? 0 : offset, LIMIT);
+      const data = res.data;
+
+      if (reset) {
+        setReviews(data.reviews);
+        setOffset(LIMIT);
+      } else {
+        setReviews((prev) => [...prev, ...data.reviews]);
+        setOffset((prev) => prev + LIMIT);
+      }
+
+      setHasMore(data.reviews.length === LIMIT);
+      setAverageRating(data.averageRating);
+      setRatingDistribution(data.ratingDistribution);
+
+      //  준비 완료 표시
+      if (reset) setIsReady(true);
+    } catch (err) {
+      console.error('❌ 리뷰 로드 실패:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // 여기서 getBookReviewList API 호출 예정
-    const init = async () => {
-      try {
-        // await fetchReviews();
-        await new Promise((r) => setTimeout(r, 150));
-        setIsReady(true);
-      } catch (err) {
-        console.error('리뷰 전체 페이지 초기화 실패:', err);
+    fetchReviews(true);
+  }, [sort]);
+
+  const renderStars = (rating) => {
+    const fullStars = Math.round(rating / 2);
+    return [...Array(5)].map((_, i) => (
+      <FontAwesomeIcon
+        key={i}
+        icon={i < fullStars ? solidStar : emptyStar}
+        size={fixwidth * 0.045}
+        color="#FFBC00"
+        style={{ marginHorizontal: fixwidth * 0.007 }}
+      />
+    ));
+  };
+
+  const handleLikePress = async (id) => {
+    try {
+      await toggleLikeReview(id);
+      fetchReviews(true);
+    } catch (err) {
+      console.error('좋아요 실패:', err);
+    }
+  };
+
+  const handleReportPress = (id) => {
+    console.log('신고 ID:', id);
+  };
+
+  const handleEditPress = (review) => {
+    navigation.navigate('ReviewEditScreen', { review, isbn13 });
+  };
+
+  const handleDeletePress = (id) => {
+    console.log('삭제 ID:', id);
+  };
+
+
+  const handleWritePress = async () => {
+    try {
+      const res = await checkAlreadyReviewed(isbn13);
+      if (res.data.alreadyReviewed) {
+        setAlertVisible(true);
+        return;
       }
-    };
-
-    init();
-  }, [isbn13]);
-
+      navigation.navigate('ReviewCreateScreen', { isbn13 });
+    } catch (err) {
+      console.error('리뷰 여부 확인 실패:', err);
+    }
+  };
   if (!isReady) {
     return (
       <CommonLayout>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#000" />
+        <Header title="리뷰" />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#aaa" />
         </View>
       </CommonLayout>
     );
-  }
+  }else
 
   return (
     <CommonLayout>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ flex: 1 }}>
-          <Header title="리뷰 상세 페이지" />
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            {/* 여기에 리뷰 리스트 컴포넌트 삽입할 예정 */}
-          </ScrollView>
+
+      <Header title={`리뷰 (${reviews.length})`} />
+
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+
+
+
+        <View style={styles.innerBox}>
+          <View style={styles.headerSection}>
+            <BookDetailRatingSummaryBlock
+              averageRating={averageRating}
+              ratingDistribution={ratingDistribution}
+            />
+
+            <WriteButton label="리뷰 쓰기" onPress={handleWritePress} />
+
+            <View style={styles.sortTabWrapper}>
+              <SortTabs currentSort={sort} onChange={setSort} />
+            </View>
+          </View>
+
+
+          <View style={styles.reviewListContainer}>
+            {reviews.map((item) => (
+              <View key={item.id} style={styles.reviewItemWrapper}>
+                <BookReviewItem
+                  item={item}
+                  onLikePress={handleLikePress}
+                  onReportPress={handleReportPress}
+                  onEditPress={handleEditPress}
+                  onDeletePress={handleDeletePress}
+                />
+              </View>
+            ))}
+          </View>
+
+          {/* 로딩 인디케이터 */}
+          {loading && (
+            <View style={styles.loadingWrapper}>
+              <ActivityIndicator size="small" color="#aaa" />
+            </View>
+          )}
         </View>
-      </TouchableWithoutFeedback>
+
+      </ScrollView>
+      <AlertPopup
+        visible={alertVisible}
+        title="이미 리뷰를 작성했어요"
+        message="리뷰는 한 권당 한 번만 작성할 수 있어요."
+        onClose={() => setAlertVisible(false)}
+      />
     </CommonLayout>
   );
+
+
+
+
 };
 
 export default BookReviewListScreen;
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    paddingVertical: fixwidth * 0.04,
-    paddingHorizontal: fixwidth * 0.06,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  averageContainer: {
+    width: '100%',
     alignItems: 'center',
+
+
+  },
+  scrollContent: {
+    width:"100%",
+    marginTop: fixwidth * 0.025,
+    paddingBottom:fixwidth*0.11
+  }
+,
+  innerBox: {
+    width: '94%',
+    alignSelf: 'center',
+  },
+  headerSection: {
+    gap: fixwidth * 0.037,
+  },
+
+  starRow: {
+    flexDirection: 'row',
+  },
+
+  sortTabWrapper: {
+    width: '100%',
+    alignSelf: 'center',
+  },
+  reviewListContainer: {
+    gap: fixwidth * 0.04,
   },
 });

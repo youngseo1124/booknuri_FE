@@ -18,7 +18,7 @@ import { checkAlreadyReviewed, deleteReview } from '../../apis/apiFunction_book'
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookReviewsBlock = ({
+const DPBookReviewsBlock = ({
                             reviews,
                             onLikePress,
                             onReportPress,
@@ -91,7 +91,10 @@ const BookReviewsBlock = ({
       )}
 
       <View style={styles.wrapper}>
-        <MoreButton label="리뷰 전체 보기" onPress={() => {}} />
+        <MoreButton
+          label="리뷰 전체 보기"
+          onPress={() => navigation.navigate('BookReviewListScreen', { isbn13 })}
+        />
         <WriteButton label="리뷰 쓰기" onPress={handleWritePress} />
       </View>
 
@@ -114,11 +117,11 @@ const BookReviewsBlock = ({
   );
 };
 
-export default BookReviewsBlock;
+export default DPBookReviewsBlock;
 
 const styles = StyleSheet.create({
   container: {
-    width: '92%',
+    width: '93%',
     alignSelf: 'center',
     paddingVertical: fixwidth * 0.07,
   },

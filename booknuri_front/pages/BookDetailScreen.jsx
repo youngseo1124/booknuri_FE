@@ -7,12 +7,12 @@ import {
     getBookReviewList,
     toggleLikeReview,
 } from '../apis/apiFunction_book';
-import BookInfoHeaderBlock from '../components/bookDetailpage/BookInfoHeaderBlock';
-import BookInfoContentBlock from '../components/bookDetailpage/BookInfoContentBlock';
+import DPBookInfoHeaderBlock from '../components/bookDetailpage/DPBookInfoHeaderBlock';
+import DPBookInfoContentBlock from '../components/bookDetailpage/DPBookInfoContentBlock';
 import DividerBlock from '../components/public/DividerBlock';
-import BookRatingSummaryBlock from '../components/bookDetailpage/BookRatingSummaryBlock';
+import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingSummaryBlock';
 import ToastPopup from '../components/public/ToastPopup';
-import BookReviewsBlock from '../components/bookDetailpage/BookReviewsBlock.';
+import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -91,25 +91,25 @@ const BookDetailScreen = ({ route, navigation }) => {
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
           >
-              <BookInfoHeaderBlock
+              <DPBookInfoHeaderBlock
                 bookInfo={bookData?.bookInfo}
                 onAddToBookshelf={handleAddToBookshelf}
               />
 
               <DividerBlock />
 
-              <BookInfoContentBlock description={bookData?.bookInfo?.description} />
+              <DPBookInfoContentBlock description={bookData?.bookInfo?.description} />
 
               <DividerBlock />
 
-              <BookRatingSummaryBlock
+              <DPBookRatingSummaryBlock
                 reviewRating={averageRating}
                 ratingDistribution={ratingDistribution}
               />
 
               <DividerBlock />
 
-              <BookReviewsBlock
+              <DPBookReviewsBlock
                 reviews={sortedReviews}
                 onLikePress={handleLike}
                 onSortChange={fetchSortedReviews}

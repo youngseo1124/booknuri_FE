@@ -23,6 +23,7 @@ import ScanScreen from './pages/ScanScreen.jsx';
 import BookDetailScreen from './pages/BookDetailScreen';
 import ReviewCreateScreen from './pages/review/ReviewCreateScreen';
 import ReviewEditScreen from './pages/review/ReviewEditScreen';
+import BookReviewListScreen from './pages/review/BookReviewListScreen';
 
 const Stack = createStackNavigator();
 
@@ -61,6 +62,7 @@ const AppInner = () => {
                     <Stack.Screen name="BookDetailScreen" component={BookDetailScreen} />
                     <Stack.Screen name="ReviewCreateScreen" component={ReviewCreateScreen} />
                     <Stack.Screen name="ReviewEditScreen" component={ReviewEditScreen} />
+                    <Stack.Screen name="BookReviewListScreen" component={BookReviewListScreen} />
                 </>
             )}
         </Stack.Navigator>

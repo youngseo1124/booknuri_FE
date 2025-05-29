@@ -80,6 +80,7 @@ export default BookReviewItem;
 
 const styles = StyleSheet.create({
   reviewCard: {
+    width:"100%",
     backgroundColor: '#fff',
     borderRadius: fixwidth * 0.03,
     paddingVertical: fixwidth * 0.035,

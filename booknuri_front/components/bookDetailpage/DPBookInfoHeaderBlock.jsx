@@ -5,7 +5,7 @@ import AddToBookshelfButton from './AddToBookshelfButton';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookInfoHeaderBlock = ({ bookInfo, onAddToBookshelf }) => {
+const DPBookInfoHeaderBlock = ({ bookInfo, onAddToBookshelf }) => {
   const [aspectRatio, setAspectRatio] = useState(0.7); // 📐 기본 비율
 
 
@@ -103,7 +103,7 @@ const BookInfoHeaderBlock = ({ bookInfo, onAddToBookshelf }) => {
 
 };
 
-export default BookInfoHeaderBlock;
+export default DPBookInfoHeaderBlock;
 
 const styles = StyleSheet.create({
   container: {

@@ -7,7 +7,7 @@ import SectionHeader from '../bookpublic/SectionHeader';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookRatingSummaryBlock = ({ reviewRating, onReviewPress, onEssayPress }) => {
+const DPBookRatingSummaryBlock = ({ reviewRating, onReviewPress, onEssayPress }) => {
   const renderStars = (rating) => {
     const fullStars = Math.round(rating || 0);
     return [...Array(5)].map((_, i) => (
@@ -72,7 +72,7 @@ const BookRatingSummaryBlock = ({ reviewRating, onReviewPress, onEssayPress }) =
   );
 };
 
-export default BookRatingSummaryBlock;
+export default DPBookRatingSummaryBlock;
 
 const styles = StyleSheet.create({
   container: {

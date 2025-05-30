@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     borderRadius: fixwidth * 0.03,
   },
   thumbnail: {
-    width: fixwidth * 0.16,
-    height: fixwidth * 0.22,
+    width: fixwidth * 0.14,
+    height: fixwidth * 0.2,
     borderRadius: fixwidth * 0.01,
     backgroundColor: '#ccc',
   },
@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: fixwidth * 0.04,
+    fontSize: fixwidth * 0.037,
     fontFamily: 'NotoSansKR-SemiBold',
     lineHeight: fixwidth * 0.055,
     color: '#333',
   },
   author: {
-    marginTop: fixwidth * 0.04,
+    marginTop: fixwidth * 0.03,
     fontSize: fixwidth * 0.035,
     fontFamily: 'NotoSansKR-Regular',
     lineHeight: fixwidth * 0.06,

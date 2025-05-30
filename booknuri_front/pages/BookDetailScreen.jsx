@@ -13,11 +13,15 @@ import DividerBlock from '../components/public/DividerBlock';
 import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingSummaryBlock';
 import ToastPopup from '../components/public/ToastPopup';
 import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';
+import DPBookReflectionsBlock from '../components/bookDetailpage/DPBookReflectionsBlock';
+import {getBookReflectionList, toggleLikeReflection} from '../apis/apiFunction_bookReflection';
+
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookDetailScreen = ({ route, navigation }) => {
     const { isbn } = route.params;
+    console.log('📘 디테일페이지 진입');
 
     const [bookData, setBookData] = useState(null);         // 📕 책 정보
     const [sortedReviews, setSortedReviews] = useState([]); // ✍ 리뷰 목록
@@ -26,6 +30,10 @@ const BookDetailScreen = ({ route, navigation }) => {
     const [ratingDistribution, setRatingDistribution] = useState({}); // 📈 별점 분포
     const [showToast, setShowToast] = useState(false);      // ✅ 토스트 표시 여부
     const [isReady, setIsReady] = useState(false);          // ⏳ 전체 준비 여부
+    const [sortedReflections, setSortedReflections] = useState([]); // 📖 독후감 목록
+    const [reflectionSort, setReflectionSort] = useState('like');   // 🔠 정렬 기준
+
+
 
     //  책 정보 불러오기
     const fetchBookData = async () => {
@@ -42,14 +50,45 @@ const BookDetailScreen = ({ route, navigation }) => {
         setRatingDistribution(res.data.ratingDistribution);
     };
 
+
+    //독후감 불러오기 함수
+    const fetchSortedReflections = async (sort = 'like') => {
+        try {
+            const res = await getBookReflectionList(isbn, sort);
+
+
+
+            setSortedReflections(res.data.reflections);
+            setReflectionSort(sort);
+        } catch (err) {
+            console.error('독후감 로딩 실패:', err);
+        }
+    };
+
+    //독후감 좋아요 함수
+    const handleReflectionLike = async (reflectionId) => {
+        try {
+            await toggleLikeReflection(reflectionId);
+            await fetchSortedReflections(reflectionSort); // 다시 불러오기
+        } catch (err) {
+            console.error(' 독후감 좋아요 실패:', err);
+        }
+    };
+
+
+
     //  한 번에 다 로드
     const initLoad = async () => {
         try {
-            await Promise.all([fetchBookData(), fetchSortedReviews()]);
-            await new Promise((r) => setTimeout(r, 150)); // 부드러운 로딩 처리
+            await Promise.all([
+                fetchBookData(),
+                fetchSortedReviews(),
+                fetchSortedReflections(), // ← 이거 안 들어가 있어서 지금 아무것도 안 불렀던 거임!!
+            ]);
+            await new Promise((r) => setTimeout(r, 150));
             setIsReady(true);
         } catch (err) {
-            console.error('❌ 데이터 로딩 실패:', err);
+            console.error(' 데이터 로딩 실패:', err);
         }
     };
 
@@ -119,6 +158,15 @@ const BookDetailScreen = ({ route, navigation }) => {
               />
 
               <DividerBlock />
+              <DPBookReflectionsBlock
+                reflections={sortedReflections}
+                onLikePress={handleReflectionLike}
+                onSortChange={fetchSortedReflections}
+                currentSort={reflectionSort}
+                isbn13={isbn}
+                navigation={navigation}
+              />
+
           </ScrollView>
 
           {showToast && (

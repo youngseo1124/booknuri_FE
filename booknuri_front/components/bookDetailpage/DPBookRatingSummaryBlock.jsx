@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
@@ -7,7 +7,7 @@ import SectionHeader from '../public/bookpublic/SectionHeader';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const DPBookRatingSummaryBlock = ({ reviewRating, onReviewPress, onEssayPress }) => {
+const DPBookRatingSummaryBlock = ({ reviewRating, reflectionRating }) => {
   const renderStars = (rating) => {
     const fullStars = Math.round(rating || 0);
     return [...Array(5)].map((_, i) => (
@@ -23,23 +23,20 @@ const DPBookRatingSummaryBlock = ({ reviewRating, onReviewPress, onEssayPress })
 
   return (
     <View style={styles.container}>
-
-
       <SectionHeader label="평점" />
 
-      {/* 기존 내용 */}
       <View style={styles.innerBox}>
         {/* 리뷰 블럭 */}
         <View style={styles.block}>
           <Text style={styles.label}>리뷰</Text>
           {reviewRating ? (
-              <View style={styles.placeholderWrapper}>
-                <Text style={styles.score}>{reviewRating.toFixed(1)}</Text>
-              </View>
-                ) : (
+            <View style={styles.placeholderWrapper}>
+              <Text style={styles.score}>{reviewRating.toFixed(1)}</Text>
+            </View>
+          ) : (
             <View style={styles.placeholderWrapper}>
               <Text style={styles.placeholderText}>
-                아직 리뷰가 없어요 {"\n"}첫 리뷰를 작성해주세요
+                아직 리뷰가 없어요{"\n"}첫 리뷰를 작성해주세요
               </Text>
             </View>
           )}
@@ -53,18 +50,19 @@ const DPBookRatingSummaryBlock = ({ reviewRating, onReviewPress, onEssayPress })
         {/* 독후감 블럭 */}
         <View style={styles.block}>
           <Text style={styles.label}>독후감</Text>
-          {reviewRating ? (
+          {reflectionRating ? (
             <View style={styles.placeholderWrapper}>
-              <Text style={styles.score}>{reviewRating.toFixed(1)}</Text>
+              <Text style={styles.score}>{reflectionRating.toFixed(1)}</Text>
             </View>
           ) : (
             <View style={styles.placeholderWrapper}>
-              <Text style={styles.placeholderText}>아직 독후감이 없어요{"\n"}첫 독후감을 작성해주세요
+              <Text style={styles.placeholderText}>
+                아직 독후감이 없어요{"\n"}첫 독후감을 작성해주세요
               </Text>
             </View>
           )}
           <View style={styles.stars}>
-            {reviewRating ? renderStars(reviewRating / 2) : renderStars(0)}
+            {reflectionRating ? renderStars(reflectionRating / 2) : renderStars(0)}
           </View>
         </View>
       </View>
@@ -80,8 +78,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: fixwidth * 0.07,
   },
-
-
   innerBox: {
     flexDirection: 'row',
     backgroundColor: '#fffaf1',
@@ -90,7 +86,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginVertical: fixwidth * 0.02,
   },
-
   block: {
     alignItems: 'center',
     width: '45%',
@@ -111,12 +106,11 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSansKR-Light',
     color: '#676767',
     lineHeight: fixwidth * 0.037,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   stars: {
     flexDirection: 'row',
   },
-
   placeholderWrapper: {
     height: fixwidth * 0.147,
     justifyContent: 'center',
@@ -125,7 +119,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 1,
-    backgroundColor: '#e0e0e0', // 연한 회색
+    backgroundColor: '#e0e0e0',
     marginVertical: fixwidth * 0.03,
     height: '100%',
     alignSelf: 'center',

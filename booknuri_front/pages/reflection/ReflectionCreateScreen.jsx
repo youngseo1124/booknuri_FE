@@ -17,12 +17,11 @@ import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/bookpublic/CommonLayout';
 import { getBookTotalInfo } from '../../apis/apiFunction_book';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
-import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ImageUploaderBox from '../../components/public/bookpublic/ImageUploaderBox';
-import {createReflection, uploadReflectionImages} from '../../apis/apiFunction_bookReflection';
+import {createReflection, getMyReflectionByIsbn, uploadReflectionImages} from '../../apis/apiFunction_bookReflection';
 import api from '../../apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -30,6 +29,7 @@ import InputBox from '../../components/public/bookpublic/InputBox';
 import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
 import TextInputBox from '../../components/public/bookpublic/TextInputBox';
 import VerticalGap from '../../components/public/bookpublic/VerticalGap';
+import MyIntentModule from '../../MyIntentModule';
 
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -65,6 +65,21 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     fetchBookData();
   }, [isbn13]);
 
+  const handleNativeChooser = async () => {
+    if (images.length >= 3) {
+      return;
+    }
+
+    try {
+      const uri = await MyIntentModule.openChooser(); // 네이티브 chooser 실행
+      if (uri && uri !== 'null') {
+        setImages((prev) => [...prev, { uri }]); // RN용 이미지 객체로 추가
+      }
+    } catch (err) {
+      console.warn('❌ chooser 실행 실패:', err);
+    }
+  };
+
 
 
   const uploadReflectionImages = async (reflectionId, images) => {
@@ -82,19 +97,17 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     const accessToken = await AsyncStorage.getItem('accessToken');
 
     const response = await axios.post(
-      `http://172.18.10.128:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
+      `http://192.168.9.109:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
       formData,
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${accessToken}`, // ✅ 토큰 직접 붙이기
+          'Authorization': `Bearer ${accessToken}`,
         },
-        transformRequest: (data, headers) => data, // ✅ FormData 그대로 전달
+        transformRequest: (data, headers) => data,
       }
     );
 
-    console.log('🔥 accessToken:', accessToken);
-    console.log('✅이미지 업로드 응답:', response.data);
     return response.data;
   };
 
@@ -115,6 +128,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     try {
       await createReflection({
         isbn13,
+        title,
         content,
         rating,
         containsSpoiler,
@@ -125,9 +139,10 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
     try {
       // 2️. 내 독후감 다시 조회해서 reflectionId 확보
-      const res = await api.get(`/book/reflection/my/${isbn13}`);
-      const reflectionId = res?.data?.id;
-
+      const res = await getMyReflectionByIsbn(isbn13);
+      console.log('🆔 reflection응답:', res);
+      const reflectionId = res?.data?.reflectionId || res?.data?.id; // 둘 다 대비 가능하게!
+      console.log('🆔 reflectionId:', reflectionId);
 
       if (!reflectionId) {
         Alert.alert("실패", "독후감 ID를 가져오지 못했어요.");
@@ -236,9 +251,9 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
               {/* 본문 작성 ✍ */}
               <TextInputBox
-                placeholder="최대 1000자까지 작성 가능"
-                maxLength={1000}
-                inputHeight={fixwidth * 0.55}
+                placeholder="최대 2000자까지 작성 가능"
+                maxLength={2000}
+                inputHeight={fixwidth * 0.5}
                 value={content}
                 onChangeText={setContent}
               />
@@ -257,7 +272,8 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
               />
 
               <View style={styles.imageArea}>
-                <ImageUploaderBox imageCount={images.length} onPress={handleSelectImage} />
+                <ImageUploaderBox imageCount={images.length} onPress={handleNativeChooser} />
+
 
                 <View style={styles.imagePreviewWrap}>
                   {images.map((img, idx) => (

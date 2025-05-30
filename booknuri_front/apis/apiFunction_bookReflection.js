@@ -12,14 +12,7 @@ export const checkAlreadyReflected = (isbn13) => {
 
 /**
  * ✍️ 독후감 작성
- * @param {object} data - 독후감 작성 정보
- * @param {string} data.isbn13 - 책 ISBN13
- * @param {string} data.content - 독후감 내용 (text - 긴 글 가능!)
- * @param {number} data.rating - 별점 (1~10)
- * @param {boolean} data.containsSpoiler - 스포 포함 여부
- * @param {boolean} data.visibleToPublic - 공개 여부
- * @returns {Promise} 작성 성공 메시지 or 중복 작성 경고
- */
+ **/
 export const createReflection = (data) => {
   return api.post('/book/reflection', data);
 };

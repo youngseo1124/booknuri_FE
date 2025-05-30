@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart, faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
+import VerticalGap from './VerticalGap';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -52,8 +53,10 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
             style={styles.contentText}
             numberOfLines={5}
           >
+            <Text style={styles.titleText}>{item.title + '\n'}</Text>
             {item.content}
           </Text>
+
           {hasImage && (
             <Image
               source={{ uri: item.imageUrls[0] }}
@@ -210,5 +213,12 @@ const styles = StyleSheet.create({
     borderRadius: fixwidth * 0.01,
     borderWidth: fixwidth * 0.001,
     borderColor: '#eee',
+  },
+
+  titleText: {
+    fontSize: fixwidth * 0.04,
+    color: '#222',
+    fontFamily: 'NotoSansKR-Bold',
+    lineHeight: fixwidth * 0.07,
   },
 });

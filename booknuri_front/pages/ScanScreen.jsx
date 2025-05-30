@@ -8,7 +8,7 @@ import {
     PermissionsAndroid,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
-import ConfirmPopup from '../components/public/ConfirmPopup';
+import ConfirmPopup from '../components/public/publicPopup_Alert_etc/ConfirmPopup';
 import { useNavigation } from '@react-navigation/native';
 
 

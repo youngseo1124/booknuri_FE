@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import FixedBottomButton from '../../public/FixedBottomButton';
+import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import StepOneImage from '../../../image/firstSetting/stepOne.png';
 import LottieView from 'lottie-react-native';
 import { LoginContext } from '../../../contexts/LoginContextProvider';

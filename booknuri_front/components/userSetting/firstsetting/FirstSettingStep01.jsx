@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import FixedBottomButton from '../../public/FixedBottomButton';
+import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import StepOneImage from '../../../image/firstSetting/stepOne.png';
 
 const { height,width: fixwidth } = Dimensions.get('window');

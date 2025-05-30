@@ -10,7 +10,7 @@ import {
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import StepProgressHeader from '../../components/public/StepProgressHeader';
+import StepProgressHeader from '../../components/public/publicHeader/StepProgressHeader';
 import Step01 from '../../components/userSetting/firstsetting/FirstSettingStep01';
 import Step02 from '../../components/userSetting/firstsetting/FirstSettingStep02';
 import Step03 from '../../components/userSetting/firstsetting/FirstSettingStep03';

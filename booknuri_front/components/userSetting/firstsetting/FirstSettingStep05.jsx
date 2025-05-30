@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { View, StyleSheet, useWindowDimensions, Dimensions } from 'react-native';
-import FixedBottomButton from '../../public/FixedBottomButton';
+import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import { LoginContext } from '../../../contexts/LoginContextProvider';
 import { setMyLibrary } from '../../../apis/apiFunction';
 import LibraryFilter from '../../userSetting/librarySetting/LibraryFilter';

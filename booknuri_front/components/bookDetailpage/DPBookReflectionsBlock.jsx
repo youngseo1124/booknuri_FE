@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native';
-import SectionHeader from '../bookpublic/SectionHeader';
-import SortTabs from '../bookpublic/SortTabs';
-import MoreButton from '../bookpublic/MoreButton';
-import WriteButton from '../bookpublic/WriteButton';
-import AlertPopup from '../public/AlertPopup';
-import TitleOnlyPopup from '../public/TitleOnlyPopup';
+import SectionHeader from '../public/bookpublic/SectionHeader';
+import SortTabs from '../public/bookpublic/SortTabs';
+import MoreButton from '../public/publicButton/MoreButton';
+import WriteButton from '../public/publicButton/WriteButton';
+import AlertPopup from '../public/publicPopup_Alert_etc/AlertPopup';
+import TitleOnlyPopup from '../public/publicPopup_Alert_etc/TitleOnlyPopup';
 
 
-import BookReflectionItem from '../bookpublic/BookReflectionItem';
+import BookReflectionItem from '../public/bookpublic/BookReflectionItem';
 import {checkAlreadyReflected, deleteReflection} from '../../apis/apiFunction_bookReflection';
 
 const { width: fixwidth } = Dimensions.get('window');

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
-import CommonLayout from '../components/public/CommonLayout';
-import Header from '../components/public/Header';
+import CommonLayout from '../components/public/bookpublic/CommonLayout';
+import Header from '../components/public/publicHeader/Header';
 import {
     getBookTotalInfo,
     getBookReviewList,
@@ -9,9 +9,9 @@ import {
 } from '../apis/apiFunction_book';
 import DPBookInfoHeaderBlock from '../components/bookDetailpage/DPBookInfoHeaderBlock';
 import DPBookInfoContentBlock from '../components/bookDetailpage/DPBookInfoContentBlock';
-import DividerBlock from '../components/public/DividerBlock';
+import DividerBlock from '../components/public/bookpublic/DividerBlock';
 import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingSummaryBlock';
-import ToastPopup from '../components/public/ToastPopup';
+import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
 import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';
 import DPBookReflectionsBlock from '../components/bookDetailpage/DPBookReflectionsBlock';
 import {getBookReflectionList, toggleLikeReflection} from '../apis/apiFunction_bookReflection';

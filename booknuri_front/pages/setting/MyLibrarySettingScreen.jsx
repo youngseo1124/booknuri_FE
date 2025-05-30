@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { View, StyleSheet, useWindowDimensions, Dimensions, Text } from 'react-native';
-import Header from '../../components/public/Header';
+import Header from '../../components/public/publicHeader/Header';
 
-import FixedBottomButton from '../../components/public/FixedBottomButton';
+import FixedBottomButton from '../../components/public/publicButton/FixedBottomButton';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 import { setMyLibrary } from '../../apis/apiFunction';

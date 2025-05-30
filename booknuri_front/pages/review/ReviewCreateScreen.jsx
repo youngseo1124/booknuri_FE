@@ -9,14 +9,16 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import Header from '../../components/public/Header';
-import CommonLayout from '../../components/public/CommonLayout';
+import Header from '../../components/public/publicHeader/Header';
+import CommonLayout from '../../components/public/bookpublic/CommonLayout';
 import { createReview, getBookTotalInfo } from '../../apis/apiFunction_book';
-import BookMiniHeaderBlock from '../../components/bookpublic/BookMiniHeaderBlock';
+import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
-import CustomCheckBox from '../../components/bookpublic/CustomCheckBox';
-import WriteButton from '../../components/bookpublic/WriteButton';
-import TitleOnlyPopup from '../../components/public/TitleOnlyPopup'; // ✅ 바뀐 부분
+import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import WriteButton from '../../components/public/publicButton/WriteButton';
+import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
+import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import TextInputBox from '../../components/public/bookpublic/TextInputBox'; // ✅ 바뀐 부분
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -87,14 +89,19 @@ const ReviewCreateScreen = ({ route, navigation }) => {
                 authors={bookData.authors}
               />
 
-              <ReviewFormBlock
+              <StarRatingBox
+                value={rating}
+                onChange={setRating}
+              />
+
+              <TextInputBox
                 placeholder="한글 기준 100자까지 작성 가능"
                 maxLength={100}
                 inputHeight={fixwidth * 0.5}
-                onRatingChange={setRating}
-                onTextChange={setReviewText}
-                onSpoilerChange={setContainsSpoiler}
+                value={reviewText}
+                onChangeText={setReviewText}
               />
+
 
               <CustomCheckBox
                 label="스포일러 체크"

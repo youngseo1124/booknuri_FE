@@ -13,14 +13,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 
-import Header from '../../components/public/Header';
-import CommonLayout from '../../components/public/CommonLayout';
-import SortTabs from '../../components/bookpublic/SortTabs';
-import BookReviewItem from '../../components/bookpublic/BookReviewItem';
+import Header from '../../components/public/publicHeader/Header';
+import CommonLayout from '../../components/public/bookpublic/CommonLayout';
+import SortTabs from '../../components/public/bookpublic/SortTabs';
+import BookReviewItem from '../../components/public/bookpublic/BookReviewItem';
 import {checkAlreadyReviewed, getBookReviewList, toggleLikeReview} from '../../apis/apiFunction_book';
 import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
-import WriteButton from '../../components/bookpublic/WriteButton';
-import AlertPopup from '../../components/public/AlertPopup';
+import WriteButton from '../../components/public/publicButton/WriteButton';
+import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';
 
 const { width: fixwidth } = Dimensions.get('window');
 

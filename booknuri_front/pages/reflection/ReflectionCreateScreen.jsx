@@ -13,19 +13,23 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Header from '../../components/public/Header';
-import CommonLayout from '../../components/public/CommonLayout';
+import Header from '../../components/public/publicHeader/Header';
+import CommonLayout from '../../components/public/bookpublic/CommonLayout';
 import { getBookTotalInfo } from '../../apis/apiFunction_book';
-import BookMiniHeaderBlock from '../../components/bookpublic/BookMiniHeaderBlock';
+import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
-import CustomCheckBox from '../../components/bookpublic/CustomCheckBox';
-import WriteButton from '../../components/bookpublic/WriteButton';
-import TitleOnlyPopup from '../../components/public/TitleOnlyPopup';
-import ImageUploaderBox from '../../components/bookpublic/ImageUploaderBox';
+import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import WriteButton from '../../components/public/publicButton/WriteButton';
+import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
+import ImageUploaderBox from '../../components/public/bookpublic/ImageUploaderBox';
 import {createReflection, uploadReflectionImages} from '../../apis/apiFunction_bookReflection';
 import api from '../../apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import InputBox from '../../components/public/bookpublic/InputBox';
+import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import TextInputBox from '../../components/public/bookpublic/TextInputBox';
+import VerticalGap from '../../components/public/bookpublic/VerticalGap';
 
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -45,6 +49,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
   const [imageToDeleteIdx, setImageToDeleteIdx] = useState(null);
 
   const [isReady, setIsReady] = useState(false);
+  const [title, setTitle] = useState('');
 
   useEffect(() => {
     const fetchBookData = async () => {
@@ -108,7 +113,6 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      // 1️. 일단 작성 시도
       await createReflection({
         isbn13,
         content,
@@ -117,15 +121,13 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
         visibleToPublic,
       });
     } catch (err) {
-      // 작성 실패해도 무시하고 진행 (이미 작성된 경우 포함)
-      console.log("✅ 독후감 작성 실패 but 계속 진행:", err?.response?.data?.message);
     }
 
     try {
       // 2️. 내 독후감 다시 조회해서 reflectionId 확보
       const res = await api.get(`/book/reflection/my/${isbn13}`);
       const reflectionId = res?.data?.id;
-      console.log("📌 가져온 reflectionId:", reflectionId);
+
 
       if (!reflectionId) {
         Alert.alert("실패", "독후감 ID를 가져오지 못했어요.");
@@ -140,15 +142,14 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
       // 4️. 완료 후 이동
       navigation.replace("BookDetailScreen", { isbn: isbn13 });
     } catch (e) {
-      console.log("❌ 에러 발생:", e.response?.data || e.message);
-      Alert.alert("에러", e.response?.data?.message || "알 수 없는 오류");
+      console.log(" 에러 발생:", e.response?.data || e.message);
+
     }
   };
 
 
   const handleAddImage = async (fromCamera = false) => {
     if (images.length >= 3) {
-      Alert.alert('최대 3장까지 업로드할 수 있어요!');
       return;
     }
 
@@ -162,13 +163,18 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     }
   };
 
-  const openImageSelectPopup = () => {
-    Alert.alert('이미지 추가', '어떻게 추가할까요?', [
-      { text: '카메라', onPress: () => handleAddImage(true) },
-      { text: '앨범에서 선택', onPress: () => handleAddImage(false) },
-      { text: '취소', style: 'cancel' },
-    ]);
+  const handleSelectImage = async () => {
+    if (images.length >= 3) return;
+
+    const options = { mediaType: 'photo', quality: 0.8 };
+    const result = await launchImageLibrary(options);
+
+    if (result.assets?.length) {
+      setImages((prev) => [...prev, result.assets[0]]);
+    }
   };
+
+
 
   const confirmDeleteImage = (index) => {
     setImageToDeleteIdx(index);
@@ -207,13 +213,38 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
                 title={bookData.bookname}
                 authors={bookData.authors}
               />
-              <ReviewFormBlock
-                placeholder="최대 500자까지 작성 가능"
-                maxLength={500}
-                inputHeight={fixwidth * 0.55}
-                onRatingChange={setRating}
-                onTextChange={setContent}
+              <VerticalGap height={fixwidth*0.003} />
+
+              {/* 별점 ⭐ */}
+              <StarRatingBox
+                value={rating}
+                onChange={setRating}
               />
+
+              <VerticalGap height={fixwidth*0.003} />
+
+              {/* 제목 입력 (InputBox는 그대로) */}
+              <InputBox
+                placeholder="제목을 입력하세요"
+                maxLength={30}
+                inputHeight={fixwidth * 0.14}
+                value={title}
+                onChangeText={setTitle}
+              />
+
+
+
+              {/* 본문 작성 ✍ */}
+              <TextInputBox
+                placeholder="최대 1000자까지 작성 가능"
+                maxLength={1000}
+                inputHeight={fixwidth * 0.55}
+                value={content}
+                onChangeText={setContent}
+              />
+
+
+
               <CustomCheckBox
                 label="스포일러 포함"
                 value={containsSpoiler}
@@ -224,8 +255,10 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
                 value={visibleToPublic}
                 onChange={setVisibleToPublic}
               />
+
               <View style={styles.imageArea}>
-                <ImageUploaderBox imageCount={images.length} onPress={openImageSelectPopup} />
+                <ImageUploaderBox imageCount={images.length} onPress={handleSelectImage} />
+
                 <View style={styles.imagePreviewWrap}>
                   {images.map((img, idx) => (
                     <TouchableOpacity key={idx} onLongPress={() => confirmDeleteImage(idx)}>
@@ -234,6 +267,8 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
                   ))}
                 </View>
               </View>
+
+              <VerticalGap height={fixwidth*0.003} />
 
               <WriteButton
                 label="독후감 작성"
@@ -273,11 +308,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     paddingVertical: fixwidth * 0.05,
-    paddingHorizontal: fixwidth * 0.06,
+    paddingHorizontal: fixwidth * 0.04,
     backgroundColor: '#fff',
   },
   innerContainer: {
-    gap: fixwidth * 0.037,
+    gap: fixwidth * 0.017,
   },
   imageArea: {
     flexDirection: 'row',
@@ -291,8 +326,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   previewImage: {
-    width: fixwidth * 0.15,
-    height: fixwidth * 0.17,
+    width: fixwidth * 0.2,
+    height: fixwidth * 0.2,
     borderRadius: fixwidth * 0.015,
     backgroundColor: '#eee',
   },

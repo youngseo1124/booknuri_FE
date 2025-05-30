@@ -10,17 +10,19 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import Header from '../../components/public/Header';
-import CommonLayout from '../../components/public/CommonLayout';
+import Header from '../../components/public/publicHeader/Header';
+import CommonLayout from '../../components/public/bookpublic/CommonLayout';
 import {
   updateReview,
   getMyReviewByIsbn,
 } from '../../apis/apiFunction_book';
 import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
-import CustomCheckBox from '../../components/bookpublic/CustomCheckBox';
-import WriteButton from '../../components/bookpublic/WriteButton';
-import TitleOnlyPopup from '../../components/public/TitleOnlyPopup';
+import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import WriteButton from '../../components/public/publicButton/WriteButton';
+import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ReviewEditFormBlock from '../../components/bookDetailpage/ReviewEditFormBlock';
+import TextInputBox from '../../components/public/bookpublic/TextInputBox';
+import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -88,14 +90,17 @@ const ReviewEditScreen = ({ route, navigation }) => {
             keyboardShouldPersistTaps="handled"
           >
             <View style={styles.innerContainer}>
-              <ReviewEditFormBlock
+              <StarRatingBox
+                value={rating}
+                onChange={setRating}
+              />
+
+              <TextInputBox
                 placeholder="한글 기준 100자까지 작성 가능"
                 maxLength={100}
                 inputHeight={fixwidth * 0.55}
-                onRatingChange={setRating}
-                onTextChange={setReviewText}
-                initialRating={rating}
-                initialText={reviewText}
+                value={reviewText}
+                onChangeText={setReviewText}
               />
 
               <CustomCheckBox

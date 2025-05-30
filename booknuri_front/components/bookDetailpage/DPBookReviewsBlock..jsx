@@ -6,13 +6,13 @@ import {
   Dimensions,
   Text,
 } from 'react-native';
-import SectionHeader from '../bookpublic/SectionHeader';
-import BookReviewItem from '../bookpublic/BookReviewItem';
-import SortTabs from '../bookpublic/SortTabs';
-import MoreButton from '../bookpublic/MoreButton';
-import WriteButton from '../bookpublic/WriteButton';
-import AlertPopup from '../public/AlertPopup';
-import TitleOnlyPopup from '../public/TitleOnlyPopup';
+import SectionHeader from '../public/bookpublic/SectionHeader';
+import BookReviewItem from '../public/bookpublic/BookReviewItem';
+import SortTabs from '../public/bookpublic/SortTabs';
+import MoreButton from '../public/publicButton/MoreButton';
+import WriteButton from '../public/publicButton/WriteButton';
+import AlertPopup from '../public/publicPopup_Alert_etc/AlertPopup';
+import TitleOnlyPopup from '../public/publicPopup_Alert_etc/TitleOnlyPopup';
 
 import { checkAlreadyReviewed, deleteReview } from '../../apis/apiFunction_book';
 

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LoginContext } from "../contexts/LoginContextProvider";
-import ToastPopup from '../components/public/ToastPopup'; // ✅ 토스트 불러오기
+import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup'; // ✅ 토스트 불러오기
 
 const { width, height } = Dimensions.get("window");
 

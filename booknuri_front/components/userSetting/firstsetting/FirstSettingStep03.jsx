@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput, Dimensions, Alert } from 'react-native';
-import FixedBottomButton from '../../public/FixedBottomButton';
+import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import { setUserBirth } from '../../../apis/apiFunction';
 
 const { width: fixwidth } = Dimensions.get('window');

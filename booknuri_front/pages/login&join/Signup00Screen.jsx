@@ -4,11 +4,11 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import Header from '../../components/public/Header';
+import Header from '../../components/public/publicHeader/Header';
 import AgreeSection from '../../components/Login/AgreeSection';
-import FixedBottomButton from '../../components/public/FixedBottomButton';
+import FixedBottomButton from '../../components/public/publicButton/FixedBottomButton';
 import { useNavigation } from '@react-navigation/native';
-import CommonLayout from '../../components/public/CommonLayout';
+import CommonLayout from '../../components/public/bookpublic/CommonLayout';
 
 const { width: fixwidth } = Dimensions.get('window');
 

@@ -26,8 +26,8 @@ export default ImageUploaderBox;
 
 const styles = StyleSheet.create({
   container: {
-    width: fixwidth * 0.17,
-    height: fixwidth * 0.17,
+    width: fixwidth * 0.2,
+    height: fixwidth * 0.2,
     borderRadius: fixwidth * 0.04,
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',

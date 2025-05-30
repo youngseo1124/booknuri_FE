@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GenderSelectBox from '../GenderSelectBox';
-import FixedBottomButton from '../../public/FixedBottomButton';
+import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import { setUserGender } from '../../../apis/apiFunction';
 
 const { height,width: fixwidth } = Dimensions.get('window');

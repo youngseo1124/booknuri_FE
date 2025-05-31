@@ -11,13 +11,15 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart, faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
-import VerticalGap from './VerticalGap';
+import VerticalGap from '../publicUtil/VerticalGap';
+import {useNavigation} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onDeletePress }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasImage = item.imageUrls?.length > 0;
+  const navigation = useNavigation();
 
   const renderStars = (rating) => {
     const fullStars = Math.round(rating / 2);
@@ -37,17 +39,19 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
     return name.length <= 3 ? name + '****' : name.slice(0, 3) + '****';
   };
 
+
+
   return (
     <View style={styles.card}>
       {/* ⭐ 별점 */}
       <View style={styles.stars}>{renderStars(item.rating)}</View>
 
-      {/* 📌 접힌 상태: 텍스트 + 썸네일 나란히 */}
+      {/*  접힌 상태: 텍스트 + 썸네일 나란히 */}
       {!isExpanded ? (
         <TouchableOpacity
           style={styles.previewRow}
           onPress={() => setIsExpanded(true)}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
         >
           <Text
             style={styles.contentText}
@@ -67,9 +71,16 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
         </TouchableOpacity>
       ) : (
         //  펼쳐진 상태: 이미지들 위에, 전체 내용 아래
-        <TouchableOpacity onPress={() => setIsExpanded(false)} activeOpacity={0.8}>
-          {/* 펼친 상태: 이미지 리스트 먼저, 그 아래 텍스트 */}
-          <View style={{ backgroundColor: '#f5f5f5', borderRadius: fixwidth * 0.02, paddingHorizontal: fixwidth * 0.03,marginHorizontal: -fixwidth * 0.007,}}>
+        <TouchableOpacity onPress={() => setIsExpanded(false)} activeOpacity={0.9}>
+          <View
+            style={{
+              backgroundColor: '#f5f5f5',
+              borderRadius: fixwidth * 0.02,
+              paddingHorizontal: fixwidth * 0.03,
+              marginHorizontal: -fixwidth * 0.007,
+              paddingVertical:fixwidth*0.017
+            }}
+          >
             {item.imageUrls.map((img, idx) => (
               <Image
                 key={idx}
@@ -79,10 +90,12 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
               />
             ))}
             <Text style={[styles.contentText, { marginTop: fixwidth * 0.03 }]}>
+              <Text style={styles.titleText}>{item.title + '\n'}</Text>
               {item.content}
             </Text>
           </View>
         </TouchableOpacity>
+
 
       )}
 
@@ -102,6 +115,7 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
               <TouchableOpacity onPress={() => onEditPress(item)}>
                 <Text style={styles.footerText}>수정</Text>
               </TouchableOpacity>
+
               <Text style={styles.separator}>|</Text>
               <TouchableOpacity onPress={() => onDeletePress(item.id)}>
                 <Text style={styles.footerText}>삭제</Text>

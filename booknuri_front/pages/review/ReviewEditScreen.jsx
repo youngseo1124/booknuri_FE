@@ -21,7 +21,7 @@ import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox'
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ReviewEditFormBlock from '../../components/bookDetailpage/ReviewEditFormBlock';
-import TextInputBox from '../../components/public/bookpublic/TextInputBox';
+import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
 
 const { width: fixwidth } = Dimensions.get('window');

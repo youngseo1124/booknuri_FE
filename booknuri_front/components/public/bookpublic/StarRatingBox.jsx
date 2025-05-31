@@ -9,7 +9,7 @@ const { width: fixwidth } = Dimensions.get('window');
 const StarRatingBox = ({
                          value = 0,
                          onChange,
-                         starSize = fixwidth * 0.1, // ⭐ 별 크기 조절 가능 (디폴트: 현재값)
+                         starSize = fixwidth * 0.09, // ⭐ 별 크기 조절 가능 (디폴트: 현재값)
                        }) => {
   const [rating, setRating] = useState(value);
 

@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Dimensions,
-  ScrollView,
-  ActivityIndicator,
-  Image,
-  Alert,
-  TouchableOpacity,
+  View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Dimensions,
+  ScrollView, ActivityIndicator, Image, Alert, TouchableOpacity,
 } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/bookpublic/CommonLayout';
 import { getBookTotalInfo } from '../../apis/apiFunction_book';
@@ -21,172 +12,77 @@ import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox'
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ImageUploaderBox from '../../components/public/bookpublic/ImageUploaderBox';
-import {createReflection, getMyReflectionByIsbn, uploadReflectionImages} from '../../apis/apiFunction_bookReflection';
-import api from '../../apis/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import {
+  getMyReflectionByIsbn,
+  updateReflection,
+  deleteReflectionImage,
+  uploadReflectionImages,
+} from '../../apis/apiFunction_bookReflection';
 import InputBox from '../../components/public/publicInput/InputBox';
-import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
-import VerticalGap from '../../components/public/publicUtil/VerticalGap';
+import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import VerticalGap from '../../components/public/bookpublic/publicUtil/VerticalGap';
 import MyIntentModule from '../../MyIntentModule';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const ReflectionCreateScreen = ({ route, navigation }) => {
+
+const ReflectionEditScreen = ({ route, navigation }) => {
   const { isbn13 } = route.params;
 
   const [bookData, setBookData] = useState(null);
+  const [reflectionId, setReflectionId] = useState(null);
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
   const [containsSpoiler, setContainsSpoiler] = useState(false);
   const [visibleToPublic, setVisibleToPublic] = useState(true);
   const [images, setImages] = useState([]);
+  const [deletedImageIds, setDeletedImageIds] = useState([]);
 
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
   const [imageToDeleteIdx, setImageToDeleteIdx] = useState(null);
-
   const [isReady, setIsReady] = useState(false);
-  const [title, setTitle] = useState('');
 
   useEffect(() => {
-    const fetchBookData = async () => {
+    const fetchData = async () => {
       try {
-        const res = await getBookTotalInfo(isbn13);
-        setBookData(res.data.bookInfo);
-        await new Promise((resolve) => setTimeout(resolve, 200));
+        const [bookRes, reflectionRes] = await Promise.all([
+          getBookTotalInfo(isbn13),
+          getMyReflectionByIsbn(isbn13),
+        ]);
+
+        setBookData(bookRes.data.bookInfo);
+
+        const data = reflectionRes.data;
+        setReflectionId(data.id);
+        setTitle(data.title);
+        setContent(data.content);
+        setRating(data.rating);
+        setContainsSpoiler(data.containsSpoiler);
+        setVisibleToPublic(data.visibleToPublic);
+        setImages(data.imageList.map(img => ({
+          uri: img.url,
+          isNew: false,
+          id: img.id,
+        })));
+
         setIsReady(true);
       } catch (error) {
-        console.error('❌ 책 정보 로딩 실패:', error);
+
       }
     };
-    fetchBookData();
+
+    fetchData();
   }, [isbn13]);
 
-  const handleNativeChooser = async () => {
-    if (images.length >= 3) {
-      return;
-    }
-
-    try {
-      const uri = await MyIntentModule.openChooser(); // 네이티브 chooser 실행
-      if (uri && uri !== 'null') {
-        setImages((prev) => [...prev, { uri }]); // RN용 이미지 객체로 추가
-      }
-    } catch (err) {
-      console.warn('❌ chooser 실행 실패:', err);
-    }
+  const extractImageId = (url) => {
+    const filename = url.split('/').pop();
+    return filename.substring(0, filename.lastIndexOf('.'));
   };
-
-
-
-  const uploadReflectionImages = async (reflectionId, images) => {
-    console.log("🔥 reflectionId:", reflectionId);
-    const formData = new FormData();
-
-    images.forEach((img, idx) => {
-      formData.append('images', {
-        uri: img.uri,
-        name: img.fileName || `reflection_${idx}.jpg`,
-        type: img.type || 'image/jpeg',
-      });
-    });
-
-    const accessToken = await AsyncStorage.getItem('accessToken');
-
-    const response = await axios.post(
-      `http://192.168.94.109:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        transformRequest: (data, headers) => data,
-      }
-    );
-
-    return response.data;
-  };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const handleSubmit = async () => {
-    try {
-      await createReflection({
-        isbn13,
-        title,
-        content,
-        rating,
-        containsSpoiler,
-        visibleToPublic,
-      });
-    } catch (err) {
-    }
-
-    try {
-
-      const res = await getMyReflectionByIsbn(isbn13);
-      const reflectionId = res?.data?.reflectionId || res?.data?.id; // 둘 다 대비 가능하게!
-
-      if (!reflectionId) {
-        return;
-      }
-
-      //  이미지 업로드
-      if (images.length > 0) {
-        await uploadReflectionImages(reflectionId, images);
-      }
-
-      //  완료 후 이동
-      navigation.replace("BookDetailScreen", { isbn: isbn13 });
-    } catch (e) {
-      console.log(" 에러 발생:", e.response?.data || e.message);
-
-    }
-  };
-
-
-  const handleAddImage = async (fromCamera = false) => {
-    if (images.length >= 3) {
-      return;
-    }
-
-    const options = { mediaType: 'photo', quality: 0.8 };
-    const result = fromCamera
-      ? await launchCamera(options)
-      : await launchImageLibrary(options);
-
-    if (result.assets?.length) {
-      setImages((prev) => [...prev, result.assets[0]]);
-    }
-  };
-
-  const handleSelectImage = async () => {
-    if (images.length >= 3) return;
-
-    const options = { mediaType: 'photo', quality: 0.8 };
-    const result = await launchImageLibrary(options);
-
-    if (result.assets?.length) {
-      setImages((prev) => [...prev, result.assets[0]]);
-    }
-  };
-
-
 
   const confirmDeleteImage = (index) => {
     setImageToDeleteIdx(index);
@@ -194,10 +90,90 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
   };
 
   const deleteImage = () => {
+    const target = images[imageToDeleteIdx];
+    if (!target.isNew) {
+      setDeletedImageIds(prev => [...prev, target.id]);
+    }
     const newImages = [...images];
     newImages.splice(imageToDeleteIdx, 1);
     setImages(newImages);
     setDeletePopupVisible(false);
+  };
+
+  const handleNativeChooser = async () => {
+    if (images.length >= 3) return;
+    try {
+      const uri = await MyIntentModule.openChooser();
+      if (uri && uri !== 'null') {
+        setImages(prev => [...prev, { uri, isNew: true }]);
+      }
+    } catch (err) {
+      console.warn('❌ chooser 실패:', err);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await updateReflection({
+        reflectionId,
+        content,
+        rating,
+        containsSpoiler,
+        visibleToPublic,
+        title,
+      });
+
+      // 삭제할 이미지 보내기
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      const uniqueDeletedImageIds = [...new Set(deletedImageIds)];
+
+      for (const imageId of uniqueDeletedImageIds) {
+        try {
+          console.log("📤 삭제 요청 전송:", imageId);
+          await axios({
+            method: 'delete',
+            url: `http://192.168.94.109:8080/book/reflection/image/${imageId}`,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          console.log("✅ 삭제 성공:", imageId);
+        } catch (e) {
+          console.warn("❌ 삭제 실패:", imageId, e.response?.data || e.message);
+        }
+      }
+
+
+      // 새 이미지들 업로드
+      const newImages = images.filter(img => img.isNew);
+      if (newImages.length > 0) {
+        const formData = new FormData();
+        newImages.forEach((img, idx) => {
+          formData.append('images', {
+            uri: img.uri,
+            name: img.fileName || `reflection_${idx}.jpg`,
+            type: img.type || 'image/jpeg',
+          });
+        });
+
+        await axios.post(
+          `http://192.168.94.109:8080/book/reflection/image/${reflectionId}/upload`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${accessToken}`,
+            },
+            transformRequest: (data, headers) => data,
+          }
+        );
+      }
+
+      navigation.replace("BookDetailScreen", { isbn: isbn13 });
+    } catch (err) {
+      console.log('❌ 수정 실패:', err.response?.data || err.message || err);
+      Alert.alert("실패", "독후감 수정에 실패했어요.");
+    }
   };
 
   if (!isReady) {
@@ -214,28 +190,17 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     <CommonLayout>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1 }}>
-          <Header title="독후감 작성" />
-          <ScrollView
-            contentContainerStyle={styles.contentContainer}
-            keyboardShouldPersistTaps="handled"
-          >
+          <Header title="독후감 수정" />
+          <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
             <View style={styles.innerContainer}>
               <BookMiniHeaderBlock
                 imageUrl={bookData.bookImageURL}
                 title={bookData.bookname}
                 authors={bookData.authors}
               />
-              <VerticalGap height={fixwidth*0.003} />
-
-              {/* 별점 ⭐ */}
-              <StarRatingBox
-                value={rating}
-                onChange={setRating}
-              />
-
-              <VerticalGap height={fixwidth*0.003} />
-
-              {/* 제목 입력 (InputBox는 그대로) */}
+              <VerticalGap height={fixwidth * 0.003} />
+              <StarRatingBox value={rating} onChange={setRating} />
+              <VerticalGap height={fixwidth * 0.003} />
               <InputBox
                 placeholder="제목을 입력하세요"
                 maxLength={30}
@@ -243,10 +208,6 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
                 value={title}
                 onChangeText={setTitle}
               />
-
-
-
-              {/* 본문 작성 ✍ */}
               <TextInputBox
                 placeholder="최대 2000자까지 작성 가능"
                 maxLength={2000}
@@ -254,24 +215,11 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
                 value={content}
                 onChangeText={setContent}
               />
-
-
-
-              <CustomCheckBox
-                label="스포일러 포함"
-                value={containsSpoiler}
-                onChange={setContainsSpoiler}
-              />
-              <CustomCheckBox
-                label="공개 독후감"
-                value={visibleToPublic}
-                onChange={setVisibleToPublic}
-              />
+              <CustomCheckBox label="스포일러 포함" value={containsSpoiler} onChange={setContainsSpoiler} />
+              <CustomCheckBox label="공개 독후감" value={visibleToPublic} onChange={setVisibleToPublic} />
 
               <View style={styles.imageArea}>
                 <ImageUploaderBox imageCount={images.length} onPress={handleNativeChooser} />
-
-
                 <View style={styles.imagePreviewWrap}>
                   {images.map((img, idx) => (
                     <TouchableOpacity key={idx} onLongPress={() => confirmDeleteImage(idx)}>
@@ -281,10 +229,8 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
                 </View>
               </View>
 
-              <VerticalGap height={fixwidth*0.003} />
-
               <WriteButton
-                label="독후감 작성"
+                label="수정 완료"
                 onPress={() => {
                   if (rating === 0 || content.trim() === '') return;
                   setConfirmVisible(true);
@@ -295,7 +241,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
           <TitleOnlyPopup
             visible={confirmVisible}
-            title="독후감을 등록할까요?"
+            title="수정된 독후감을 저장할까요?"
             onCancel={() => setConfirmVisible(false)}
             onConfirm={() => {
               setConfirmVisible(false);
@@ -315,7 +261,10 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
   );
 };
 
-export default ReflectionCreateScreen;
+export default ReflectionEditScreen;
+
+// styles 객체는 이전 코드와 동일하게 유지!
+
 
 const styles = StyleSheet.create({
   contentContainer: {

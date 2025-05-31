@@ -9,7 +9,7 @@ import {
 } from '../apis/apiFunction_book';
 import DPBookInfoHeaderBlock from '../components/bookDetailpage/DPBookInfoHeaderBlock';
 import DPBookInfoContentBlock from '../components/bookDetailpage/DPBookInfoContentBlock';
-import DividerBlock from '../components/public/bookpublic/DividerBlock';
+import DividerBlock from '../components/public/publicUtil/DividerBlock';
 import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingSummaryBlock';
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
 import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';

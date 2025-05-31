@@ -18,7 +18,7 @@ import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox'
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
-import TextInputBox from '../../components/public/bookpublic/TextInputBox'; // ✅ 바뀐 부분
+import TextInputBox from '../../components/public/publicInput/TextInputBox'; // ✅ 바뀐 부분
 
 const { width: fixwidth } = Dimensions.get('window');
 

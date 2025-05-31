@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     width: '100%',
-    padding: fixwidth * 0.04,
+    padding: fixwidth * 0.02,
     backgroundColor: '#fff',
     borderRadius: fixwidth * 0.02,
     textAlignVertical: 'top',

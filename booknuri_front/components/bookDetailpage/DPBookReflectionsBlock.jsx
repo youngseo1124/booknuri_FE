@@ -68,6 +68,10 @@ const DPBookReflectionsBlock = ({
     }
   };
 
+  const handleEditPress = (item) => {
+    navigation.navigate('ReflectionEditScreen', { isbn13: item.isbn13 });
+  };
+
   return (
     <View style={styles.container}>
       <SectionHeader label={`독후감 (${reflections?.length || 0})`} />

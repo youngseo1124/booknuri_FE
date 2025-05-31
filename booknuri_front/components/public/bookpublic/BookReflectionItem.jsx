@@ -18,7 +18,7 @@ const { width: fixwidth } = Dimensions.get('window');
 
 const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onDeletePress }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const hasImage = item.imageUrls?.length > 0;
+  const hasImage = item.imageList?.length > 0;
   const navigation = useNavigation();
 
   const renderStars = (rating) => {
@@ -63,7 +63,7 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
 
           {hasImage && (
             <Image
-              source={{ uri: item.imageUrls[0] }}
+              source={{ uri: item.imageList[0].url }}
               style={styles.thumbnail}
               resizeMode="cover"
             />
@@ -78,13 +78,13 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
               borderRadius: fixwidth * 0.02,
               paddingHorizontal: fixwidth * 0.03,
               marginHorizontal: -fixwidth * 0.007,
-              paddingVertical:fixwidth*0.017
+              paddingBottom:fixwidth*0.025
             }}
           >
-            {item.imageUrls.map((img, idx) => (
+            {item.imageList.map((imgObj, idx) => (
               <Image
-                key={idx}
-                source={{ uri: img }}
+                key={imgObj.id || idx}
+                source={{ uri: imgObj.url }}
                 style={styles.expandedImage}
                 resizeMode="contain"
               />

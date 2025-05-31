@@ -229,6 +229,8 @@ const ReflectionEditScreen = ({ route, navigation }) => {
                 </View>
               </View>
 
+              <VerticalGap height={fixwidth*0.003} />
+
               <WriteButton
                 label="수정 완료"
                 onPress={() => {

@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: fixwidth * 0.025,
-    marginBottom: fixwidth * 0.007,
+    marginBottom: fixwidth * 0.00,
   },
 });

@@ -94,7 +94,7 @@ const DPBookReflectionsBlock = ({
       <View style={styles.wrapper}>
         <MoreButton
           label="독후감 전체 보기"
-          onPress={() => navigation.navigate('BookReflectionListScreen', { isbn13 })}
+          onPress={() => navigation.navigate('ReflectionListScreen', { isbn13 })}
         />
         <WriteButton label="독후감 쓰기" onPress={handleWritePress} />
       </View>

@@ -47,19 +47,27 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
       <View style={styles.stars}>{renderStars(item.rating)}</View>
 
       {/*  접힌 상태: 텍스트 + 썸네일 나란히 */}
+      {/*  접힌 상태: 텍스트 + 썸네일 나란히 */}
       {!isExpanded ? (
         <TouchableOpacity
           style={styles.previewRow}
           onPress={() => setIsExpanded(true)}
           activeOpacity={0.9}
         >
-          <Text
-            style={styles.contentText}
-            numberOfLines={5}
-          >
-            <Text style={styles.titleText}>{item.title + '\n'}</Text>
-            {item.content}
-          </Text>
+          {/*  스포일러 표시 분기 */}
+          {item.containsSpoiler ? (
+            <View style={styles.spoilerBox}>
+              <Text style={styles.spoilerText}>
+                ⚠️ 스포일러가 포함된 독후감입니다.{"\n"}클릭 시 확인 가능합니다.
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.contentText} numberOfLines={5}>
+              <Text style={styles.titleText}>{item.title + '\n'}</Text>
+              {item.content}
+            </Text>
+          )}
+
 
           {hasImage && (
             <Image
@@ -70,7 +78,7 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
           )}
         </TouchableOpacity>
       ) : (
-        //  펼쳐진 상태: 이미지들 위에, 전체 내용 아래
+        // 펼쳐진 상태
         <TouchableOpacity onPress={() => setIsExpanded(false)} activeOpacity={0.9}>
           <View
             style={{
@@ -78,7 +86,7 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
               borderRadius: fixwidth * 0.02,
               paddingHorizontal: fixwidth * 0.03,
               marginHorizontal: -fixwidth * 0.007,
-              paddingBottom:fixwidth*0.025
+              paddingBottom: fixwidth * 0.025,
             }}
           >
             {item.imageList.map((imgObj, idx) => (
@@ -95,9 +103,8 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
             </Text>
           </View>
         </TouchableOpacity>
-
-
       )}
+
 
       {/* 👤 작성자 */}
       <Text style={styles.username}>{maskUsername(item.reviewerUsername)}</Text>
@@ -174,7 +181,7 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: fixwidth * 0.18,
-    height: fixwidth * 0.24,
+    height: fixwidth * 0.27,
     borderRadius: fixwidth * 0.01,
     backgroundColor: '#eee',
   },
@@ -235,4 +242,20 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSansKR-Bold',
     lineHeight: fixwidth * 0.07,
   },
+  spoilerBox: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+  spoilerText: {
+    paddingVertical: fixwidth * 0.077,
+    fontSize: fixwidth * 0.03,
+    lineHeight: fixwidth * 0.055,
+    fontFamily: 'NotoSansKR-Regular',
+    color: '#FF4D4D',
+    backgroundColor: '#FFF1F1',
+    borderRadius: fixwidth * 0.01,
+    textAlign: 'center',
+  },
+
 });

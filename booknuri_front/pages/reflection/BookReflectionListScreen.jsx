@@ -45,15 +45,18 @@ const ReflectionListScreen = ({ route, navigation }) => {
     setLoading(true);
     try {
       const res = await getBookReflectionList(isbn13, sort, reset ? 0 : offset, LIMIT);
+      // 비공개 제거!
       const data = res.data;
+      const onlyPublic = data.reflections.filter(item => item.visibleToPublic);
 
       if (reset) {
-        setReflections(data.reflections);
+        setReflections(onlyPublic);
         setOffset(LIMIT);
       } else {
-        setReflections((prev) => [...prev, ...data.reflections]);
+        setReflections((prev) => [...prev, ...onlyPublic]);
         setOffset((prev) => prev + LIMIT);
       }
+
 
       setHasMore(data.reflections.length === LIMIT);
       setAverageRating(data.averageRating);

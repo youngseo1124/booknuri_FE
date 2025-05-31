@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart, faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
@@ -7,8 +7,11 @@ import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookReviewItem = ({ item, onLikePress, onReportPress, onEditPress, onDeletePress }) => {
+  const [showSpoiler, setShowSpoiler] = useState(false);
+
   const renderStars = (rating) => {
     const fullStars = Math.round(rating / 2);
+
     return [...Array(5)].map((_, i) => (
       <FontAwesomeIcon
         key={i}
@@ -31,7 +34,20 @@ const BookReviewItem = ({ item, onLikePress, onReportPress, onEditPress, onDelet
       <View style={styles.stars}>{renderStars(item.rating)}</View>
 
       {/* 내용 */}
-      <Text style={styles.content}>{item.content}</Text>
+      {item.containsSpoiler ? (
+        <TouchableOpacity activeOpacity={0.9}   onPress={() => setShowSpoiler(!showSpoiler)}>
+          {showSpoiler ? (
+            <Text style={styles.content}>{item.content}</Text>
+          ) : (
+            <Text style={styles.spoilerText}>
+              ⚠️ 스포일러가 포함된 리뷰입니다.{"\n"}클릭 시 확인 가능합니다.
+            </Text>
+          )}
+        </TouchableOpacity>
+      ) : (
+        <Text style={styles.content}>{item.content}</Text>
+      )}
+
 
       {/* 닉네임 */}
       <Text style={styles.username}>{maskUsername(item.reviewerUsername)}</Text>
@@ -147,5 +163,16 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSansKR-Regular',
     lineHeight: fixwidth * 0.06,
     color: '#666',
+  },
+  spoilerText: {
+    fontSize: fixwidth * 0.03,
+    fontFamily: 'NotoSansKR-Regular',
+    lineHeight: fixwidth * 0.055,
+    color: '#FF4D4D',
+    backgroundColor: '#FFF1F1',
+    textAlign: 'center',
+    paddingVertical: fixwidth * 0.033,
+    borderRadius: fixwidth * 0.01,
+    marginVertical: fixwidth * 0.011,
   },
 });

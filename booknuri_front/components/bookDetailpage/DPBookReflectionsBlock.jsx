@@ -41,7 +41,7 @@ const DPBookReflectionsBlock = ({
     />
   );
 
-  const limitedReflections = reflections?.slice(0, 5) || [];
+  const limitedReflections = reflections?.filter(r => r.visibleToPublic).slice(0, 4) || [];
 
   const handleWritePress = async () => {
     try {
@@ -74,7 +74,7 @@ const DPBookReflectionsBlock = ({
 
   return (
     <View style={styles.container}>
-      <SectionHeader label={`독후감 (${reflections?.length || 0})`} />
+      <SectionHeader label={`독후감 (${limitedReflections.length})`} />
       <SortTabs currentSort={currentSort} onChange={onSortChange} />
 
       {limitedReflections.length > 0 ? (

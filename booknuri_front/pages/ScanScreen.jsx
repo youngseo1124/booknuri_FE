@@ -8,8 +8,9 @@ import {
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import ConfirmPopup from '../components/public/publicPopup_Alert_etc/ConfirmPopup';
+import AlertPopup from '../components/public/publicPopup_Alert_etc/AlertPopup'; // ✅ 추가
 import { useNavigation } from '@react-navigation/native';
-import {checkBookExists} from '../apis/apiFunction_book';
+import { checkBookExists } from '../apis/apiFunction_book';
 
 const ScanScreen = () => {
     const navigation = useNavigation();
@@ -17,7 +18,9 @@ const ScanScreen = () => {
     const [hasPermission, setHasPermission] = useState(false);
     const [scannedData, setScannedData] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
-    const [isLandscapeFromWebView, setIsLandscapeFromWebView] = useState(false); // ✅ HTML에서 받아온 방향
+    const [isLandscapeFromWebView, setIsLandscapeFromWebView] = useState(false);
+    const [failCount, setFailCount] = useState(0); // ❌ 실패 카운트
+    const [showAlertPopup, setShowAlertPopup] = useState(false); // ⚠️ 안내 팝업
 
     // ✅ 카메라 권한 요청
     useEffect(() => {
@@ -48,34 +51,41 @@ const ScanScreen = () => {
                 return;
             }
 
-            // ✅ 함수로 API 호출
             const { data } = await checkBookExists(isbn);
 
             if (data === true) {
                 console.log('✅ 존재하는 ISBN:', isbn);
                 setScannedData(isbn);
                 setPopupVisible(true);
+                setFailCount(0); // 성공 시 실패 카운트 초기화
             } else {
-                console.warn('📕 DB에 존재하지 않는 ISBN:', isbn);
+                console.warn('📕 DB에 없는 ISBN:', isbn);
+                setFailCount(prev => {
+                    const updated = prev + 1;
+                    if (updated >= 2) {
+                        setShowAlertPopup(true);
+                    }
+                    return updated;
+                });
             }
         } catch (err) {
             console.error('❌ 메시지 처리 중 에러:', err);
         }
     };
 
-
-
+    // ✅ 확인 버튼
     const handleConfirm = () => {
         setPopupVisible(false);
-        console.log('📚 ISBN 처리 시작:', scannedData);
         navigation.replace('BookDetailScreen', { isbn: scannedData });
     };
 
+    // ✅ 취소 버튼
     const handleCancel = () => {
         setPopupVisible(false);
         setScannedData('');
     };
 
+    // ✅ 바코드 HTML 경로 설정
     const sourceUri =
       Platform.OS === 'android'
         ? 'file:///android_asset/barcode.html'
@@ -96,6 +106,7 @@ const ScanScreen = () => {
             <Text style={styles.permissionText}>카메라 권한을 요청 중...</Text>
           )}
 
+          {/* ✅ 유효 ISBN일 때 */}
           <ConfirmPopup
             visible={popupVisible}
             title="스캔 완료"
@@ -103,6 +114,18 @@ const ScanScreen = () => {
             onConfirm={handleConfirm}
             onCancel={handleCancel}
             isLandscape={isLandscapeFromWebView}
+          />
+
+          {/* 연속 실패 2회 이상 안내 */}
+          <AlertPopup
+            visible={showAlertPopup}
+            title="도서 미등록 안내"
+            message={`스캔한 책은 아직 등록되지 않았어요.\n다른 책을 시도해보거나 나중에 다시 시도해주세요.`}
+            onClose={() => {
+                setShowAlertPopup(false);
+                navigation.goBack();
+            }}
+
           />
       </View>
     );

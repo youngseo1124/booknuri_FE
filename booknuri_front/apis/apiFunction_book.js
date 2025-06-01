@@ -6,6 +6,11 @@ export const getBookTotalInfo = (isbn13) => {
 };
 
 
+//  ISBN 존재 여부 확인 (존재 여부만 true/false)
+export const checkBookExists = (isbn13) => {
+  return api.get(`/book/exist/${isbn13}`);
+};
+
 
 /**
  * ❓ 리뷰 작성 여부 확인

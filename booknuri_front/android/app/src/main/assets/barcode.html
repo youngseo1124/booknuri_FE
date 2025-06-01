@@ -37,11 +37,6 @@
             background-color: #000000;
         }
 
-        #reader__scan_region > div:nth-child(1) {
-            transform: none !important;
-            scale: 1 !important;
-        }
-
         .overlay-text {
             position: absolute;
             top: 33px;
@@ -57,33 +52,56 @@
 <body>
 <div id="reader-container">
     <div class="overlay-text">
-         ISBN 바코드만 박스에 들어오도록 위치를 맞춰주세요<br />
-        ※ 가격 바코드까지 들어오면 인식이 실패할 수 있어요
-
+        📸 ISBN 바코드를 화면 어디든 맞춰주세요!
     </div>
     <div id="reader"></div>
 </div>
 
 <script>
+    // ✅ 진짜 디바이스 회전 상태를 기반으로 판단하는 함수
+    function getOrientationAccurate() {
+        if (window.screen.orientation) {
+            const angle = window.screen.orientation.angle;
+            return angle === 90 || angle === -90;
+        }
+        // fallback
+        return window.innerWidth > window.innerHeight;
+    }
+
     function onScanSuccess(decodedText, decodedResult) {
-        window.ReactNativeWebView?.postMessage(decodedText);
+        const onlyNumbers = decodedText.replace(/[^0-9]/g, '');
+        const isbn = onlyNumbers.slice(0, 13);
+
+        const isLandscape = getOrientationAccurate();
+
+        console.log("🎯 스캔됨 - ISBN:", isbn);
+        console.log("📐 방향 정보:", isLandscape ? "가로" : "세로");
+
+        if (/^97[89][0-9]{10}$/.test(isbn)) {
+            const payload = {
+                isbn: isbn,
+                isLandscape: isLandscape
+            };
+
+            console.log("📤 전송 데이터:", payload);
+            window.ReactNativeWebView?.postMessage(JSON.stringify(payload));
+        } else {
+            console.warn("❌ ISBN 형식 아님:", isbn);
+        }
     }
 
     const html5QrCode = new Html5Qrcode("reader");
 
-    html5QrCode
-        .start(
-            { facingMode: "environment" },
-            {
-                fps: 15,
-                qrbox: { width: 190, height: 90 },
-                disableFlip: true
-            },
-            onScanSuccess
-        )
-        .catch(err => {
-            console.error("카메라 시작 실패 ❌", err);
-        });
+    html5QrCode.start(
+      { facingMode: { exact: "environment" } },
+      {
+          fps: 15,
+          disableFlip: true
+      },
+      onScanSuccess
+    ).catch(err => {
+        console.error("카메라 시작 실패 ❌", err);
+    });
 </script>
 </body>
 </html>

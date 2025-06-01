@@ -1,82 +1,117 @@
-// (확인/취소 버튼이 있는 팝업)
-
-// ✅ 필요한 라이브러리 불러오기
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+    View,
+    Text,
+    Modal,
+    TouchableOpacity,
+    StyleSheet,
+    useWindowDimensions,
+} from 'react-native';
 
-// ✅ ConfirmPopup 컴포넌트 정의
-const ConfirmPopup = ({ visible, title, message, onConfirm, onCancel }) => {
+const ConfirmPopup = ({
+                          visible,
+                          title,
+                          message,
+                          onConfirm,
+                          onCancel,
+                          isLandscape = false,
+                      }) => {
+    const { width: fixwidth } = useWindowDimensions(); // ✅ 실시간 반응하는 width!
+
     return (
-        <Modal visible={visible} transparent animationType="fade">
-            <View style={styles.overlay}>
-                <View style={styles.popup}>
-                    <Text style={styles.title}>{String(title)}</Text>
-                    <Text style={styles.message}>{String(message)}</Text>
+      <Modal visible={visible} transparent animationType="fade">
+          <View style={styles.overlay}>
+              <View
+                style={[
+                    styles.popup(fixwidth),
+                    isLandscape && styles.popupLandscape(fixwidth),
+                ]}
+              >
+                  <Text style={styles.title(fixwidth)}>{String(title)}</Text>
+                  <Text style={styles.message(fixwidth)}>{String(message)}</Text>
 
-
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-                            <Text style={styles.buttonText}>취소</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
-                            <Text style={styles.buttonText}>확인</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        </Modal>
+                  <View style={styles.buttonContainer(fixwidth)}>
+                      <TouchableOpacity
+                        style={styles.cancelButton(fixwidth)}
+                        onPress={onCancel}
+                      >
+                          <Text style={styles.buttonText(fixwidth)}>취소</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.confirmButton(fixwidth)}
+                        onPress={onConfirm}
+                      >
+                          <Text style={styles.buttonText(fixwidth)}>확인</Text>
+                      </TouchableOpacity>
+                  </View>
+              </View>
+          </View>
+      </Modal>
     );
 };
 
-// ✅ 스타일 정의
-const styles = StyleSheet.create({
+export default ConfirmPopup;
+
+// ✅ 모든 스타일을 함수형으로 변경해서 fixwidth 반응하도록 처리
+const styles = {
     overlay: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    popup: {
+    popup: (w) => ({
         backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10,
-        width: 300,
+        paddingVertical: w * 0.06,
+        paddingHorizontal: w * 0.06,
+        borderRadius: w * 0.03,
+        width: w * 0.8,
         alignItems: 'center',
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color:'#000000'
-    },
-    message: {
-        fontSize: 16,
-        marginVertical: 10,
-        color:'#000000'
-    },
-    buttonContainer: {
+    }),
+    popupLandscape: (w) => ({
+        width: w * 0.6,
+    }),
+    title: (w) => ({
+        fontSize: w * 0.045,
+        fontFamily: 'NotoSansKR-SemiBold',
+        color: '#000000',
+        marginBottom: w * 0.02,
+        textAlign: 'center',
+        lineHeight: w * 0.05,
+        paddingVertical: w * 0.02,
+    }),
+    message: (w) => ({
+        fontSize: w * 0.037,
+        fontFamily: 'NotoSansKR-Regular',
+        color: '#333333',
+        marginBottom: w * 0.04,
+        textAlign: 'center',
+        lineHeight: w * 0.05,
+    }),
+    buttonContainer: (w) => ({
         flexDirection: 'row',
-        marginTop: 10,
-    },
-    cancelButton: {
-        backgroundColor: '#4da6ff',
-        padding: 10,
-        borderRadius: 5,
-        width: 80,
+        justifyContent: 'center',
+        gap: w * 0.03,
+    }),
+    cancelButton: (w) => ({
+        backgroundColor: 'rgba(97,156,245,0.6)',
+        paddingVertical: w * 0.025,
+        borderRadius: w * 0.02,
+        width: w * 0.25,
         alignItems: 'center',
-        marginRight: 10,
-    },
-    confirmButton: {
-        backgroundColor: '#4da6ff',
-        padding: 10,
-        borderRadius: 5,
-        width: 80,
+        marginRight: w * 0.02,
+    }),
+    confirmButton: (w) => ({
+        backgroundColor: 'rgba(97,156,245,0.95)',
+        paddingVertical: w * 0.025,
+        borderRadius: w * 0.02,
+        width: w * 0.25,
         alignItems: 'center',
-    },
-    buttonText: {
+    }),
+    buttonText: (w) => ({
         color: 'white',
-        fontSize: 16,
-    },
-});
-
-export default ConfirmPopup;
+        fontSize: w * 0.038,
+        lineHeight: w * 0.05,
+        fontFamily: 'NotoSansKR-Medium',
+    }),
+};

@@ -15,16 +15,15 @@ import ImageUploaderBox from '../../components/public/bookpublic/ImageUploaderBo
 import {
   getMyReflectionByIsbn,
   updateReflection,
-  deleteReflectionImage,
-  uploadReflectionImages,
+
 } from '../../apis/apiFunction_bookReflection';
 import InputBox from '../../components/public/publicInput/InputBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
-import VerticalGap from '../../components/public/bookpublic/publicUtil/VerticalGap';
 import MyIntentModule from '../../MyIntentModule';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VerticalGap from "../../components/public/publicUtil/VerticalGap";
 
 const { width: fixwidth } = Dimensions.get('window');
 

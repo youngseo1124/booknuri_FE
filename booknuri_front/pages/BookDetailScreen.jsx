@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
-import CommonLayout from '../components/public/bookpublic/CommonLayout';
+import CommonLayout from '../components/public/publicUtil/CommonLayout';
 import Header from '../components/public/publicHeader/Header';
 import {
     getBookTotalInfo,

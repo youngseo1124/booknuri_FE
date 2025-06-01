@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 
 import Header from '../../components/public/publicHeader/Header';
-import CommonLayout from '../../components/public/bookpublic/CommonLayout';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import {
   updateReview,
-  getMyReviewByIsbn,
+  getMyReviewByIsbn, getBookTotalInfo,
 } from '../../apis/apiFunction_book';
 import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
@@ -23,6 +23,7 @@ import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleO
 import ReviewEditFormBlock from '../../components/bookDetailpage/ReviewEditFormBlock';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -35,6 +36,7 @@ const ReviewEditScreen = ({ route, navigation }) => {
   const [reviewId, setReviewId] = useState(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [bookData, setBookData] = useState(null);
 
   const handleSubmit = async () => {
     try {
@@ -49,6 +51,16 @@ const ReviewEditScreen = ({ route, navigation }) => {
       console.error('❌ 리뷰 수정 실패:', err);
     }
   };
+
+  const fetchBookData = async () => {
+    try {
+      const res = await getBookTotalInfo(isbn13);
+      setBookData(res.data.bookInfo);
+    } catch (error) {
+      console.error('❌ 책 정보 불러오기 실패:', error);
+    }
+  };
+
 
   const fetchMyReview = async () => {
     try {
@@ -67,7 +79,8 @@ const ReviewEditScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    fetchMyReview();
+    fetchMyReview(); // 기존 리뷰 불러오기
+    fetchBookData();
   }, [isbn13]);
 
   if (!isReady) {
@@ -90,6 +103,13 @@ const ReviewEditScreen = ({ route, navigation }) => {
             keyboardShouldPersistTaps="handled"
           >
             <View style={styles.innerContainer}>
+
+              <BookMiniHeaderBlock
+                imageUrl={bookData.bookImageURL}
+                title={bookData.bookname}
+                authors={bookData.authors}
+              />
+
               <StarRatingBox
                 value={rating}
                 onChange={setRating}

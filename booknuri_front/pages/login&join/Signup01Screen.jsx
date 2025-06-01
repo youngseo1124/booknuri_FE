@@ -9,7 +9,7 @@ import SignupFormStep01 from "../../components/Login/SignupFormStep01";
 import FixedBottomButton from "../../components/public/publicButton/FixedBottomButton";
 import { join } from "../../apis/apiFunction";
 import { useNavigation } from '@react-navigation/native';
-import CommonLayout from '../../components/public/bookpublic/CommonLayout'; // ✅ 공통 레이아웃
+import CommonLayout from '../../components/public/publicUtil/CommonLayout'; // ✅ 공통 레이아웃
 
 const { width } = Dimensions.get("window");
 

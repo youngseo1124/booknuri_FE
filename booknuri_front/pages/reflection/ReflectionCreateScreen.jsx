@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Header from '../../components/public/publicHeader/Header';
-import CommonLayout from '../../components/public/bookpublic/CommonLayout';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import { getBookTotalInfo } from '../../apis/apiFunction_book';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';

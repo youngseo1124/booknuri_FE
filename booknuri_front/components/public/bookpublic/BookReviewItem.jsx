@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
   spoilerText: {
     fontSize: fixwidth * 0.03,
     fontFamily: 'NotoSansKR-Regular',
-    lineHeight: fixwidth * 0.055,
-    color: '#FF4D4D',
+    lineHeight: fixwidth * 0.05,
+    color: '#000000',
     backgroundColor: '#FFF1F1',
     textAlign: 'center',
     paddingVertical: fixwidth * 0.033,

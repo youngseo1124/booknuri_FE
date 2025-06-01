@@ -8,7 +8,7 @@ import Header from '../../components/public/publicHeader/Header';
 import AgreeSection from '../../components/Login/AgreeSection';
 import FixedBottomButton from '../../components/public/publicButton/FixedBottomButton';
 import { useNavigation } from '@react-navigation/native';
-import CommonLayout from '../../components/public/bookpublic/CommonLayout';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 
 const { width: fixwidth } = Dimensions.get('window');
 

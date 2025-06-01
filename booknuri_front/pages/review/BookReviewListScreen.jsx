@@ -5,22 +5,26 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  FlatList,
-  TouchableWithoutFeedback,
-  Keyboard, ScrollView,
+  ScrollView,
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 
 import Header from '../../components/public/publicHeader/Header';
-import CommonLayout from '../../components/public/bookpublic/CommonLayout';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import SortTabs from '../../components/public/bookpublic/SortTabs';
 import BookReviewItem from '../../components/public/bookpublic/BookReviewItem';
-import {checkAlreadyReviewed, getBookReviewList, toggleLikeReview} from '../../apis/apiFunction_book';
+import {
+  checkAlreadyReviewed,
+  getBookReviewList,
+  toggleLikeReview,
+  deleteReview, // ✅ 삭제 API
+} from '../../apis/apiFunction_book';
 import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';
+import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup'; // ✅ 삭제 팝업
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -36,10 +40,11 @@ const BookReviewListScreen = ({ route, navigation }) => {
   const [ratingDistribution, setRatingDistribution] = useState({});
   const [alertVisible, setAlertVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
+
+  const [deletePopupVisible, setDeletePopupVisible] = useState(false); // ✅ 삭제 확인창
+  const [selectedReviewId, setSelectedReviewId] = useState(null); // ✅ 삭제할 ID 저장
+
   const LIMIT = 20;
-
-
-
 
   const fetchReviews = async (reset = false) => {
     if (loading || (!hasMore && !reset)) return;
@@ -59,8 +64,6 @@ const BookReviewListScreen = ({ route, navigation }) => {
       setHasMore(data.reviews.length === LIMIT);
       setAverageRating(data.averageRating);
       setRatingDistribution(data.ratingDistribution);
-
-      //  준비 완료 표시
       if (reset) setIsReady(true);
     } catch (err) {
       console.error('❌ 리뷰 로드 실패:', err);
@@ -72,19 +75,6 @@ const BookReviewListScreen = ({ route, navigation }) => {
   useEffect(() => {
     fetchReviews(true);
   }, [sort]);
-
-  const renderStars = (rating) => {
-    const fullStars = Math.round(rating / 2);
-    return [...Array(5)].map((_, i) => (
-      <FontAwesomeIcon
-        key={i}
-        icon={i < fullStars ? solidStar : emptyStar}
-        size={fixwidth * 0.045}
-        color="#FFBC00"
-        style={{ marginHorizontal: fixwidth * 0.007 }}
-      />
-    ));
-  };
 
   const handleLikePress = async (id) => {
     try {
@@ -104,9 +94,19 @@ const BookReviewListScreen = ({ route, navigation }) => {
   };
 
   const handleDeletePress = (id) => {
-    console.log('삭제 ID:', id);
+    setSelectedReviewId(id); // ✅ 어떤 리뷰 지울지 저장
+    setDeletePopupVisible(true); // ✅ 삭제 팝업 띄우기
   };
 
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteReview(selectedReviewId); // ✅ 실제 삭제 요청
+      setDeletePopupVisible(false);
+      fetchReviews(true); // ✅ 목록 새로고침
+    } catch (err) {
+      console.error('❌ 리뷰 삭제 실패:', err);
+    }
+  };
 
   const handleWritePress = async () => {
     try {
@@ -120,30 +120,26 @@ const BookReviewListScreen = ({ route, navigation }) => {
       console.error('리뷰 여부 확인 실패:', err);
     }
   };
+
   if (!isReady) {
     return (
       <CommonLayout>
         <Header title="리뷰" />
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#aaa" />
         </View>
       </CommonLayout>
     );
-  }else
+  }
 
   return (
     <CommonLayout>
-
       <Header title={`리뷰 (${reviews.length})`} />
-
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-
-
-
         <View style={styles.innerBox}>
           <View style={styles.headerSection}>
             <BookDetailRatingSummaryBlock
@@ -157,7 +153,6 @@ const BookReviewListScreen = ({ route, navigation }) => {
               <SortTabs currentSort={sort} onChange={setSort} />
             </View>
           </View>
-
 
           <View style={styles.reviewListContainer}>
             {reviews.map((item) => (
@@ -173,27 +168,31 @@ const BookReviewListScreen = ({ route, navigation }) => {
             ))}
           </View>
 
-          {/* 로딩 인디케이터 */}
           {loading && (
             <View style={styles.loadingWrapper}>
               <ActivityIndicator size="small" color="#aaa" />
             </View>
           )}
         </View>
-
       </ScrollView>
+
+      {/* 리뷰 중복 작성 알림 */}
       <AlertPopup
         visible={alertVisible}
         title="이미 리뷰를 작성했어요"
         message="리뷰는 한 권당 한 번만 작성할 수 있어요."
         onClose={() => setAlertVisible(false)}
       />
+
+      {/* 리뷰 삭제 팝업 */}
+      <TitleOnlyPopup
+        visible={deletePopupVisible}
+        title="리뷰를 삭제할까요?"
+        onCancel={() => setDeletePopupVisible(false)}
+        onConfirm={handleDeleteConfirm}
+      />
     </CommonLayout>
   );
-
-
-
-
 };
 
 export default BookReviewListScreen;
@@ -202,15 +201,12 @@ const styles = StyleSheet.create({
   averageContainer: {
     width: '100%',
     alignItems: 'center',
-
-
   },
   scrollContent: {
-    width:"100%",
+    width: '100%',
     marginTop: fixwidth * 0.025,
-    paddingBottom:fixwidth*0.11
-  }
-,
+    paddingBottom: fixwidth * 0.11,
+  },
   innerBox: {
     width: '94%',
     alignSelf: 'center',
@@ -218,11 +214,9 @@ const styles = StyleSheet.create({
   headerSection: {
     gap: fixwidth * 0.037,
   },
-
   starRow: {
     flexDirection: 'row',
   },
-
   sortTabWrapper: {
     width: '100%',
     alignSelf: 'center',

@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Header from '../../components/public/publicHeader/Header';
-import CommonLayout from '../../components/public/bookpublic/CommonLayout';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import { createReview, getBookTotalInfo } from '../../apis/apiFunction_book';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
@@ -23,7 +23,8 @@ import TextInputBox from '../../components/public/publicInput/TextInputBox'; // 
 const { width: fixwidth } = Dimensions.get('window');
 
 const ReviewCreateScreen = ({ route, navigation }) => {
-  const { isbn13 } = route.params;
+  const { isbn13, returnScreenName = 'BookDetailScreen' } = route.params;
+
 
   const [bookData, setBookData] = useState(null);
   const [rating, setRating] = useState(0);
@@ -41,7 +42,7 @@ const ReviewCreateScreen = ({ route, navigation }) => {
         rating,
         containsSpoiler,
       });
-      navigation.replace('BookDetailScreen', { isbn: isbn13 });
+      navigation.replace(returnScreenName, { isbn: isbn13 });
     } catch (err) {
       console.error('❌ 리뷰 등록 실패:', err);
     }

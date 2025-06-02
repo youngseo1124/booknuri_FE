@@ -18,6 +18,8 @@ import {
     getBookReflectionList,
     toggleLikeReflection,
 } from '../apis/apiFunction_bookReflection';
+import {deleteBookQuote, getBookQuoteListByIsbn, toggleBookQuoteLike} from '../apis/apiFunction_bookQuote';
+import DPBookQuotesBlock from '../components/bookDetailpage/DPBookQuotesBlock';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -37,6 +39,17 @@ const BookDetailScreen = ({ route, navigation }) => {
     const [showToast, setShowToast] = useState(false);
     const [isReady, setIsReady] = useState(false);
 
+    // 리뷰
+    const [reviewTotalCount, setReviewTotalCount] = useState(0);
+
+    // 독후감
+    const [reflectionTotalCount, setReflectionTotalCount] = useState(0);
+
+
+    const [sortedQuotes, setSortedQuotes] = useState([]);
+    const [quoteSort, setQuoteSort] = useState('like');
+    const [quoteTotalCount, setQuoteTotalCount] = useState(0);
+
     // 📘 책 정보 불러오기
     const fetchBookData = async () => {
         const res = await getBookTotalInfo(isbn);
@@ -47,6 +60,7 @@ const BookDetailScreen = ({ route, navigation }) => {
     const fetchSortedReviews = async (sort = 'like') => {
         const res = await getBookReviewList(isbn, sort);
         setSortedReviews(res.data.reviews);
+        setReviewTotalCount(res.data.totalCount);
         setReviewSort(sort);
         setAverageRating(res.data.averageRating);
         setRatingDistribution(res.data.ratingDistribution);
@@ -57,12 +71,59 @@ const BookDetailScreen = ({ route, navigation }) => {
         try {
             const res = await getBookReflectionList(isbn, sort);
             setSortedReflections(res.data.reflections);
+            setReflectionTotalCount(res.data.totalCount);
             setReflectionSort(sort);
             setReflectionAverageRating(res.data.averageRating);
         } catch (err) {
             console.error('❌ 독후감 로딩 실패:', err);
         }
     };
+
+    //인용 가져오기
+
+    const fetchSortedQuotes = async (sort = 'like') => {
+        try {
+            const res = await  getBookQuoteListByIsbn(isbn, sort);
+            console.log('📚 인용 응답:', res.data); // 👈 여기에 콘솔 찍어서 확인해봐
+            setSortedQuotes(res.data.quotes);
+            setQuoteTotalCount(res.data.totalCount);
+            setQuoteSort(sort);
+        } catch (err) {
+            console.error('❌ 인용 로딩 실패:', err);
+        }
+    };
+
+    // 💛 인용 좋아요
+    const handleQuoteLike = async (quoteId) => {
+        try {
+            await toggleBookQuoteLike(quoteId); // API 호출
+            await fetchSortedQuotes(quoteSort); // 다시 불러오기
+        } catch (err) {
+            console.error('❌ 인용 좋아요 실패:', err);
+        }
+    };
+
+// ✏️ 인용 수정 (수정 화면으로 이동)
+    const handleQuoteEdit = (quoteItem) => {
+        navigation.navigate('BookQuoteEditScreen', {
+            quoteData: quoteItem,
+            returnScreenName: 'BookDetailScreen',
+        });
+    };
+
+// 🗑️ 인용 삭제
+    const handleQuoteDelete = async (quoteId) => {
+        // 여기서 팝업 띄워서 확인 후 삭제할 수도 있음!
+        try {
+            await deleteBookQuote(quoteId); // 삭제 API
+            await fetchSortedQuotes(quoteSort); // 다시 로딩
+        } catch (err) {
+            console.error('❌ 인용 삭제 실패:', err);
+        }
+    };
+
+
+
 
     // 💛 독후감 좋아요
     const handleReflectionLike = async (reflectionId) => {
@@ -91,6 +152,7 @@ const BookDetailScreen = ({ route, navigation }) => {
                 fetchBookData(),
                 fetchSortedReviews(),
                 fetchSortedReflections(),
+                fetchSortedQuotes(),
             ]);
             await new Promise((r) => setTimeout(r, 150)); // 살짝 딜레이로 부드럽게
             setIsReady(true);
@@ -137,6 +199,23 @@ const BookDetailScreen = ({ route, navigation }) => {
 
               <DividerBlock />
 
+
+
+              <DPBookQuotesBlock
+                quotes={sortedQuotes}
+                totalCount={quoteTotalCount}
+                currentSort={quoteSort}
+                onSortChange={fetchSortedQuotes}
+                isbn13={isbn}
+                navigation={navigation}
+                onLikePress={handleQuoteLike}
+                onEditPress={handleQuoteEdit}
+                onDeletePress={handleQuoteDelete}
+              />
+
+
+              <DividerBlock />
+
               <DPBookRatingSummaryBlock
                 reviewRating={averageRating}
                 reflectionRating={reflectionAverageRating} // ✅ 추가됨!
@@ -147,6 +226,7 @@ const BookDetailScreen = ({ route, navigation }) => {
 
               <DPBookReviewsBlock
                 reviews={sortedReviews}
+                totalCount={reviewTotalCount}
                 onLikePress={handleLike}
                 onSortChange={fetchSortedReviews}
                 currentSort={reviewSort}
@@ -158,6 +238,7 @@ const BookDetailScreen = ({ route, navigation }) => {
 
               <DPBookReflectionsBlock
                 reflections={sortedReflections}
+                totalCount={reflectionTotalCount}
                 onLikePress={handleReflectionLike}
                 onSortChange={fetchSortedReflections}
                 currentSort={reflectionSort}

@@ -15,6 +15,7 @@ const { width: fixwidth } = Dimensions.get('window');
 
 const DPBookReflectionsBlock = ({
                                   reflections,
+                                  totalCount,
                                   onLikePress,
                                   onReportPress,
                                   onSortChange,
@@ -74,7 +75,7 @@ const DPBookReflectionsBlock = ({
 
   return (
     <View style={styles.container}>
-      <SectionHeader label={`독후감 (${limitedReflections.length})`} />
+      <SectionHeader label={`독후감 (${totalCount})`} />
       <SortTabs currentSort={currentSort} onChange={onSortChange} />
 
       {limitedReflections.length > 0 ? (

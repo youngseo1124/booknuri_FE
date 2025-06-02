@@ -52,39 +52,18 @@
 <body>
 <div id="reader-container">
     <div class="overlay-text">
-        📸 ISBN 바코드를 화면 어디든 맞춰주세요!
+         책 바코드를 카메라 가까이 갖다대주세요.
     </div>
     <div id="reader"></div>
 </div>
 
 <script>
-    // ✅ 진짜 디바이스 회전 상태를 기반으로 판단하는 함수
-    function getOrientationAccurate() {
-        if (window.screen.orientation) {
-            const angle = window.screen.orientation.angle;
-            return angle === 90 || angle === -90;
-        }
-        // fallback
-        return window.innerWidth > window.innerHeight;
-    }
-
     function onScanSuccess(decodedText, decodedResult) {
         const onlyNumbers = decodedText.replace(/[^0-9]/g, '');
         const isbn = onlyNumbers.slice(0, 13);
 
-        const isLandscape = getOrientationAccurate();
-
-        console.log("🎯 스캔됨 - ISBN:", isbn);
-        console.log("📐 방향 정보:", isLandscape ? "가로" : "세로");
-
         if (/^97[89][0-9]{10}$/.test(isbn)) {
-            const payload = {
-                isbn: isbn,
-                isLandscape: isLandscape
-            };
-
-            console.log("📤 전송 데이터:", payload);
-            window.ReactNativeWebView?.postMessage(JSON.stringify(payload));
+            window.ReactNativeWebView?.postMessage(isbn);
         } else {
             console.warn("❌ ISBN 형식 아님:", isbn);
         }
@@ -92,16 +71,18 @@
 
     const html5QrCode = new Html5Qrcode("reader");
 
-    html5QrCode.start(
-      { facingMode: { exact: "environment" } },
-      {
-          fps: 15,
-          disableFlip: true
-      },
-      onScanSuccess
-    ).catch(err => {
-        console.error("카메라 시작 실패 ❌", err);
-    });
+    html5QrCode
+        .start(
+            { facingMode: "environment" },
+            {
+                fps: 15,
+                disableFlip: true
+            },
+            onScanSuccess
+        )
+        .catch(err => {
+            console.error("카메라 시작 실패 ❌", err);
+        });
 </script>
 </body>
 </html>

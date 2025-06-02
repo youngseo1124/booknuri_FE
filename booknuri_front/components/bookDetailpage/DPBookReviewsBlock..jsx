@@ -20,6 +20,7 @@ const { width: fixwidth } = Dimensions.get('window');
 
 const DPBookReviewsBlock = ({
                             reviews,
+                              totalCount,
                             onLikePress,
                             onReportPress,
                             onSortChange,
@@ -46,7 +47,7 @@ const DPBookReviewsBlock = ({
     />
   );
 
-  const limitedReviews = reviews?.slice(0, 5) || [];
+  const limitedReviews = reviews?.slice(0, 4) || [];
 
   const handleWritePress = async () => {
     try {
@@ -61,6 +62,7 @@ const DPBookReviewsBlock = ({
     }
   };
 
+
   const handleDeleteConfirm = async () => {
     try {
       await deleteReview(selectedReviewId);
@@ -73,7 +75,8 @@ const DPBookReviewsBlock = ({
 
   return (
     <View style={styles.container}>
-      <SectionHeader label={`리뷰 (${reviews?.length || 0})`} />
+      <SectionHeader label={`리뷰 (${totalCount})`} />
+
       <SortTabs currentSort={currentSort} onChange={onSortChange} />
 
       {limitedReviews.length > 0 ? (

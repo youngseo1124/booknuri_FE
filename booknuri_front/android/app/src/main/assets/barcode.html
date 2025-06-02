@@ -52,17 +52,35 @@
 <body>
 <div id="reader-container">
     <div class="overlay-text">
-         책 바코드를 카메라 가까이 갖다대주세요.
+        책 바코드를 카메라 가까이 갖다대주세요.
     </div>
     <div id="reader"></div>
 </div>
 
 <script>
+
+    function getOrientationAccurate() {
+        if (window.screen.orientation) {
+            const angle = window.screen.orientation.angle;
+            return angle === 90 || angle === -90;
+        }
+        return window.innerWidth > window.innerHeight;
+    }
+
     function onScanSuccess(decodedText, decodedResult) {
         const onlyNumbers = decodedText.replace(/[^0-9]/g, '');
         const isbn = onlyNumbers.slice(0, 13);
+        const isLandscape = getOrientationAccurate();
+
+        console.log("🎯 스캔됨 - ISBN:", isbn);
 
         if (/^97[89][0-9]{10}$/.test(isbn)) {
+            const payload = {
+                isbn: isbn,
+                isLandscape: isLandscape
+            };
+
+            window.ReactNativeWebView?.postMessage(JSON.stringify(payload));
             window.ReactNativeWebView?.postMessage(isbn);
         } else {
             console.warn("❌ ISBN 형식 아님:", isbn);
@@ -71,18 +89,16 @@
 
     const html5QrCode = new Html5Qrcode("reader");
 
-    html5QrCode
-        .start(
-            { facingMode: "environment" },
-            {
-                fps: 15,
-                disableFlip: true
-            },
-            onScanSuccess
-        )
-        .catch(err => {
-            console.error("카메라 시작 실패 ❌", err);
-        });
+    html5QrCode.start(
+      { facingMode: { exact: "environment" } }, // ✅ 바깥카메라 명시
+      {
+          fps: 15,
+          disableFlip: true
+      },
+      onScanSuccess
+    ).catch(err => {
+        console.error("카메라 시작 실패 ❌", err);
+    });
 </script>
 </body>
 </html>

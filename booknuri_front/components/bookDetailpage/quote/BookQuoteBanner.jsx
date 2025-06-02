@@ -1,28 +1,29 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
-import BookQuoteItem from '../public/bookpublic/BookQuoteItem';
-
-const { width: fixwidth } = Dimensions.get('window');
-const itemWidth = fixwidth * 0.82;
+import {View, FlatList, StyleSheet, Dimensions} from 'react-native';
+import BookQuoteItem from './BookQuoteItem';
 
 const BookQuoteBanner = ({
                            quotes = [],
+                           containerWidth = 0,
                            onLikePress,
                            onEditPress,
                            onDeletePress,
                            onReportPress,
                          }) => {
+  const itemWidth = containerWidth * 0.9;
+  const gap = containerWidth * 0.04;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { width: containerWidth }]}>
       <FlatList
         data={quotes}
         horizontal
-        pagingEnabled={true} // ✅ 이거 꼭!
+        pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.scrollArea}
-        snapToInterval={itemWidth + fixwidth * 0.04} // ✅ 정확한 snap
+        snapToInterval={itemWidth + gap}
         decelerationRate="fast"
+        contentContainerStyle={{ paddingHorizontal: gap / 2 }}
         renderItem={({ item }) => (
           <View style={{ width: itemWidth }}>
             <BookQuoteItem
@@ -34,20 +35,18 @@ const BookQuoteBanner = ({
             />
           </View>
         )}
-        ItemSeparatorComponent={() => <View style={{ width: fixwidth * 0.04 }} />}
+        ItemSeparatorComponent={() => <View style={{ width: gap }} />}
       />
     </View>
   );
 };
 
+const { width: fixwidth } = Dimensions.get('window');
 export default BookQuoteBanner;
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    marginVertical: fixwidth * 0.03,
-  },
-  scrollArea: {
-    paddingHorizontal: fixwidth * 0.03,
+    alignItems: 'center',
+    marginVertical: fixwidth*0.022,
   },
 });

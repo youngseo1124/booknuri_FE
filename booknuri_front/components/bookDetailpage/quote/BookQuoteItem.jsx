@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import PureQuoteContent from './PureQuoteContent';
+import VerticalGap from '../../public/publicUtil/VerticalGap';
+import DownloadableQuoteCard from '../DownloadableQuoteCard';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -40,6 +42,10 @@ const BookQuoteItem = ({
         fontColor={fontColor}
         fontScale={fontScale}
       />
+
+      <VerticalGap height={fixwidth*0.017}/>
+
+      <DownloadableQuoteCard quoteId={id} />
 
       {/* 👇 하단 유저/날짜/버튼 영역 */}
       <View style={styles.footer}>
@@ -86,11 +92,11 @@ export default BookQuoteItem;
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%', // ✅ 완전 반응형
+    width: '100%',
     alignSelf: 'center',
   },
   footer: {
-    marginTop: fixwidth * 0.02,
+    marginTop: fixwidth * 0.005,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

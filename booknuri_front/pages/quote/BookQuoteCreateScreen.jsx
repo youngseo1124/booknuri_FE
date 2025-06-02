@@ -1,61 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
+  ScrollView,
+  Text,
   TouchableWithoutFeedback,
   Keyboard,
-  Dimensions,
-  ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
-import Header from '../../components/public/publicHeader/Header';
+
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
-import { createReview, getBookTotalInfo } from '../../apis/apiFunction_book';
+import Header from '../../components/public/publicHeader/Header';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
-import ReviewFormBlock from '../../components/bookDetailpage/review/ReviewWriteFormBlock';
-import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
-import TextInputBox from '../../components/public/publicInput/TextInputBox'; // ✅ 바뀐 부분
+import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+
+
+
+import { createBookQuote } from '../../apis/apiFunction_bookQuote';
+import { getBookTotalInfo } from '../../apis/apiFunction_book';
+import QuoteInputPreviewBlock from '../../components/bookDetailpage/quote/QuoteInputPreviewBlock';
+import QuoteBackgroundSelector from '../../components/bookDetailpage/quote/QuoteBackgroundSelector';
+import QuoteFontSizeSlider from '../../components/bookDetailpage/quote/QuoteFontSizeSlider';
+import QuoteFontColorSelector from '../../components/bookDetailpage/quote/QuoteFontColorSelector';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const ReviewCreateScreen = ({ route, navigation }) => {
+const BookQuoteCreateScreen = ({ route, navigation }) => {
   const { isbn13, returnScreenName = 'BookDetailScreen' } = route.params;
 
-
   const [bookData, setBookData] = useState(null);
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState('');
-  const [containsSpoiler, setContainsSpoiler] = useState(false);
+  const [quoteText, setQuoteText] = useState('');
+  const [backgroundId, setBackgroundId] = useState(1);
+  const [fontColor, setFontColor] = useState('#FFFFFF');
+  const [fontScale, setFontScale] = useState(7.0); // 기본값 중간
+  const [visibleToPublic, setVisibleToPublic] = useState(true);
   const [confirmVisible, setConfirmVisible] = useState(false);
-
   const [isReady, setIsReady] = useState(false);
 
-  const handleSubmit = async () => {
-    try {
-      await createReview({
-        isbn13,
-        content: reviewText,
-        rating,
-        containsSpoiler,
-      });
-      navigation.replace(returnScreenName, { isbn: isbn13 });
-    } catch (err) {
-      console.error('❌ 리뷰 등록 실패:', err);
-    }
-  };
 
   const fetchBookData = async () => {
     try {
       const res = await getBookTotalInfo(isbn13);
       setBookData(res.data.bookInfo);
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((r) => setTimeout(r, 150));
       setIsReady(true);
-    } catch (error) {
-      console.error('❌ 책 정보 불러오기 실패:', error);
+    } catch (err) {
+      console.error('❌ 책 정보 로딩 실패:', err);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await createBookQuote({
+        isbn13,
+        quoteText,
+        fontScale,
+        fontColor,
+        backgroundId,
+        visibleToPublic,
+      });
+      navigation.replace(returnScreenName, { isbn: isbn13 });
+    } catch (err) {
+      console.error('❌ 인용 저장 실패:', err);
     }
   };
 
@@ -77,55 +86,62 @@ const ReviewCreateScreen = ({ route, navigation }) => {
     <CommonLayout>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1 }}>
-          <Header title="리뷰 작성" />
+          <Header title="인용 작성" />
           <ScrollView
             contentContainerStyle={styles.contentContainer}
             keyboardShouldPersistTaps="handled"
           >
             <View style={styles.innerContainer}>
-
               <BookMiniHeaderBlock
                 imageUrl={bookData.bookImageURL}
                 title={bookData.bookname}
                 authors={bookData.authors}
               />
 
-              <StarRatingBox
-                value={rating}
-                onChange={setRating}
+              <QuoteInputPreviewBlock
+                quoteText={quoteText}
+                backgroundId={backgroundId}
+                fontColor={fontColor}
+                fontScale={fontScale}
+                onChangeText={setQuoteText}
               />
 
-              <TextInputBox
-                placeholder="한글 기준 100자까지 작성 가능"
-                maxLength={100}
-                inputHeight={fixwidth * 0.5}
-                value={reviewText}
-                onChangeText={setReviewText}
+
+              <QuoteFontSizeSlider
+                fontScale={fontScale}
+                onChange={setFontScale}
+              />
+
+              <QuoteFontColorSelector
+                fontColor={fontColor}
+                onSelect={setFontColor}
+              />
+
+              <QuoteBackgroundSelector
+                selectedId={backgroundId}
+                onSelect={setBackgroundId}
               />
 
 
               <CustomCheckBox
-                label="스포일러 체크"
-                value={containsSpoiler}
-                onChange={setContainsSpoiler}
+                label="전체공개"
+                value={visibleToPublic}
+                onChange={setVisibleToPublic}
               />
 
               <WriteButton
-                label="리뷰 작성"
+                label="인용 등록"
                 onPress={() => {
-                  if (rating === 0 || reviewText.trim() === '') return;
+                  if (quoteText.trim() === '') return;
                   setConfirmVisible(true);
                 }}
               />
-
             </View>
-
-
           </ScrollView>
 
           <TitleOnlyPopup
             visible={confirmVisible}
-            title="리뷰를 등록할까요?"
+            title="이 인용을 등록할까요?"
             onCancel={() => setConfirmVisible(false)}
             onConfirm={() => {
               setConfirmVisible(false);
@@ -138,7 +154,7 @@ const ReviewCreateScreen = ({ route, navigation }) => {
   );
 };
 
-export default ReviewCreateScreen;
+export default BookQuoteCreateScreen;
 
 const styles = StyleSheet.create({
   contentContainer: {

@@ -1,4 +1,3 @@
-// 📁 components/book/BookFallbackCover.jsx
 
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, ImageBackground } from 'react-native';
@@ -9,7 +8,7 @@ const BookFallbackCover = ({ title }) => {
   return (
     <View style={styles.wrapper}>
       <ImageBackground
-        source={require('../../image/book/default_cover.png')} // ✨ 너가 업로드한 이미지 저장해둔 거!
+        source={require('../../image/book/default_cover.png')}
         style={styles.bg}
         resizeMode="cover"
       >

@@ -21,8 +21,9 @@ const backgroundImages = {
   15: require('../../../image/quote/fifteen.jpg'),
 };
 
-const PureQuoteContent = ({ quoteText, backgroundId, fontColor, fontScale }) => {
-  const fontSize = fixwidth * 0.02 + fontScale * 0.6;
+const PureQuoteContent = ({ quoteText, backgroundId, fontColor, fontScale ,showTitle = false,
+                            bookTitle = '',}) => {
+  const fontSize = fixwidth * 0.024 + fontScale * 0.6;
 
   return (
     <ImageBackground
@@ -31,8 +32,14 @@ const PureQuoteContent = ({ quoteText, backgroundId, fontColor, fontScale }) => 
       imageStyle={styles.bgImage}
     >
       <Text style={[styles.text, { color: fontColor, fontSize }]}>
-        {quoteText}
+        {quoteText ? quoteText.replace(/\n/g, '\n') : ''}
       </Text>
+
+      {showTitle && (
+        <Text style={styles.bookTitle}>
+          - {bookTitle} -
+        </Text>
+      )}
     </ImageBackground>
   );
 };
@@ -54,7 +61,17 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    fontFamily: 'NotoSansKR-Medium',
-    lineHeight: fixwidth * 0.055,
+    fontFamily:'NotoSansKR-Regular',
+    lineHeight: fixwidth * 0.05,
+    paddingBottom: fixwidth * 0.007
+  },
+  bookTitle: {
+    fontSize: fixwidth * 0.032,
+    marginTop: fixwidth * 0.015,
+    fontFamily: 'NotoSansKR-Bold',
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });

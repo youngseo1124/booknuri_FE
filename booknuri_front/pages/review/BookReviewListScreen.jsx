@@ -14,7 +14,7 @@ import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import SortTabs from '../../components/public/bookpublic/SortTabs';
-import BookReviewItem from '../../components/public/bookpublic/BookReviewItem';
+import BookReviewItem from '../../components/bookDetailpage/review/BookReviewItem';
 import {
   checkAlreadyReviewed,
   getBookReviewList,

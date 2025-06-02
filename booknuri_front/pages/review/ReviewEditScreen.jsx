@@ -16,11 +16,11 @@ import {
   updateReview,
   getMyReviewByIsbn, getBookTotalInfo,
 } from '../../apis/apiFunction_book';
-import ReviewFormBlock from '../../components/bookDetailpage/ReviewWriteFormBlock';
+import ReviewFormBlock from '../../components/bookDetailpage/review/ReviewWriteFormBlock';
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import ReviewEditFormBlock from '../../components/bookDetailpage/ReviewEditFormBlock';
+import ReviewEditFormBlock from '../../components/bookDetailpage/review/ReviewEditFormBlock';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';

@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBookmark } from '@fortawesome/free-regular-svg-icons'; //
-import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+
 
 const { width: fixwidth } = Dimensions.get('window');
 

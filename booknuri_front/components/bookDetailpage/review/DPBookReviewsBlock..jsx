@@ -6,15 +6,15 @@ import {
   Dimensions,
   Text,
 } from 'react-native';
-import SectionHeader from '../public/bookpublic/SectionHeader';
-import BookReviewItem from '../public/bookpublic/BookReviewItem';
-import SortTabs from '../public/bookpublic/SortTabs';
-import MoreButton from '../public/publicButton/MoreButton';
-import WriteButton from '../public/publicButton/WriteButton';
-import AlertPopup from '../public/publicPopup_Alert_etc/AlertPopup';
-import TitleOnlyPopup from '../public/publicPopup_Alert_etc/TitleOnlyPopup';
+import SectionHeader from '../../public/bookpublic/SectionHeader';
+import BookReviewItem from './BookReviewItem';
+import SortTabs from '../../public/bookpublic/SortTabs';
+import MoreButton from '../../public/publicButton/MoreButton';
+import WriteButton from '../../public/publicButton/WriteButton';
+import AlertPopup from '../../public/publicPopup_Alert_etc/AlertPopup';
+import TitleOnlyPopup from '../../public/publicPopup_Alert_etc/TitleOnlyPopup';
 
-import { checkAlreadyReviewed, deleteReview } from '../../apis/apiFunction_book';
+import { checkAlreadyReviewed, deleteReview } from '../../../apis/apiFunction_book';
 
 const { width: fixwidth } = Dimensions.get('window');
 

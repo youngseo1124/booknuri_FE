@@ -12,14 +12,14 @@ import DPBookInfoContentBlock from '../components/bookDetailpage/DPBookInfoConte
 import DividerBlock from '../components/public/publicUtil/DividerBlock';
 import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingSummaryBlock';
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
-import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';
+import DPBookReviewsBlock from '../components/bookDetailpage/review/DPBookReviewsBlock.';
 import DPBookReflectionsBlock from '../components/bookDetailpage/DPBookReflectionsBlock';
 import {
     getBookReflectionList,
     toggleLikeReflection,
 } from '../apis/apiFunction_bookReflection';
 import {deleteBookQuote, getBookQuoteListByIsbn, toggleBookQuoteLike} from '../apis/apiFunction_bookQuote';
-import DPBookQuotesBlock from '../components/bookDetailpage/DPBookQuotesBlock';
+import DPBookQuotesBlock from '../components/bookDetailpage/quote/DPBookQuotesBlock';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -106,7 +106,8 @@ const BookDetailScreen = ({ route, navigation }) => {
 // ✏️ 인용 수정 (수정 화면으로 이동)
     const handleQuoteEdit = (quoteItem) => {
         navigation.navigate('BookQuoteEditScreen', {
-            quoteData: quoteItem,
+            quoteId: quoteItem.id,
+            isbn13: isbn,
             returnScreenName: 'BookDetailScreen',
         });
     };

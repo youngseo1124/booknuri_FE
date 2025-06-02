@@ -108,8 +108,7 @@ const styles = StyleSheet.create({
     borderWidth: fixwidth * 0.0047,
     borderColor: 'rgba(0,0,0,0.15)',
   },
-  countText: {
-    position: 'absolute',
+  countText: {    position: 'absolute',
     bottom: fixwidth * 0.025,
     right: fixwidth * 0.03,
     color: '#999',

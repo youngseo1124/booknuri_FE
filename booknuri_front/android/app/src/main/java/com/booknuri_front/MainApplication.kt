@@ -12,7 +12,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
 
-// 패키지 import
+// 만든 네이티브 패키지 import
 import com.booknuri_front.MyIntentPackage
 
 class MainApplication : Application(), ReactApplication {
@@ -21,7 +21,7 @@ class MainApplication : Application(), ReactApplication {
         object : DefaultReactNativeHost(this) {
             override fun getPackages(): List<ReactPackage> =
                 PackageList(this).packages.toMutableList().apply {
-                    //만든 패키지 수동 등록
+                    // 만든 패키지 수동 등록
                     add(MyIntentPackage())
                 }
 
@@ -40,7 +40,7 @@ class MainApplication : Application(), ReactApplication {
         super.onCreate()
         SoLoader.init(this, OpenSourceMergedSoMapping)
         if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-            // If you opted-in for the New Architecture, we load the native entry point for this app.
+            // New Architecture 선택 시 네이티브 진입점 로드
             load()
         }
     }

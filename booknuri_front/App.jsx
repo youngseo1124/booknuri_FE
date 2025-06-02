@@ -29,6 +29,7 @@ import ReflectionEditScreen from './pages/reflection/ReflectionEditScreen';
 import ReflectionListScreen from './pages/reflection/BookReflectionListScreen';
 import BookQuoteCreateScreen from './pages/quote/BookQuoteCreateScreen';
 import BookQuoteEditScreen from './pages/quote/BookQuoteEditScreen';
+import QuoteCaptureScreen from './pages/QuoteCaptureScreen';
 
 const Stack = createStackNavigator();
 
@@ -75,6 +76,7 @@ const AppInner = () => {
 
                     <Stack.Screen name="BookQuoteCreateScreen" component={BookQuoteCreateScreen} />
                     <Stack.Screen name={"BookQuoteEditScreen"} component={BookQuoteEditScreen} />
+                    <Stack.Screen name={"QuoteCaptureScreen"} component={QuoteCaptureScreen} />
 
                 </>
             )}

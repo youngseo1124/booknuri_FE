@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
         borderRadius: fixwidth * 0.03,
         width: fixwidth * 0.8,
         alignItems: 'center',
+        borderWidth: fixwidth * 0.001,
+        borderColor:'rgba(0,0,0,0.38)',
     },
     title: {
         fontSize: fixwidth * 0.045,

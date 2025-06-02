@@ -16,32 +16,21 @@ const ConfirmPopup = ({
                           onCancel,
                           isLandscape = false,
                       }) => {
-    const { width: fixwidth } = useWindowDimensions(); // ✅ 실시간 반응하는 width!
+    const { width: fixwidth } = useWindowDimensions();
 
     return (
       <Modal visible={visible} transparent animationType="fade">
           <View style={styles.overlay}>
-              <View
-                style={[
-                    styles.popup(fixwidth),
-                    isLandscape && styles.popupLandscape(fixwidth),
-                ]}
-              >
-                  <Text style={styles.title(fixwidth)}>{String(title)}</Text>
-                  <Text style={styles.message(fixwidth)}>{String(message)}</Text>
+              <View style={[styles.popup, isLandscape && styles.popupLandscape]}>
+                  <Text style={styles.title}>{String(title)}</Text>
+                  <Text style={styles.message}>{String(message)}</Text>
 
-                  <View style={styles.buttonContainer(fixwidth)}>
-                      <TouchableOpacity
-                        style={styles.cancelButton(fixwidth)}
-                        onPress={onCancel}
-                      >
-                          <Text style={styles.buttonText(fixwidth)}>취소</Text>
+                  <View style={styles.buttonContainer}>
+                      <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
+                          <Text style={styles.buttonText}>취소</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.confirmButton(fixwidth)}
-                        onPress={onConfirm}
-                      >
-                          <Text style={styles.buttonText(fixwidth)}>확인</Text>
+                      <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
+                          <Text style={styles.buttonText}>확인</Text>
                       </TouchableOpacity>
                   </View>
               </View>
@@ -52,66 +41,66 @@ const ConfirmPopup = ({
 
 export default ConfirmPopup;
 
-// ✅ 모든 스타일을 함수형으로 변경해서 fixwidth 반응하도록 처리
-const styles = {
+const styles = StyleSheet.create({
     overlay: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    popup: (w) => ({
+    popup: {
         backgroundColor: 'white',
-        paddingVertical: w * 0.06,
-        paddingHorizontal: w * 0.06,
-        borderRadius: w * 0.03,
-        width: w * 0.8,
+        paddingVertical: 24,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        width: '80%',
         alignItems: 'center',
-    }),
-    popupLandscape: (w) => ({
-        width: w * 0.6,
-    }),
-    title: (w) => ({
-        fontSize: w * 0.045,
+
+    },
+    popupLandscape: {
+        width: '60%',
+    },
+    title: {
+        fontSize: 18,
         fontFamily: 'NotoSansKR-SemiBold',
-        color: '#000000',
-        marginBottom: w * 0.02,
+        color: '#000',
+        marginBottom: 12,
         textAlign: 'center',
-        lineHeight: w * 0.05,
-        paddingVertical: w * 0.02,
-    }),
-    message: (w) => ({
-        fontSize: w * 0.037,
+        lineHeight: 20,
+        paddingVertical: 8,
+    },
+    message: {
+        fontSize: 15,
         fontFamily: 'NotoSansKR-Regular',
-        color: '#333333',
-        marginBottom: w * 0.04,
+        color: '#333',
+        marginBottom: 16,
         textAlign: 'center',
-        lineHeight: w * 0.05,
-    }),
-    buttonContainer: (w) => ({
+        lineHeight: 20,
+    },
+    buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: w * 0.03,
-    }),
-    cancelButton: (w) => ({
+        gap: 12,
+    },
+    cancelButton: {
         backgroundColor: 'rgba(97,156,245,0.6)',
-        paddingVertical: w * 0.025,
-        borderRadius: w * 0.02,
-        width: w * 0.25,
+        paddingVertical: 14,
+        borderRadius: 8,
+        width: '25%',
         alignItems: 'center',
-        marginRight: w * 0.02,
-    }),
-    confirmButton: (w) => ({
+        marginRight: 12,
+    },
+    confirmButton: {
         backgroundColor: 'rgba(97,156,245,0.95)',
-        paddingVertical: w * 0.025,
-        borderRadius: w * 0.02,
-        width: w * 0.25,
+        paddingVertical: 14,
+        borderRadius: 8,
+        width: '25%',
         alignItems: 'center',
-    }),
-    buttonText: (w) => ({
+    },
+    buttonText: {
         color: 'white',
-        fontSize: w * 0.038,
-        lineHeight: w * 0.05,
+        fontSize: 15,
+        lineHeight: 20,
         fontFamily: 'NotoSansKR-Medium',
-    }),
-};
+    },
+});

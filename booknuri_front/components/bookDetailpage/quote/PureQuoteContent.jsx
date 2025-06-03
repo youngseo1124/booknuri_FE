@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
   },
+
   bgImage: {
     resizeMode: 'cover',
   },

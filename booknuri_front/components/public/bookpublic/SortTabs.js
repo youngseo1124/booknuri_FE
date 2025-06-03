@@ -3,32 +3,38 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const SORT_OPTIONS = [
-  { key: 'like', label: '공감순' },
-  { key: 'new', label: '최신순' },
-  { key: 'high', label: '별점 높은순' },
-  { key: 'low', label: '별점 낮은순' },
-];
+const DEFAULT_SORT_OPTIONS = {
+  like: '공감순',
+  new: '최신순',
+  high: '별점 높은순',
+  low: '별점 낮은순',
+};
 
-const ReviewSortTabs = ({ currentSort, onChange }) => {
+const DEFAULT_VISIBLE_OPTIONS = ['like', 'new', 'high', 'low']; // ✅ 디폴트 설정
+
+const SortTabs = ({
+                    currentSort,
+                    onChange,
+                    visibleOptions = DEFAULT_VISIBLE_OPTIONS, // ✅ 안 주면 리뷰용 기본
+                  }) => {
   return (
     <View style={styles.tabWrapper}>
       <View style={styles.tabContainer}>
-        {SORT_OPTIONS.map((option) => (
+        {visibleOptions.map((key) => (
           <TouchableOpacity
-            key={option.key}
-            onPress={() => onChange(option.key)}
+            key={key}
+            onPress={() => onChange(key)}
             style={styles.tabButton}
           >
             <Text
               style={[
                 styles.tabText,
-                currentSort === option.key && styles.activeText,
+                currentSort === key && styles.activeText,
               ]}
             >
-              {option.label}
+              {DEFAULT_SORT_OPTIONS[key]}
             </Text>
-            {currentSort === option.key && <View style={styles.underline} />}
+            {currentSort === key && <View style={styles.underline} />}
           </TouchableOpacity>
         ))}
       </View>
@@ -36,7 +42,9 @@ const ReviewSortTabs = ({ currentSort, onChange }) => {
   );
 };
 
-export default ReviewSortTabs;
+
+
+export default SortTabs;
 
 const styles = StyleSheet.create({
   tabWrapper: {

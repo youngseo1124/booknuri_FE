@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  ScrollView,
+  FlatList,
 } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
-import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import SortTabs from '../../components/public/bookpublic/SortTabs';
 import BookReviewItem from '../../components/bookDetailpage/review/BookReviewItem';
+import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
+import WriteButton from '../../components/public/publicButton/WriteButton';
+import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';
+import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
+
 import {
   checkAlreadyReviewed,
   getBookReviewList,
   toggleLikeReview,
-  deleteReview, // ✅ 삭제 API
+  deleteReview,
 } from '../../apis/apiFunction_book';
-import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
-import WriteButton from '../../components/public/publicButton/WriteButton';
-import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';
-import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup'; // ✅ 삭제 팝업
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -36,15 +33,15 @@ const BookReviewListScreen = ({ route, navigation }) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
   const [averageRating, setAverageRating] = useState(0);
   const [ratingDistribution, setRatingDistribution] = useState({});
   const [alertVisible, setAlertVisible] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-
-  const [deletePopupVisible, setDeletePopupVisible] = useState(false); // ✅ 삭제 확인창
-  const [selectedReviewId, setSelectedReviewId] = useState(null); // ✅ 삭제할 ID 저장
-
-  const LIMIT = 20;
+  const [deletePopupVisible, setDeletePopupVisible] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const LIMIT = 10;
 
   const fetchReviews = async (reset = false) => {
     if (loading || (!hasMore && !reset)) return;
@@ -56,6 +53,7 @@ const BookReviewListScreen = ({ route, navigation }) => {
       if (reset) {
         setReviews(data.reviews);
         setOffset(LIMIT);
+        setTotalCount(data.totalCount);
       } else {
         setReviews((prev) => [...prev, ...data.reviews]);
         setOffset((prev) => prev + LIMIT);
@@ -85,24 +83,20 @@ const BookReviewListScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleReportPress = (id) => {
-    console.log('신고 ID:', id);
-  };
-
   const handleEditPress = (review) => {
     navigation.navigate('ReviewEditScreen', { review, isbn13 });
   };
 
   const handleDeletePress = (id) => {
-    setSelectedReviewId(id); // ✅ 어떤 리뷰 지울지 저장
-    setDeletePopupVisible(true); // ✅ 삭제 팝업 띄우기
+    setSelectedReviewId(id);
+    setDeletePopupVisible(true);
   };
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteReview(selectedReviewId); // ✅ 실제 삭제 요청
+      await deleteReview(selectedReviewId);
       setDeletePopupVisible(false);
-      fetchReviews(true); // ✅ 목록 새로고침
+      fetchReviews(true);
     } catch (err) {
       console.error('❌ 리뷰 삭제 실패:', err);
     }
@@ -134,47 +128,45 @@ const BookReviewListScreen = ({ route, navigation }) => {
 
   return (
     <CommonLayout>
-      <Header title={`리뷰 (${reviews.length})`} />
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.innerBox}>
+      <Header title={`리뷰 (${totalCount})`} />
+      <FlatList
+        data={reviews}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.reviewItemWrapper}>
+            <BookReviewItem
+              item={item}
+              onLikePress={handleLikePress}
+              onReportPress={(id) => console.log('신고 ID:', id)}
+              onEditPress={handleEditPress}
+              onDeletePress={handleDeletePress}
+            />
+          </View>
+        )}
+        onEndReached={() => fetchReviews(false)}
+        onEndReachedThreshold={0.7}
+        ListHeaderComponent={
           <View style={styles.headerSection}>
             <BookDetailRatingSummaryBlock
               averageRating={averageRating}
               ratingDistribution={ratingDistribution}
             />
-
             <WriteButton label="리뷰 쓰기" onPress={handleWritePress} />
-
             <View style={styles.sortTabWrapper}>
               <SortTabs currentSort={sort} onChange={setSort} />
             </View>
           </View>
-
-          <View style={styles.reviewListContainer}>
-            {reviews.map((item) => (
-              <View key={item.id} style={styles.reviewItemWrapper}>
-                <BookReviewItem
-                  item={item}
-                  onLikePress={handleLikePress}
-                  onReportPress={handleReportPress}
-                  onEditPress={handleEditPress}
-                  onDeletePress={handleDeletePress}
-                />
-              </View>
-            ))}
-          </View>
-
-          {loading && (
+        }
+        ListFooterComponent={
+          loading && (
             <View style={styles.loadingWrapper}>
               <ActivityIndicator size="small" color="#aaa" />
             </View>
-          )}
-        </View>
-      </ScrollView>
+          )
+        }
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      />
 
       {/* 리뷰 중복 작성 알림 */}
       <AlertPopup
@@ -198,30 +190,24 @@ const BookReviewListScreen = ({ route, navigation }) => {
 export default BookReviewListScreen;
 
 const styles = StyleSheet.create({
-  averageContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
   scrollContent: {
-    width: '100%',
-    marginTop: fixwidth * 0.025,
     paddingBottom: fixwidth * 0.11,
-  },
-  innerBox: {
-    width: '94%',
-    alignSelf: 'center',
+    paddingHorizontal: fixwidth * 0.01,
   },
   headerSection: {
-    gap: fixwidth * 0.037,
-  },
-  starRow: {
-    flexDirection: 'row',
+    width: '94%',
+    alignSelf: 'center',
+    gap: fixwidth * 0.035,
+    marginTop: fixwidth * 0.03,
   },
   sortTabWrapper: {
-    width: '100%',
-    alignSelf: 'center',
   },
-  reviewListContainer: {
-    gap: fixwidth * 0.04,
+  loadingWrapper: {
+    marginTop: fixwidth * 0.05,
+    alignItems: 'center',
+  },
+  reviewItemWrapper: {
+    marginBottom: fixwidth * 0.03,
+    paddingHorizontal: fixwidth * 0.025,
   },
 });

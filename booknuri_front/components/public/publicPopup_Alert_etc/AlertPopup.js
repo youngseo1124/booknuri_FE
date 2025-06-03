@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.17)',
     },
     popup: {
         backgroundColor: 'white',
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: fixwidth * 0.001,
         borderColor:'rgba(0,0,0,0.38)',
+
     },
     title: {
         fontSize: fixwidth * 0.045,

@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  ScrollView,
+  FlatList,
 } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
-import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import SortTabs from '../../components/public/bookpublic/SortTabs';
 import BookReflectionItem from '../../components/public/bookpublic/BookReflectionItem';
-import { checkAlreadyReflected, getBookReflectionList, toggleLikeReflection } from '../../apis/apiFunction_bookReflection';
 import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import { deleteReflection } from '../../apis/apiFunction_bookReflection';
+
+import {
+  checkAlreadyReflected,
+  getBookReflectionList,
+  toggleLikeReflection,
+  deleteReflection,
+} from '../../apis/apiFunction_bookReflection';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -32,12 +33,14 @@ const ReflectionListScreen = ({ route, navigation }) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
   const [ratingDistribution, setRatingDistribution] = useState({});
   const [alertVisible, setAlertVisible] = useState(false);
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
   const [selectedReflectionId, setSelectedReflectionId] = useState(null);
-  const [isReady, setIsReady] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
   const LIMIT = 20;
 
   const fetchReflections = async (reset = false) => {
@@ -45,18 +48,17 @@ const ReflectionListScreen = ({ route, navigation }) => {
     setLoading(true);
     try {
       const res = await getBookReflectionList(isbn13, sort, reset ? 0 : offset, LIMIT);
-      // 비공개 제거!
       const data = res.data;
-      const onlyPublic = data.reflections.filter(item => item.visibleToPublic);
+      const onlyPublic = data.reflections.filter((item) => item.visibleToPublic);
 
       if (reset) {
         setReflections(onlyPublic);
         setOffset(LIMIT);
+        setTotalCount(data.totalCount);
       } else {
         setReflections((prev) => [...prev, ...onlyPublic]);
         setOffset((prev) => prev + LIMIT);
       }
-
 
       setHasMore(data.reflections.length === LIMIT);
       setAverageRating(data.averageRating);
@@ -80,10 +82,6 @@ const ReflectionListScreen = ({ route, navigation }) => {
     } catch (err) {
       console.error('❌ 좋아요 실패:', err);
     }
-  };
-
-  const handleReportPress = (id) => {
-    console.log('신고 ID:', id);
   };
 
   const handleEditPress = (reflection) => {
@@ -131,46 +129,44 @@ const ReflectionListScreen = ({ route, navigation }) => {
 
   return (
     <CommonLayout>
-      <Header title={`독후감 (${reflections.length})`} />
+      <Header title={`독후감 (${totalCount})`} />
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.innerBox}>
+      <FlatList
+        data={reflections}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.itemWrapper}>
+            <BookReflectionItem
+              item={item}
+              onLikePress={handleLikePress}
+              onEditPress={handleEditPress}
+              onDeletePress={handleDeletePress}
+              onReportPress={(id) => console.log('신고 ID:', id)}
+            />
+          </View>
+        )}
+        onEndReached={() => fetchReflections(false)}
+        onEndReachedThreshold={0.7}
+        ListHeaderComponent={
           <View style={styles.headerSection}>
             <BookDetailRatingSummaryBlock
               averageRating={averageRating}
               ratingDistribution={ratingDistribution}
             />
             <WriteButton label="독후감 쓰기" onPress={handleWritePress} />
-            <View style={styles.sortTabWrapper}>
-              <SortTabs currentSort={sort} onChange={setSort} />
-            </View>
+            <SortTabs currentSort={sort} onChange={setSort} />
           </View>
-
-          <View style={styles.reviewListContainer}>
-            {reflections.map((item) => (
-              <View key={item.id} style={styles.reviewItemWrapper}>
-                <BookReflectionItem
-                  item={item}
-                  onLikePress={handleLikePress}
-                  onReportPress={handleReportPress}
-                  onEditPress={handleEditPress}
-                  onDeletePress={handleDeletePress}
-                />
-              </View>
-            ))}
-          </View>
-
-          {loading && (
+        }
+        ListFooterComponent={
+          loading && (
             <View style={styles.loadingWrapper}>
               <ActivityIndicator size="small" color="#aaa" />
             </View>
-          )}
-        </View>
-      </ScrollView>
+          )
+        }
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      />
 
       <AlertPopup
         visible={alertVisible}
@@ -193,26 +189,22 @@ export default ReflectionListScreen;
 
 const styles = StyleSheet.create({
   scrollContent: {
-    width: '100%',
-    marginTop: fixwidth * 0.025,
     paddingBottom: fixwidth * 0.11,
-  },
-  innerBox: {
-    width: '94%',
-    alignSelf: 'center',
+    paddingHorizontal: fixwidth * 0.01,
   },
   headerSection: {
-    gap: fixwidth * 0.037,
-  },
-  sortTabWrapper: {
-    width: '100%',
+    width: '94%',
     alignSelf: 'center',
-  },
-  reviewListContainer: {
-    gap: fixwidth * 0.04,
+    gap: fixwidth * 0.035,
+    marginTop: fixwidth * 0.03,
+    marginBottom: fixwidth * 0.0,
   },
   loadingWrapper: {
     marginTop: fixwidth * 0.05,
     alignItems: 'center',
+  },
+  itemWrapper: {
+    marginBottom: fixwidth * 0.03,
+    paddingHorizontal: fixwidth * 0.025,
   },
 });

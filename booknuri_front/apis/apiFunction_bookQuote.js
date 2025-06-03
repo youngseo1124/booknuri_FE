@@ -71,3 +71,24 @@ export const getBookQuoteListByIsbn = (isbn13, sort = 'like', offset = 0, limit 
 export const toggleBookQuoteLike = (quoteId) => {
   return api.post(`/book/quote/like/${quoteId}`);
 };
+
+
+/**
+ * 🧠 OCR 이미지 텍스트 추출
+ * @param {object} imageAsset - 이미지 asset 객체 (base64 포함)
+ * @returns {Promise<string>} 추출된 텍스트
+ */
+export const extractTextFromImage = (imageAsset) => {
+  const formData = new FormData();
+  formData.append('image', {
+    uri: `data:image/jpeg;base64,${imageAsset.base64}`,
+    name: 'photo.jpg',
+    type: 'image/jpeg',
+  });
+
+  return api.post('/book/quote/ocr', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }).then(res => res.data.text);
+};

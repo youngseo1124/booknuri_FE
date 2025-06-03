@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   footer: {
-    marginTop: fixwidth * 0.005,
+    marginTop: fixwidth * 0.001,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: fixwidth * 0.01,
     paddingHorizontal: fixwidth * 0.025,
-    paddingVertical: fixwidth * 0.008,
+    paddingVertical: fixwidth * 0.015,
     borderRadius: fixwidth * 0.012,
     backgroundColor: '#f2f2f2',
   },

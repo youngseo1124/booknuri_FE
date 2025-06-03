@@ -23,7 +23,7 @@ const AgreeSection = ({ title, content, checked, onToggle }) => {
           <Icon
             name={checked ? 'checkmark-circle' : 'ellipse-outline'}
             size={width*0.07}
-            color={checked ? '#00C471' : '#ccc'}
+            color={checked ? 'rgb(97,156,245)' : '#ccc'}
           />
         </TouchableOpacity>
         <Text style={styles.title}>{title}</Text>

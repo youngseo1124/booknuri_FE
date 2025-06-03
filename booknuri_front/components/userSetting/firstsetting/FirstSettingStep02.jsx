@@ -12,7 +12,7 @@ import GenderSelectBox from '../GenderSelectBox';
 import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import { setUserGender } from '../../../apis/apiFunction';
 
-const { height,width: fixwidth } = Dimensions.get('window');
+const { height, width: fixwidth } = Dimensions.get('window');
 
 const Step02 = ({ onNext }) => {
   const [gender, setGender] = useState(null);
@@ -20,7 +20,7 @@ const Step02 = ({ onNext }) => {
 
   const handleSubmit = async () => {
     if (!gender) {
-      Alert.alert('성별을 선택해 주세요!');
+
       return;
     }
 
@@ -29,11 +29,11 @@ const Step02 = ({ onNext }) => {
       if (res.status === 200) {
         onNext();
       } else {
-        Alert.alert('오류', '성별 저장에 실패했어요');
+
       }
     } catch (err) {
       console.error('❌ 성별 저장 실패:', err);
-      Alert.alert('에러', '네트워크 오류가 발생했어요');
+
     }
   };
 
@@ -43,19 +43,22 @@ const Step02 = ({ onNext }) => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>성별을 선택해 주세요</Text>
 
-        <View style={styles.boxWrapper}>
-          <GenderSelectBox
-            label="여성"
-            selected={gender === 'F'}
-            onPress={() => setGender('F')}
-          />
-          <GenderSelectBox
-            label="남성"
-            selected={gender === 'M'}
-            onPress={() => setGender('M')}
-          />
+        <View style={styles.middleBlock}>
+          <Text style={styles.title}>성별을 선택해 주세요</Text>
+
+          <View style={styles.boxWrapper}>
+            <GenderSelectBox
+              label="여성"
+              selected={gender === 'F'}
+              onPress={() => setGender('F')}
+            />
+            <GenderSelectBox
+              label="남성"
+              selected={gender === 'M'}
+              onPress={() => setGender('M')}
+            />
+          </View>
         </View>
       </ScrollView>
 
@@ -64,6 +67,8 @@ const Step02 = ({ onNext }) => {
   );
 };
 
+export default Step02;
+
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
@@ -71,16 +76,18 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    paddingHorizontal: fixwidth * 0.06,
+  },
+  middleBlock: {
+    height: height * 0.8,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: fixwidth * 0.06,
-    paddingBottom: fixwidth * 0.15,
-    maxHeight:height*1
   },
   title: {
-    fontSize: fixwidth * 0.06,
+    fontSize: fixwidth * 0.058,
     textAlign: 'center',
-    fontFamily: 'NanumGothic-Bold',
+    fontFamily: 'NotoSansKR-SemiBold',
+    lineHeight: fixwidth * 0.07,
     color: '#000000',
     marginBottom: fixwidth * 0.08,
     width: '100%',
@@ -89,5 +96,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
-export default Step02;

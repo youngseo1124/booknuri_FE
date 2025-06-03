@@ -93,12 +93,12 @@ const LibraryFilter = ({ setFilter }) => {
 
 const styles = StyleSheet.create({
   filterContainer: {
-    paddingVertical: fixwidth * 0.03,
-    width: '100%', // 💯 부모 기준 너비
+    paddingVertical: fixwidth * 0.027,
+    width: '100%',
     alignItems: 'center',
   },
   pickerWrapper: {
-    width: '100%', // 💯 부모 기준 너비
+    width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: fixwidth * 0.02,

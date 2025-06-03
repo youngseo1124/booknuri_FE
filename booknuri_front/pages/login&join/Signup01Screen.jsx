@@ -96,7 +96,6 @@ const Signup01Screen = () => {
 const styles = StyleSheet.create({
   content: {
     alignItems: "center",
-    paddingHorizontal: width * 0.05,
     paddingBottom: width * 0.2, // 버튼 공간 확보
   },
 });

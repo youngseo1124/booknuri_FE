@@ -16,6 +16,7 @@ import LoginForm from "../../components/Login/LoginForm";
 import JoinLinkComponent from "../../components/Login/JoinLinkComponent";
 import KakaoLoginButton from "../../components/Login/KakaoLoginButton";
 import GoogleLoginButton from "../../components/Login/GoogleLoginButton";
+import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 
 // ✅ 고정 width만 가져오기 (폰트나 스타일 계산용)
 const { width: fixwidth, height } = Dimensions.get("window");
@@ -24,7 +25,7 @@ const LoginScreen = () => {
     return (
       <>
           <StatusBar barStyle="dark-content" backgroundColor="#e0d6ce" />
-          <SafeAreaView edges={["top"]} style={{ backgroundColor: "#e0d6ce" }} />
+
 
           <SafeAreaView edges={["left", "right", "bottom"]} style={styles.safeArea}>
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -44,6 +45,9 @@ const LoginScreen = () => {
 
                           <LoginForm />
                           <JoinLinkComponent />
+
+                          <VerticalGap />
+
 
                           {/* SNS 로그인 섹션 */}
                           <View style={styles.snsSection}>
@@ -75,54 +79,56 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#e0d6ce",
-        paddingVertical: fixwidth * 0.07,
+        backgroundColor: 'rgb(127,172,253)',
+        paddingVertical: fixwidth * 0.03,
     },
     formWrapper: {
-        width: '87%',
-        backgroundColor: "#ffffff",
-        height: height * 0.79,
+        paddingTop: fixwidth * 0.087,
+        backgroundColor: 'rgb(127,172,253)',
+        width: '73%',
+        height: height * 0.85,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: fixwidth * 0.04,
+        borderRadius: fixwidth * 0.047,
         marginTop: fixwidth * 0.01,
         marginBottom: fixwidth * 0.01,
+        borderWidth: fixwidth*0.0
     },
     logoWrapper: {
-        paddingBottom: fixwidth * 0.07,
+        paddingBottom: fixwidth * 0.027,
     },
     logo: {
-        width: fixwidth * 0.4,
-        height: fixwidth * 0.4,
+        width: fixwidth * 0.36,
+        height: fixwidth * 0.36,
         resizeMode: "contain",
     },
     snsSection: {
-        paddingTop: fixwidth * 0.2,
+        paddingTop: fixwidth * 0.19,
         alignItems: "center",
-        width: "90%", // ✅ 반응형
+        width: "117%",
     },
     dividerWrapper: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: fixwidth * 0.04,
+        marginBottom: fixwidth * 0.05,
         paddingHorizontal: fixwidth * 0.05,
         width: "100%",
     },
     divider: {
         flex: 1,
         height: 1,
-        backgroundColor: "#ccc",
+        backgroundColor: "rgb(233,233,233)",
     },
     snsText: {
         marginHorizontal: fixwidth * 0.01,
-        color: "#999",
-        fontSize: fixwidth * 0.033, // ✅ 반응형 글자크기
+        color: "rgb(238,238,238)",
+        fontSize: fixwidth * 0.033,
     },
     snsButtonsWrapper: {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        gap: fixwidth * 0.03, // ✅ 여백도 반응형
+        gap: fixwidth * 0.037,
     },
 });
 

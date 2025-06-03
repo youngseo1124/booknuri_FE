@@ -22,6 +22,7 @@ const FixedBottomButton = ({ disabled, onPress, label = "다음" }) => {
         style={[styles.button, disabled && styles.disabled]}
         disabled={disabled}
         onPress={onPress}
+        activeOpacity={0.8}
       >
         <Text style={styles.text}>{label}</Text>
       </TouchableOpacity>
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     height: fixwidth * 0.14,
-    backgroundColor: '#bca48e',
+    backgroundColor: 'rgb(97,156,245)',
     borderRadius: fixwidth * 0.01,
     alignItems: 'center',
     justifyContent: 'center',

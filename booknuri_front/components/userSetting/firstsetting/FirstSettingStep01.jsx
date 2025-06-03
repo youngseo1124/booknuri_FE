@@ -3,91 +3,102 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Dimensions,
   ScrollView,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
-import StepOneImage from '../../../image/firstSetting/stepOne.png';
+import JoinCheckBox from '../../public/publicButton/JoinCheckBox'; // 체크박스
+import VerticalGap from '../../public/publicUtil/VerticalGap';
 
-const { height,width: fixwidth } = Dimensions.get('window');
+const { height, width: fixwidth } = Dimensions.get('window');
 
 const Step01 = ({ onNext }) => {
+  const features = [
+    '내 도서관에서 도서 검색하기',
+    '내 이용기록 바탕으로 맞춤 도서 추천받기',
+    '책 속 문장을 사진 찍어 인용문구로 저장하기',
+    '책 독후감 작성하기',
+    '읽고 싶은 도서 내 책장에 저장하기',
+    '독서 캘린더 쓰기',
+  ];
 
   return (
     <View style={styles.wrapper}>
       <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: fixwidth * 0.07,
-          paddingTop: fixwidth * 0.18,
-          maxHeight:height*1,
-
-        }}
+        contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* 🟢 콘텐츠 영역 */}
-        <View style={styles.flexContainer}>
+        {/* ✅ 세로 중앙 정렬 영역 */}
+        <View style={styles.middleBlock}>
+          {/* 인사말 */}
           <View style={styles.centerContent}>
-            <Text style={styles.guideText}>책누리에 오신 걸{'\n'}환영해요! 🙌</Text>
+            <Text style={styles.guideText}>책나루에 오신 걸 환영해요!</Text>
             <Text style={styles.guideSubText}>
-              책누리는 공공도서관과 연결해{'\n'}
-              독서 생활을 편리하게 관리해주는 앱이에요.{'\n'}
-              더 나은 이용을 위해{'\n'}
-              간단한 설정만 먼저 도와주세요 :)
+              책나루는 공공도서관과 연결해 독서 생활을 편리하게 관리해주는 앱이에요.{'\n'}
+              책나루에서는 아래와 같은 서비스를 이용하실 수 있어요.
             </Text>
           </View>
 
-          {/*  이미지: 맨 아래로 */}
-          <View style={styles.imageWrapper}>
-            <Image source={StepOneImage} style={styles.image} resizeMode="contain" />
+          <VerticalGap height={fixwidth * 0.07} />
+
+          {/* 기능 소개 체크박스 */}
+          <View style={styles.featureBox}>
+            {features.map((item, idx) => (
+              <View style={styles.checkItem} key={idx}>
+                <JoinCheckBox label={item} value={true} onChange={() => {}} />
+              </View>
+            ))}
           </View>
         </View>
       </ScrollView>
 
-      {/*  하단 버튼 */}
+      {/* 하단 버튼 */}
       <FixedBottomButton label="시작하기" onPress={onNext} />
     </View>
   );
 };
+
+export default Step01;
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  flexContainer: {
-    flex: 1,
-    justifyContent: 'space-between', // 텍스트 위, 이미지 아래로 떨어뜨림
+  scrollContainer: {
+    flexGrow: 1,
+    paddingHorizontal: fixwidth * 0.07,
+  },
+  middleBlock: {
+    height: height * 0.8,
+    justifyContent: 'center',
   },
   centerContent: {
-    paddingTop: fixwidth*0.37,
     alignItems: 'center',
-    minHeight:fixwidth * 0.4,
   },
   guideText: {
-    fontSize: fixwidth * 0.067,
+    fontSize: fixwidth * 0.057,
     textAlign: 'center',
-    fontFamily: 'NanumGothic-Bold',
+    fontFamily: 'NotoSansKR-SemiBold',
+    lineHeight: fixwidth * 0.1,
     color: '#000000',
   },
   guideSubText: {
-    paddingTop: fixwidth * 0.05,
-    fontSize: fixwidth * 0.04,
-    color: '#444',
+    fontSize: fixwidth * 0.038,
+    color: '#000000',
     textAlign: 'center',
-    lineHeight: fixwidth * 0.057,
-    fontFamily: 'NanumGothic-Regular',
+    lineHeight: fixwidth * 0.067,
+    fontFamily: 'NotoSansKR-Regular',
+    marginTop: fixwidth * 0.04,
   },
-  imageWrapper: {
-    alignItems: 'center',
-    marginTop: fixwidth * 0.1,
+  featureBox: {
+    gap: fixwidth * 0.057,
+    marginTop: fixwidth * 0.017,
+    backgroundColor: 'rgba(241,241,241,0.81)',
+    padding: fixwidth * 0.037,
+    borderRadius: fixwidth * 0.037,
   },
-  image: {
-    width: fixwidth * 1,
-    height: fixwidth * 0.9,
+  checkItem: {
+    paddingLeft: fixwidth * 0.01,
   },
 });
-
-export default Step01;

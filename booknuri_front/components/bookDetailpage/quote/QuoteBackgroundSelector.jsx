@@ -17,7 +17,15 @@ const backgroundImages = {
   13: require('../../../image/quote/thirteen.jpg'),
   14: require('../../../image/quote/fourteen.jpg'),
   15: require('../../../image/quote/fifteen.jpg'),
+  16: require('../../../image/quote/sixteen.jpg'),
+  17: require('../../../image/quote/seventeen.jpg'),
+  18: require('../../../image/quote/eighteen.jpg'),
+  19: require('../../../image/quote/nineteen.jpg'),
+  20: require('../../../image/quote/twenty.jpg'),
+  21: require('../../../image/quote/twentyone.jpg'),
+  22: require('../../../image/quote/twentytwo.jpg'),
 };
+
 
 const QuoteBackgroundSelector = ({ selectedId, onSelect }) => {
   return (

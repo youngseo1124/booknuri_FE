@@ -32,9 +32,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5E5',
   },
   text: {
-    fontSize: fixwidth * 0.042,
+    fontSize: fixwidth * 0.04,
     color: '#222',
-    fontFamily: 'NanumGothic-Bold',
+    fontFamily: 'NotoSansKR-Regular',
+    lineHeight: fixwidth * 0.055,
   },
   selectedText: {
     color: '#FFA800',

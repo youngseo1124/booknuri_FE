@@ -3,6 +3,14 @@ import { StyleSheet, Text, ImageBackground, Dimensions, View } from 'react-nativ
 
 const { width: fixwidth } = Dimensions.get('window');
 
+const hexToRgba = (hex, alpha = 1) => {
+  if (!/^#([A-Fa-f0-9]{6})$/.test(hex)) return hex;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 const backgroundImages = {
   1: require('../../../image/quote/one.jpg'),
   2: require('../../../image/quote/two.jpg'),
@@ -19,6 +27,13 @@ const backgroundImages = {
   13: require('../../../image/quote/thirteen.jpg'),
   14: require('../../../image/quote/fourteen.jpg'),
   15: require('../../../image/quote/fifteen.jpg'),
+  16: require('../../../image/quote/sixteen.jpg'),
+  17: require('../../../image/quote/seventeen.jpg'),
+  18: require('../../../image/quote/eighteen.jpg'),
+  19: require('../../../image/quote/nineteen.jpg'),
+  20: require('../../../image/quote/twenty.jpg'),
+  21: require('../../../image/quote/twentyone.jpg'),
+  22: require('../../../image/quote/twentytwo.jpg'),
 };
 
 const PureQuoteContent = ({
@@ -28,10 +43,13 @@ const PureQuoteContent = ({
                             fontScale,
                             showTitle = false,
                             bookTitle = '',
-                            capture = false, // 새 props 추가 (기본 false)
+                            capture = false,
                           }) => {
-  const fontSize = fixwidth * 0.024 + fontScale * 0.6;
+  const fontSize = fixwidth * 0.02 + fontScale * 0.6;
+  const lineHeight = fontSize * 1.37;
   const radius = capture ? 0 : (showTitle ? 0 : fixwidth * 0.03);
+
+  const transparentFontColor = hexToRgba(fontColor, 0.9);
 
   return (
     <ImageBackground
@@ -39,17 +57,15 @@ const PureQuoteContent = ({
       style={[styles.card, { borderRadius: radius }]}
       imageStyle={[styles.bgImage, { borderRadius: radius }]}
     >
-      {/* 본문 텍스트 - 플로우 레이아웃 */}
       <View style={styles.textWrapper}>
-        <Text style={[styles.text, { color: fontColor, fontSize }]}>
+        <Text style={[styles.text, { color: fontColor, fontSize, lineHeight }]}>
           {quoteText ? quoteText.replace(/\n/g, '\n') : ''}
         </Text>
       </View>
 
-      {/* 제목 텍스트 - 절대 위치 */}
       {showTitle && (
         <View style={styles.titleWrapper}>
-          <Text style={[styles.bookTitle, { color: fontColor, fontSize: fontSize * 0.9 }]}>
+          <Text style={[styles.bookTitle, { color: transparentFontColor, fontSize: fontSize * 0.9 }]}>
             - {bookTitle} -
           </Text>
         </View>
@@ -79,15 +95,14 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
     fontFamily: 'NotoSansKR-Regular',
-    lineHeight: fixwidth * 0.05,
   },
   titleWrapper: {
     position: 'absolute',
-    bottom: fixwidth * 0.047,
+    bottom: fixwidth * 0.037,
     width: '100%',
     alignItems: 'center',
   },
   bookTitle: {
-    fontFamily: 'NotoSansKR-Medium',
+    fontFamily: 'NotoSansKR-Light',
   },
 });

@@ -84,7 +84,7 @@ const QuoteCaptureScreen = ({ route, navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.wrapper}>
-          <VerticalGap height={fixwidth * 0.027} />
+          <VerticalGap height={fixwidth * 0.037} />
 
           <View collapsable={false} ref={viewRef} style={styles.captureView}>
             {includeTitle ? (
@@ -139,11 +139,11 @@ export default QuoteCaptureScreen;
 
 const styles = StyleSheet.create({
   content: {
+    width: '100%',
     paddingHorizontal: fixwidth * 0.05,
     paddingBottom: fixwidth * 0.1,
   },
   wrapper: {
-    alignItems: 'center',
   },
   captureView: {
     width: fixwidth * 0.9,

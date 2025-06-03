@@ -29,17 +29,18 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#ffffff',
-    width: '99%',
+    width: '99.2%',
 
 
     borderRadius: fixwidth*0.01,
-    borderColor: 'rgba(0,0,0,0.23)',
+    borderColor: 'rgba(0,0,0,0.22)',
     borderWidth: fixwidth*0.0017,
   },
   buttonText: {
     textAlign: 'center',
-    color: 'rgba(0,0,0,0.54)',
-    fontSize: fixwidth * 0.03,
+    color: 'rgba(0,0,0,0.75)',
+    fontSize: fixwidth * 0.027,
     fontFamily: 'NotoSansKR-Light',
+    lineHeight: fixwidth * 0.07,
   },
 });

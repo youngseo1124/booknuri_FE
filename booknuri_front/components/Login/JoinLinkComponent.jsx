@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         height: height * 0.02,
     },
     linkText: {
-        fontSize: width * 0.027,
+        fontSize: width * 0.03,
         color: '#000000',
     },
     separator: {

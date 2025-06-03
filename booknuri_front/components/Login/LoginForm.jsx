@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../contexts/LoginContextProvider";
+import VerticalGap from '../public/publicUtil/VerticalGap';
 
 const LoginForm = () => {
   const { login } = useContext(LoginContext);
@@ -26,7 +27,7 @@ const LoginForm = () => {
   };
 
   return (
-    <View style={[styles.form, { width: width * 0.67 }]}>
+    <View style={[styles.form]}>
       {/* 🔐 아이디 입력창 */}
       <View style={styles.inputWrapper}>
         <FontAwesomeIcon icon={faUser} size={fixwidth * 0.04} color="#888" style={styles.icon} />
@@ -40,6 +41,8 @@ const LoginForm = () => {
           placeholderTextColor="#aaa"
         />
       </View>
+
+      <VerticalGap height={fixwidth * 0.004} />
 
       {/* 🔐 비밀번호 입력창 */}
       <View style={styles.inputWrapper}>
@@ -70,15 +73,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignItems: "stretch",
     paddingBottom: fixwidth * 0.01,
+    width: "100%",
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f3f1f1",
+    backgroundColor: "rgb(245,245,245)",
     borderRadius: fixwidth * 0.02,
-    marginBottom: fixwidth * 0.02,
+    marginBottom: fixwidth * 0.015,
     paddingHorizontal: fixwidth * 0.03,
-    height: fixwidth * 0.11,
+    height: fixwidth * 0.133,
   },
   icon: {
     marginRight: fixwidth * 0.02,
@@ -89,16 +93,18 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   button: {
-    marginTop: fixwidth * 0.022,
-    backgroundColor: "#b9a399",
-    height: fixwidth * 0.12,
-    borderRadius: fixwidth * 0.02,
+    marginTop: fixwidth * 0.017,
+    backgroundColor: 'rgb(97,134,217)',
+    height: fixwidth * 0.137,
+    borderRadius: fixwidth * 0.025,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: fixwidth * 0.007,
   },
   buttonText: {
-    fontSize: fixwidth * 0.045,
-    fontWeight: "600",
+    fontSize: fixwidth * 0.048,
+    fontFamily: 'NotoSansKR-SemiBold',
+    lineHeight: fixwidth * 0.06,
     color: "#fff",
   },
 });

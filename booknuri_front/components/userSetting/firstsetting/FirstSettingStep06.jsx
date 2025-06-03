@@ -3,113 +3,106 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Dimensions,
   ScrollView,
+  Image,
 } from 'react-native';
+import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
 import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import StepOneImage from '../../../image/firstSetting/stepOne.png';
-import LottieView from 'lottie-react-native';
 import { LoginContext } from '../../../contexts/LoginContextProvider';
 
 const { height, width: fixwidth } = Dimensions.get('window');
 
-const Step01 = () => {
+const Step06 = () => {
+  const navigation = useNavigation();
   const { setUserInfo } = useContext(LoginContext);
-  const navigation = useNavigation(); // ✅ navigation 사용하려면 필요함
 
   const onNext = () => {
     setUserInfo(prev => ({
       ...prev,
-      gender: 'male', // or 실제 선택된 값
+      gender: 'male',
       birth: 2001,
       myLibrary: { id: 1, name: '대구중앙도서관' },
     }));
-
     navigation.navigate('MainTab');
   };
 
   return (
-      <View style={styles.wrapper}>
-        <ScrollView
-            contentContainerStyle={{
-              flexGrow: 1,
-              paddingHorizontal: fixwidth * 0.07,
-              paddingTop: fixwidth * 0.18,
-              maxHeight: height * 1,
-            }}
-            showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.flexContainer}>
-            <View style={styles.centerContent}>
-              <Text style={styles.guideText}>모든 준비가 끝났어요!</Text>
-              <Text style={styles.guideSubText}>
-                이제 책누리가 여러분의 독서 여정을 도와드릴게요 {'\n'}😊
-              </Text>
-            </View>
+    <View style={styles.wrapper}>
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {/* ✅ 세로 중앙 정렬 콘텐츠 영역 */}
+        <View style={styles.middleBlock}>
+          {/* 애니메이션 */}
+          <LottieView
+            source={require('../../../assets/lottie/cofetti.json')}
+            autoPlay
+            loop={false}
+            style={styles.lottie}
+          />
 
-            <LottieView
-                source={require('../../../assets/lottie/cofetti.json')}
-                autoPlay
-                loop={false}
-                style={{
-                  width: fixwidth * 1,
-                  height: height * 0.5,
-                  alignSelf: 'center',
-                  position: 'absolute',
-                  top: 0,
-                  zIndex: 10,
-                }}
-            />
-
-            <View style={styles.imageWrapper}>
-              <Image source={StepOneImage} style={styles.image} resizeMode="contain" />
-            </View>
+          {/* 인사말 */}
+          <View style={styles.centerContent}>
+            <Text style={styles.guideText}>모든 준비가 끝났어요!</Text>
+            <Text style={styles.guideSubText}>
+              이제 책나루가 여러분의 독서 여정을 도와드릴게요{'\n'}😊
+            </Text>
           </View>
-        </ScrollView>
 
-        <FixedBottomButton label="시작하기" onPress={onNext} />
-      </View>
+        </View>
+      </ScrollView>
+
+      {/* 하단 버튼 */}
+      <FixedBottomButton label="시작하기" onPress={onNext} />
+    </View>
   );
 };
+
+export default Step06;
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  flexContainer: {
-    flex: 1,
-    justifyContent: 'space-between',
+  scrollContainer: {
+    flexGrow: 1,
+    paddingHorizontal: fixwidth * 0.07,
+  },
+  middleBlock: {
+    height: height * 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: fixwidth * 1,
+    height: height * 0.77,
+    position: 'absolute',
+    top: 0,
+    zIndex: 10,
   },
   centerContent: {
-    paddingTop: fixwidth * 0.5,
     alignItems: 'center',
-    minHeight: fixwidth * 0.4,
+    marginBottom: fixwidth * 0.08,
   },
   guideText: {
-    fontSize: fixwidth * 0.067,
+    fontSize: fixwidth * 0.059,
     textAlign: 'center',
-    fontFamily: 'NanumGothic-Bold',
+    fontFamily: 'NotoSansKR-SemiBold',
+    lineHeight: fixwidth * 0.1,
     color: '#000000',
   },
   guideSubText: {
-    paddingTop: fixwidth * 0.05,
-    fontSize: fixwidth * 0.04,
-    color: '#444',
+    fontSize: fixwidth * 0.037,
+    color: '#000000',
     textAlign: 'center',
-    lineHeight: fixwidth * 0.057,
-    fontFamily: 'NanumGothic-Regular',
+    lineHeight: fixwidth * 0.067,
+    backgroundColor: 'rgba(241,241,241,0.81)',
+    padding: fixwidth * 0.037,
+    borderRadius: fixwidth * 0.037,
+    fontFamily: 'NotoSansKR-Regular',
+    marginTop: fixwidth * 0.04,
   },
-  imageWrapper: {
-    alignItems: 'center',
-    marginTop: fixwidth * 0.1,
-  },
-  image: {
-    width: fixwidth * 1,
-    height: fixwidth * 0.9,
-  },
-});
 
-export default Step01;
+});

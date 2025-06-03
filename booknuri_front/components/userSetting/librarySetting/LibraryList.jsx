@@ -59,18 +59,20 @@ const LibraryList = ({ onSelectLibrary, selectedLibrary, filter }) => {
     fetchInitial();
   }, [filter]);
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.item,
-        selectedLibrary?.libCode === item.libCode && styles.selectedItem,
-      ]}
-      onPress={() => onSelectLibrary(item)}
-    >
-      <Text style={styles.name}>{item.libName}</Text>
-      <Text style={styles.addr}>{item.fullAddress}</Text>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }) => {
+    const isSelected = selectedLibrary?.libCode === item.libCode;
+
+    return (
+      <TouchableOpacity
+        style={[styles.item, isSelected && styles.selectedBox]}
+        onPress={() => onSelectLibrary(item)}
+        activeOpacity={0.77}
+      >
+        <Text style={[styles.name, isSelected && styles.selectedName]}>{item.libName}</Text>
+        <Text style={[styles.addr, isSelected && styles.selectedAddr]}>{item.fullAddress}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <FlatList
@@ -89,23 +91,35 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   item: {
-    padding: fixwidth * 0.04,
-    borderBottomColor: '#eee',
-    marginBottom: fixwidth * 0.025,
+    width: '100%',
+    alignSelf: 'center',
+    paddingVertical: fixwidth * 0.04,
+    paddingHorizontal: fixwidth * 0.04,
+    marginBottom: fixwidth * 0.035,
     borderRadius: fixwidth * 0.02,
     backgroundColor: '#f5f5f5',
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  selectedItem: {
-    backgroundColor: '#e0f7fa',
+  selectedBox: {
+    backgroundColor: '#FFF5E5',
+    borderColor: '#FFA800',
   },
   name: {
-    fontWeight: 'bold',
     fontSize: fixwidth * 0.045,
+    fontFamily:  'NotoSansKR-SemiBold',
+    lineHeight: fixwidth * 0.067,
+    color: '#222',
+  },
+  selectedName: {
   },
   addr: {
-    color: '#666',
     fontSize: fixwidth * 0.035,
+    fontFamily: 'NanumGothic-Regular',
+    color: '#666',
     marginTop: fixwidth * 0.01,
+  },
+  selectedAddr: {
   },
 });
 

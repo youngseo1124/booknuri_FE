@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import PureQuoteContent from './PureQuoteContent';
 import VerticalGap from '../../public/publicUtil/VerticalGap';
-import DownloadableQuoteCard from '../DownloadableQuoteCard';
+import DownloadableQuoteCard from './DownloadableQuoteCard';
 
 const { width: fixwidth } = Dimensions.get('window');
 

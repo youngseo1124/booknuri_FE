@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
         flex: 1, // 📌 화면 전체를 차지하도록 설정
         alignItems: "center", // 📌 가로 방향 중앙 정렬
         justifyContent: "center", // 📌 기본적으로 중앙 정렬 (폼 위치 조정에 필요)
-        backgroundColor: "#ffffff",
+        backgroundColor: 'rgb(127,172,253)',
     },
     logo: {
-        width: width*0.5, // ✅ 로고 너비
-        height: width*0.5, // ✅ 로고 높이
-        resizeMode: "contain", // ✅ 이미지 크기 비율 유지
+        width: width*0.3,
+        height: width*0.3,
+        resizeMode: "contain",
     },
 
 });

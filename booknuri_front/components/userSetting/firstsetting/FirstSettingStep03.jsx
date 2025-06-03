@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, Dimensions, Alert } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Dimensions, Alert, ScrollView } from 'react-native';
 import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import { setUserBirth } from '../../../apis/apiFunction';
 
-const { width: fixwidth } = Dimensions.get('window');
+const { height, width: fixwidth } = Dimensions.get('window');
 
 const Step03 = ({ onNext }) => {
   const [year, setYear] = useState('');
@@ -26,7 +26,7 @@ const Step03 = ({ onNext }) => {
 
   const handleSubmit = async () => {
     if (!isValidDate()) {
-      Alert.alert('⚠️ 유효한 생년월일을 입력해 주세요');
+
       return;
     }
 
@@ -37,43 +37,52 @@ const Step03 = ({ onNext }) => {
         onNext();
       }
     } catch (e) {
-      Alert.alert('에러', '생년월일 저장 실패');
+
       console.error(e);
     }
   };
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.container}>
-        <Text style={styles.title}>생년월일을 입력해 주세요</Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
 
-        <View style={styles.inputRow}>
-          <TextInput
-            style={styles.input}
-            value={year}
-            onChangeText={setYear}
-            keyboardType="number-pad"
-            maxLength={4}
-            placeholder="0000년"
-          />
-          <TextInput
-            style={styles.input}
-            value={month}
-            onChangeText={setMonth}
-            keyboardType="number-pad"
-            maxLength={2}
-            placeholder="00월"
-          />
-          <TextInput
-            style={styles.input}
-            value={day}
-            onChangeText={setDay}
-            keyboardType="number-pad"
-            maxLength={2}
-            placeholder="00일"
-          />
+        <View style={styles.middleBlock}>
+          <Text style={styles.title}>생년월일을 입력해 주세요</Text>
+
+          <View style={styles.inputRow}>
+            <TextInput
+              style={styles.input}
+              value={year}
+              onChangeText={setYear}
+              keyboardType="number-pad"
+              maxLength={4}
+              placeholder="0000년"
+              placeholderTextColor="#aaa"
+            />
+            <TextInput
+              style={styles.input}
+              value={month}
+              onChangeText={setMonth}
+              keyboardType="number-pad"
+              maxLength={2}
+              placeholder="00월"
+              placeholderTextColor="#aaa"
+            />
+            <TextInput
+              style={styles.input}
+              value={day}
+              onChangeText={setDay}
+              keyboardType="number-pad"
+              maxLength={2}
+              placeholder="00일"
+              placeholderTextColor="#aaa"
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
 
       <FixedBottomButton
         label="다음"
@@ -84,39 +93,44 @@ const Step03 = ({ onNext }) => {
   );
 };
 
+export default Step03;
+
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  container: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: fixwidth * 0.06,
+  },
+  middleBlock: {
+    height: height * 0.8,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: fixwidth * 0.06,
-    paddingBottom: fixwidth * 0.35,
   },
   title: {
-    fontSize: fixwidth * 0.06,
-    fontFamily: 'NanumGothic-Bold',
+    fontSize: fixwidth * 0.058,
+    fontFamily: 'NotoSansKR-SemiBold',
+    lineHeight: fixwidth * 0.07,
     textAlign: 'center',
     color: '#000000',
     marginBottom: fixwidth * 0.07,
+    width: '100%',
   },
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: fixwidth * 0.02,
+    width: '100%',
   },
   input: {
     flex: 1,
-    fontSize: fixwidth * 0.045,
+    fontSize: fixwidth * 0.042,
     borderBottomWidth: 1.5,
     borderBottomColor: '#aaa',
     textAlign: 'center',
-    paddingVertical: fixwidth * 0.03,
-    fontFamily: 'NanumGothic-Regular',
+    paddingVertical: fixwidth * 0.011,
+    lineHeight: fixwidth * 0.08,
   },
 });
-
-export default Step03;

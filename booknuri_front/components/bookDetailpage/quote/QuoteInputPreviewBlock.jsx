@@ -19,10 +19,18 @@ const backgroundImages = {
   13: require('../../../image/quote/thirteen.jpg'),
   14: require('../../../image/quote/fourteen.jpg'),
   15: require('../../../image/quote/fifteen.jpg'),
+  16: require('../../../image/quote/sixteen.jpg'),
+  17: require('../../../image/quote/seventeen.jpg'),
+  18: require('../../../image/quote/eighteen.jpg'),
+  19: require('../../../image/quote/nineteen.jpg'),
+  20: require('../../../image/quote/twenty.jpg'),
+  21: require('../../../image/quote/twentyone.jpg'),
+  22: require('../../../image/quote/twentytwo.jpg'),
 };
 
 const QuoteInputPreviewBlock = ({ quoteText, backgroundId, fontColor, fontScale, onChangeText }) => {
-  const fontSize = fixwidth * 0.024 + fontScale * 0.6;
+  const fontSize = fixwidth * 0.02 + fontScale * 0.6;
+  const lineHeight = fontSize * 1.37;
 
   return (
     <ImageBackground
@@ -41,6 +49,7 @@ const QuoteInputPreviewBlock = ({ quoteText, backgroundId, fontColor, fontScale,
           {
             color: fontColor,
             fontSize,
+            lineHeight,
             height: fixwidth * 0.5,
             paddingVertical: 0,
           },
@@ -49,7 +58,6 @@ const QuoteInputPreviewBlock = ({ quoteText, backgroundId, fontColor, fontScale,
         textAlign="center"
         textAlignVertical="center"
       />
-
     </ImageBackground>
   );
 };
@@ -70,9 +78,8 @@ const styles = StyleSheet.create({
     borderRadius: fixwidth * 0.03,
   },
   textInput: {
-
     width: '100%',
-    textAlignVertical: 'center',
     fontFamily: 'NotoSansKR-Regular',
+    textAlignVertical: 'center',
   },
 });

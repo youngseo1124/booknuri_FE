@@ -49,7 +49,7 @@ const KakaoLoginButton = () => {
 };
 
 const { width } = Dimensions.get('window');
-const iconSize = width * 0.13;
+const iconSize = width * 0.14;
 
 const styles = StyleSheet.create({
   button: {
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffed75',
   },
   icon: {
-    width: '45%',
-    height: '45%',
+    width: '47%',
+    height: '47%',
     resizeMode: 'contain',
   },
 });

@@ -5,17 +5,15 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  useWindowDimensions,
   Dimensions,
 } from "react-native";
 import { checkEmail, checkUsername } from "../../apis/apiFunction";
 import AlertPopup from "../../apis/AlertPopup";
+import DividerBlock from "../public/publicUtil/DividerBlock";
 
-const { width: fixedWidth } = Dimensions.get("window"); // 스타일 계산용
+const { width: fixedWidth } = Dimensions.get("window");
 
 const SignupFormStep01 = ({ form, setForm, error, setError, alert, setAlert }) => {
-  const { width: realWidth } = useWindowDimensions(); // 화면 반응형용
-
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
 
@@ -68,94 +66,85 @@ const SignupFormStep01 = ({ form, setForm, error, setError, alert, setAlert }) =
   };
 
   return (
-    <View style={[styles.card, { width: realWidth * 0.95 }]}>
-      {/* 아이디 입력 */}
-      {/* 🔹 섹션 구분 라벨 - 아이디 */}
-      <View style={styles.sectionTitleWrapper}>
-        <View style={styles.line} />
+    <View style={styles.card}>
+      {/* 아이디 */}
+      <View style={styles.inputBlock}>
         <Text style={styles.sectionTitle}>아이디</Text>
-        <View style={styles.line} />
+        <View style={styles.row}>
+          <TextInput
+            style={[styles.input, { flex: 1 }]}
+            placeholder="아이디 입력"
+            value={form.username}
+            onChangeText={(text) => handleChange("username", text)}
+          />
+          <TouchableOpacity style={styles.checkBtn} onPress={checkUsernameDuplication}>
+            <Text style={styles.checkBtnText}>중복확인</Text>
+          </TouchableOpacity>
+        </View>
+        {error.username ? <Text style={styles.error}>{error.username}</Text> : null}
       </View>
-      <View style={styles.row}>
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="아이디 입력"
-          value={form.username}
-          onChangeText={(text) => handleChange("username", text)}
-        />
-        <TouchableOpacity style={styles.checkBtn} onPress={checkUsernameDuplication}>
-          <Text style={styles.checkBtnText}>중복확인</Text>
-        </TouchableOpacity>
-      </View>
-      {error.username ? <Text style={styles.error}>{error.username}</Text> : null}
+
+      <DividerBlock />
 
       {/* 이메일 */}
-
-      {/* 🔹 이메일도 같은 방식 */}
-      <View style={styles.sectionTitleWrapper}>
-        <View style={styles.line} />
+      <View style={styles.inputBlock}>
         <Text style={styles.sectionTitle}>이메일</Text>
-        <View style={styles.line} />
+        <View style={styles.emailRow}>
+          <TextInput
+            style={[styles.input, { flex: 1 }]}
+            placeholder="이메일"
+            value={form.emailId}
+            onChangeText={(text) => handleChange("emailId", text)}
+          />
+          <Text style={styles.at}>@</Text>
+          <TextInput
+            style={[styles.input, { flex: 1 }]}
+            placeholder="도메인"
+            value={form.emailDomain}
+            onChangeText={(text) => handleChange("emailDomain", text)}
+          />
+          <TouchableOpacity style={styles.checkBtn} onPress={checkEmailDuplication}>
+            <Text style={styles.checkBtnText}>중복확인</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.emailRow}>
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="이메일"
-          value={form.emailId}
-          onChangeText={(text) => handleChange("emailId", text)}
-        />
-        <Text style={styles.at}>@</Text>
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="도메인"
-          value={form.emailDomain}
-          onChangeText={(text) => handleChange("emailDomain", text)}
-        />
-        <TouchableOpacity style={styles.checkBtn} onPress={checkEmailDuplication}>
-          <Text style={styles.checkBtnText}>중복확인</Text>
-        </TouchableOpacity>
-      </View>
+
+      <DividerBlock />
 
       {/* 비밀번호 */}
-
-      {/* 🔹 이메일도 같은 방식 */}
-      <View style={styles.sectionTitleWrapper}>
-        <View style={styles.line} />
+      <View style={styles.inputBlock}>
         <Text style={styles.sectionTitle}>비밀번호</Text>
-        <View style={styles.line} />
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder="비밀번호 입력"
-        secureTextEntry
-        value={form.password}
-        onChangeText={(text) => handleChange("password", text)}
-      />
-      {error.password ? <Text style={styles.error}>{error.password}</Text> : null}
+        <TextInput
+          style={styles.input}
+          placeholder="비밀번호 입력"
+          secureTextEntry
+          value={form.password}
+          onChangeText={(text) => handleChange("password", text)}
+        />
+        {error.password ? <Text style={styles.error}>{error.password}</Text> : null}
 
-      <TextInput
-        style={styles.input}
-        placeholder="비밀번호 확인"
-        secureTextEntry
-        value={form.confirmPassword}
-        onChangeText={(text) => handleChange("confirmPassword", text)}
-      />
-      {error.confirmPassword ? <Text style={styles.error}>{error.confirmPassword}</Text> : null}
+        <TextInput
+          style={styles.input}
+          placeholder="비밀번호 확인"
+          secureTextEntry
+          value={form.confirmPassword}
+          onChangeText={(text) => handleChange("confirmPassword", text)}
+        />
+        {error.confirmPassword ? <Text style={styles.error}>{error.confirmPassword}</Text> : null}
+      </View>
+
+      <DividerBlock />
 
       {/* 닉네임 */}
-
-      {/* 🔹 이메일도 같은 방식 */}
-      <View style={styles.sectionTitleWrapper}>
-        <View style={styles.line} />
+      <View style={styles.inputBlock}>
         <Text style={styles.sectionTitle}>닉네임</Text>
-        <View style={styles.line} />
+        <TextInput
+          style={styles.input}
+          placeholder="닉네임 입력"
+          value={form.nickname}
+          onChangeText={(text) => handleChange("nickname", text)}
+        />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="닉네임 입력"
-        value={form.nickname}
-        onChangeText={(text) => handleChange("nickname", text)}
-      />
 
       <AlertPopup
         visible={alert.visible}
@@ -166,84 +155,73 @@ const SignupFormStep01 = ({ form, setForm, error, setError, alert, setAlert }) =
           if (alert.onClose) alert.onClose();
         }}
       />
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    width: '100%',
+    backgroundColor: '#fff',
     borderRadius: fixedWidth * 0.03,
-    paddingHorizontal: fixedWidth * 0.05,
   },
-  label: {
-    fontSize: fixedWidth * 0.037,
-    marginBottom: fixedWidth * 0.01,
-    color: "#000",
-    marginLeft:fixedWidth*0.02
+  inputBlock: {
+    marginHorizontal: fixedWidth * 0.05,
+    marginVertical:fixedWidth * 0.01,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: fixedWidth * 0.03,
   },
   emailRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: fixedWidth * 0.03,
   },
   at: {
     marginHorizontal: fixedWidth * 0.02,
     fontSize: fixedWidth * 0.045,
-    color: "#888",
+    color: '#888',
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderRadius: fixedWidth * 0.015,
     paddingHorizontal: fixedWidth * 0.04,
     height: fixedWidth * 0.11,
     fontSize: fixedWidth * 0.03,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     marginBottom: fixedWidth * 0.03,
   },
   checkBtn: {
     marginLeft: fixedWidth * 0.02,
     paddingVertical: fixedWidth * 0.025,
     paddingHorizontal: fixedWidth * 0.04,
-    backgroundColor: "rgba(184,171,155,0)",
-    borderRadius: fixedWidth * 0.015,
-    borderColor:"#959595",
-    borderWidth: fixedWidth * 0.002,
 
+    borderRadius: fixedWidth * 0.015,
+    borderColor: 'rgba(149,149,149,0)',
+    borderWidth: fixedWidth * 0.002,
     marginBottom: fixedWidth * 0.03,
     height: fixedWidth * 0.11,
+    justifyContent: 'center',
+    backgroundColor: 'rgb(97,156,245)'
   },
   checkBtnText: {
-    color: "#000000",
-    fontSize: fixedWidth * 0.035
+    color: '#ffffff',
+    fontSize: fixedWidth * 0.035,
   },
   error: {
-    color: "red",
+    color: 'red',
     fontSize: fixedWidth * 0.028,
     marginBottom: fixedWidth * 0.025,
   },
-  sectionTitleWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: fixedWidth * 0.04,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ccc',
-  },
   sectionTitle: {
-    marginHorizontal: fixedWidth * 0.02,
     fontSize: fixedWidth * 0.037,
     fontWeight: 'bold',
     color: '#000000',
+    marginVertical: fixedWidth * 0.015,
+    marginHorizontal: fixedWidth * 0.01,
   },
 });
 

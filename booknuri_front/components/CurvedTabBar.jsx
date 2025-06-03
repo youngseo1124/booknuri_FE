@@ -64,7 +64,7 @@ const CurvedTabBar = ({ state, navigation }) => {
             style={styles.fab}
             onPress={handleScanPress}
         >
-          <FontAwesomeIcon icon={faBarcode} size={fixwidth * 0.077} color="#fff" />
+          <FontAwesomeIcon icon={faBarcode} size={fixwidth * 0.087} color="#fff" />
         </TouchableOpacity>
 
         {/* 탭 전체 */}
@@ -86,8 +86,8 @@ const CurvedTabBar = ({ state, navigation }) => {
                 >
                   <FontAwesomeIcon
                       icon={tab.icon}
-                      size={fixwidth * 0.06}
-                      color={isFocused ? '#4B4B4B' : '#C9C9C9'}
+                      size={fixwidth * 0.074}
+                      color={isFocused ? '#ffffff' : 'rgba(207,207,207,0.57)'}
                   />
                   <Text style={[styles.label, isFocused && styles.activeLabel]}>
                     {tab.label}
@@ -105,10 +105,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#7ea4fa',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: fixwidth * 0.05,
+    paddingVertical: fixwidth * 0.037,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -117,36 +117,38 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingHorizontal: fixwidth * 0.03,
+
   },
   tabBtn: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+
   },
   emptySpace: {
     flex: 1,
   },
   label: {
-    fontSize: fixwidth * 0.026,
+    fontSize: fixwidth * 0.027,
     color: '#888',
     marginTop: 2,
   },
   activeLabel: {
-    color: '#4B4B4B',
+    color: '#eeeeee',
     fontWeight: 'bold',
   },
   fab: {
     position: 'absolute',
     top: -fixwidth * 0.067,
-    width: fixwidth * 0.21,
-    height: fixwidth * 0.21,
-    borderRadius: fixwidth * 0.07,
-    backgroundColor: '#b0957d',
+    width: fixwidth * 0.192,
+    height: fixwidth * 0.192,
+    borderRadius: fixwidth * 0.06,
+    backgroundColor: '#7ea4fa',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
-    borderWidth: fixwidth * 0.022,
-    borderColor: '#fff',
+    borderWidth: fixwidth * 0.017,
+    borderColor: '#f5f5f5',
   },
 });
 

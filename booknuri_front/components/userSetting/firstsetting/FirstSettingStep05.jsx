@@ -40,7 +40,7 @@ const Step05 = ({ onNext }) => {
 
       {/* 하단 고정 버튼 */}
       <FixedBottomButton
-        label="완료"
+        label="다음"
         onPress={handleSubmit}
         disabled={!selectedLibrary}
       />
@@ -52,8 +52,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: fixwidth*0.02,
+    paddingTop: fixwidth*0.027,
     alignItems: 'center',
+    width: '100%',
   },
   listWrapper: {
     flex: 1,

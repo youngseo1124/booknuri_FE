@@ -9,8 +9,8 @@ import {
 
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
-import SortTabs from '../../components/public/bookpublic/SortTabs';
-import BookReflectionItem from '../../components/public/bookpublic/BookReflectionItem';
+import SortTabs from '../../components/public/etc/SortTabs';
+import BookReflectionItem from '../../components/bookDetailpage/reflection/BookReflectionItem';
 import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';

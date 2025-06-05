@@ -6,9 +6,9 @@ import {
   Dimensions,
   Text,
 } from 'react-native';
-import SectionHeader from '../../public/bookpublic/SectionHeader';
+import SectionHeader from '../../public/etc/SectionHeader';
 import BookReviewItem from './BookReviewItem';
-import SortTabs from '../../public/bookpublic/SortTabs';
+import SortTabs from '../../public/etc/SortTabs';
 import MoreButton from '../../public/publicButton/MoreButton';
 import WriteButton from '../../public/publicButton/WriteButton';
 import AlertPopup from '../../public/publicPopup_Alert_etc/AlertPopup';

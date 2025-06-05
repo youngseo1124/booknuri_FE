@@ -84,7 +84,7 @@ const BookDetailScreen = ({ route, navigation }) => {
     const fetchSortedQuotes = async (sort = 'like') => {
         try {
             const res = await  getBookQuoteListByIsbn(isbn, sort);
-            console.log('📚 인용 응답:', res.data); // 👈 여기에 콘솔 찍어서 확인해봐
+            console.log('📚 인용 응답:', res.data);
             setSortedQuotes(res.data.quotes);
             setQuoteTotalCount(res.data.totalCount);
             setQuoteSort(sort);

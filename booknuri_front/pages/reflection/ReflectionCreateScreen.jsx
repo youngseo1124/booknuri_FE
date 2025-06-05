@@ -20,13 +20,13 @@ import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHead
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import ImageUploaderBox from '../../components/public/bookpublic/ImageUploaderBox';
+import ImageUploaderBox from '../../components/public/etc/ImageUploaderBox';
 import {createReflection, getMyReflectionByIsbn, uploadReflectionImages} from '../../apis/apiFunction_bookReflection';
 import api from '../../apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import InputBox from '../../components/public/publicInput/InputBox';
-import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import StarRatingBox from '../../components/public/etc/StarRatingBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import MyIntentModule from '../../MyIntentModule';
@@ -238,7 +238,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
               {/* 제목 입력 (InputBox는 그대로) */}
               <InputBox
                 placeholder="제목을 입력하세요"
-                maxLength={30}
+                maxLength={50}
                 inputHeight={fixwidth * 0.11}
                 value={title}
                 onChangeText={setTitle}
@@ -248,8 +248,8 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
               {/* 본문 작성 ✍ */}
               <TextInputBox
-                placeholder="최대 2000자까지 작성 가능"
-                maxLength={2000}
+                placeholder="최대 3000자까지 작성 가능"
+                maxLength={3000}
                 inputHeight={fixwidth * 0.5}
                 value={content}
                 onChangeText={setContent}

@@ -1,89 +1,94 @@
-import React, { useState, useContext } from "react";
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ScrollView } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LoginContext } from "../contexts/LoginContextProvider";
-import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup'; // ✅ 토스트 불러오기
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import CommonLayout from '../components/public/publicUtil/CommonLayout';
+import Header from '../components/public/publicHeader/Header';
+import { LoginContext } from '../contexts/LoginContextProvider';
+import HomeHeader from '../components/public/publicHeader/HomeHeader';
+import SearchInput from '../components/home/SearchInput';
+import VerticalGap from '../components/public/publicUtil/VerticalGap';
 
 const { width, height } = Dimensions.get("window");
 
-const HomeScreen = ({ navigation }) => {
-    const { logout } = useContext(LoginContext);
-    const insets = useSafeAreaInsets();
+const HomeScreen = () => {
+    const { userInfo } = useContext(LoginContext);
 
-    const [showToast, setShowToast] = useState(false); // ✅ 토스트 상태 추가
+    const [ageGroup, setAgeGroup] = useState('');
+    const [gender, setGender] = useState('');
+    const [libName, setLibName] = useState('');
+    const [libCode, setLibCode] = useState('');
+    const [searchFocused, setSearchFocused] = useState(false); // 🔍 상태관리
 
-    // ✅ 버튼 클릭 시 토스트 보이게
-    const handleShowToast = () => {
-        setShowToast(true);
-    };
+    useEffect(() => {
+        if (userInfo) {
+            const birthYear = Math.floor(userInfo.birth / 10000);
+            const currentYear = new Date().getFullYear();
+            const age = currentYear - birthYear;
+            const decade = Math.floor(age / 10) * 10;
+            setAgeGroup(`${decade}대`);
+            setGender(userInfo.gender === 'F' ? '여성' : '남성');
+            setLibName(userInfo.myLibrary?.libName || '');
+            setLibCode(userInfo.myLibrary?.libCode || '');
+        }
+    }, [userInfo]);
 
     return (
-      <View style={[styles.safeContainer, { paddingTop: insets.top, backgroundColor: "#000000" }]}>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <CommonLayout>
+          <HomeHeader title={libName || '마이 홈'} />
 
-              {/* 로그아웃 버튼 */}
-              <TouchableOpacity
-                onPress={logout}
-                style={styles.logoutButton}
-              >
-                  <Text style={styles.logoutText}>로그아웃 하기</Text>
-              </TouchableOpacity>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}
+          >
+              <View style={{ width: '100%' }}>
+                  <SearchInput
+                    libCode={libCode}
+                    onSearchSubmit={(keyword) => console.log('🔍 검색:', keyword)}
+                    onFocusChange={setSearchFocused} // 🔥 연결 포인트
+                  />
+              </View>
 
-              {/* ✅ 토스트 테스트용 버튼 */}
-              <TouchableOpacity
-                onPress={handleShowToast}
-                style={styles.toastButton}
-              >
-                  <Text style={styles.toastText}>토스트 테스트 버튼</Text>
-              </TouchableOpacity>
+              {!searchFocused && ( // 🔥 검색 포커스 중엔 아래 숨김
+                <>
+                    <VerticalGap />
+                    <Text style={styles.titleText}>🎉 홈화면</Text>
 
+                    <View style={styles.infoBox}>
+                        <Text style={styles.infoText}>👤 닉네임: {userInfo?.nickname}</Text>
+                        <Text style={styles.infoText}>🎂 연령대: {ageGroup}</Text>
+                        <Text style={styles.infoText}>🚻 성별: {gender}</Text>
+                        <Text style={styles.infoText}>🏛️ 도서관: {libName}</Text>
+                        <Text style={styles.infoText}>📘 도서관 코드: {libCode}</Text>
+                    </View>
+                </>
+              )}
           </ScrollView>
-
-          {/* ✅ 토스트 컴포넌트 (조건부 렌더링) */}
-          {showToast && (
-            <ToastPopup
-              message="테스트 테스트 "
-              onClose={() => setShowToast(false)}
-            />
-          )}
-      </View>
+      </CommonLayout>
     );
 };
 
+export default HomeScreen;
+
 const styles = StyleSheet.create({
-    safeContainer: {
-        flex: 1,
-    },
     scrollContainer: {
         alignItems: "center",
-        paddingTop: width * 0.04,
-        backgroundColor: "#faf5f2",
-        minHeight: height * 1,
+        paddingTop: width * 0.01,
+        minHeight: height,
+        backgroundColor: "#ffffff",
     },
-    logoutButton: {
-        backgroundColor: "#ff4444",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 10,
-        marginTop: 20,
+    titleText: {
+        fontSize: width * 0.05,
+        fontWeight: '700',
+        marginVertical: width * 0.03,
     },
-    logoutText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
+    infoBox: {
+        width: '90%',
+        backgroundColor: '#f5f5f5',
+        borderRadius: width * 0.03,
+        padding: width * 0.05,
     },
-    toastButton: {
-        backgroundColor: "#4444ff",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 10,
-        marginTop: 30,
-    },
-    toastText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
+    infoText: {
+        fontSize: width * 0.038,
+        marginBottom: width * 0.01,
     },
 });
-
-export default HomeScreen;

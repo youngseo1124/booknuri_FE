@@ -9,7 +9,7 @@ import {
 
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
-import SortTabs from '../../components/public/bookpublic/SortTabs';
+import SortTabs from '../../components/public/etc/SortTabs';
 import BookQuoteItem from '../../components/bookDetailpage/quote/BookQuoteItem';
 import {
   getBookQuoteListByIsbn,

@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart, faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
-import VerticalGap from '../publicUtil/VerticalGap';
+import VerticalGap from '../../public/publicUtil/VerticalGap';
 import {useNavigation} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');

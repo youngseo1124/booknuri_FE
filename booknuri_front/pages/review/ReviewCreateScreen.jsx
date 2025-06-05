@@ -17,7 +17,7 @@ import ReviewFormBlock from '../../components/bookDetailpage/review/ReviewWriteF
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import StarRatingBox from '../../components/public/etc/StarRatingBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox'; // ✅ 바뀐 부분
 
 const { width: fixwidth } = Dimensions.get('window');

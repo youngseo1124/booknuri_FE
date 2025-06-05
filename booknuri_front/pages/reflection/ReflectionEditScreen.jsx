@@ -11,7 +11,7 @@ import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHead
 import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import ImageUploaderBox from '../../components/public/bookpublic/ImageUploaderBox';
+import ImageUploaderBox from '../../components/public/etc/ImageUploaderBox';
 import {
   getMyReflectionByIsbn,
   updateReflection,
@@ -19,7 +19,7 @@ import {
 } from '../../apis/apiFunction_bookReflection';
 import InputBox from '../../components/public/publicInput/InputBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
-import StarRatingBox from '../../components/public/bookpublic/StarRatingBox';
+import StarRatingBox from '../../components/public/etc/StarRatingBox';
 import MyIntentModule from '../../MyIntentModule';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';

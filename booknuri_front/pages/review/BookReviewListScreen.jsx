@@ -9,7 +9,7 @@ import {
 
 import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
-import SortTabs from '../../components/public/bookpublic/SortTabs';
+import SortTabs from '../../components/public/etc/SortTabs';
 import BookReviewItem from '../../components/bookDetailpage/review/BookReviewItem';
 import BookDetailRatingSummaryBlock from '../../components/bookDetailpage/BookDetailRatingSummaryBlock';
 import WriteButton from '../../components/public/publicButton/WriteButton';

@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    height: width * 0.1,
+    height: width * 0.105,
   },
   backButton: {
     position: 'absolute',
-    left: width * 0.06,
-    top: width * 0.035,
+    left: width * 0.057,
+    top: width * 0.027,
   },
   title: {
     position: 'absolute',
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     right: 0,
     textAlign: 'center',
     transform: [{ translateY: -10 }],
-    fontSize: width * 0.047,
+    fontSize: width * 0.0457,
     color: '#111',
-    fontFamily: 'NotoSansKR-SemiBold',
+    fontFamily: 'NanumGothic-Bold',
     lineHeight: width * 0.05,
 
   },

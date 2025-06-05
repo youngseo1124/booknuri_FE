@@ -8,8 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { searchAutocomplete } from '../../apis/apiFunction_search';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
-import BookSuggestionItem from '../public/bookpublic/BookSuggestionItem';
-import VerticalGap from '../public/publicUtil/VerticalGap';
 import BookSuggestionCarousel from './BookSuggestionCarousel';
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -108,18 +106,31 @@ const SearchInput = ({ libCode, onSearchSubmit, onFocusChange }) => {
                     <Text style={styles.clearAll}>전체삭제</Text>
                   </TouchableOpacity>
                 </View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ alignItems: 'center' }}
+                >
                   <View style={styles.keywordRow}>
-                    {recentKeywords.map((word) => (
-                      <View key={word} style={styles.keywordChip}>
-                        <Text style={styles.keywordText}>{word}</Text>
-                        <TouchableOpacity onPress={() => handleKeywordDelete(word)}>
-                          <Text style={styles.deleteX}>✕</Text>
-                        </TouchableOpacity>
-                      </View>
+                    {recentKeywords.slice(0, 10).map((word) => (
+                      <TouchableOpacity
+                        key={word}
+                        onPress={() => {
+                          setSearchKeyword(word);        // ✅ 검색창에 삽입
+                          inputRef.current?.focus();     // ✅ 포커스 다시
+                        }}
+                      >
+                        <View style={styles.keywordChip}>
+                          <Text style={styles.keywordText}>{word}</Text>
+                          <TouchableOpacity onPress={() => handleKeywordDelete(word)}>
+                            <Text style={styles.deleteX}>✕</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </TouchableOpacity>
                     ))}
                   </View>
                 </ScrollView>
+
               </>
             ) : (
               <BookSuggestionCarousel
@@ -161,8 +172,8 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   keywordBox: {
-    marginTop: fixwidth * 0.03,
-    paddingHorizontal: fixwidth * 0.04,
+    marginTop: fixwidth * 0.017,
+    paddingHorizontal: fixwidth * 0.045,
   },
   rowBetween: {
     flexDirection: 'row',
@@ -171,27 +182,36 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: fixwidth * 0.04,
-    fontWeight: '600',
+    fontFamily: 'NotoSansKR-Medium',
+    lineHeight: fixwidth * 0.087,
   },
   clearAll: {
     color: '#999',
+    fontFamily: 'NotoSansKR-Regular',
     fontSize: fixwidth * 0.035,
+  },
+  keywordRow: {
+    flexDirection: 'row',
   },
   keywordChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: fixwidth * 0.025,
-    backgroundColor: '#eee',
-    borderRadius: fixwidth * 0.03,
-    marginRight: fixwidth * 0.015,
-    marginBottom: fixwidth * 0.015,
+    paddingHorizontal: fixwidth * 0.04,
+    paddingVertical: fixwidth * 0.017,
+    backgroundColor: '#ffffff',
+    borderRadius: fixwidth * 0.05,
+    marginRight: fixwidth * 0.037,
+    height: fixwidth * 0.09,
+    borderColor: 'rgba(0,0,0,0.34)',
+    borderWidth: fixwidth * 0.001,
   },
   keywordText: {
-    fontSize: fixwidth * 0.035,
-    marginRight: fixwidth * 0.015,
+    fontSize: fixwidth * 0.0357,
+    color: '#111',
+    marginRight: fixwidth * 0.037,
   },
   deleteX: {
-    fontSize: fixwidth * 0.035,
-    color: '#999',
+    fontSize: fixwidth * 0.0397,
+    color: '#888',
   },
 });

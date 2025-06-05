@@ -16,7 +16,7 @@ import LoginScreen from './pages/login&join/LoginScreen';
 import Signup00Screen from './pages/login&join/Signup00Screen';
 import Signup01Screen from './pages/login&join/Signup01Screen';
 import FirstSettingScreen from './pages/firstSetting/FirstSettingScreen';
-import HomeScreen from './pages/HomeScreen';
+import HomeScreen from './pages/home/HomeScreen';
 import MyLibrarySettingScreen from './pages/setting/MyLibrarySettingScreen';
 import TabNavigator from './navigation/TabNavigator';
 import ScanScreen from './pages/ScanScreen.jsx';
@@ -32,6 +32,7 @@ import BookQuoteEditScreen from './pages/quote/BookQuoteEditScreen';
 import QuoteCaptureScreen from './pages/QuoteCaptureScreen';
 import OCRScreen from './pages/quote/OCRScreen';
 import BookQuoteListScreen from './pages/quote/BookQuoteListScreen';
+import BookSearchResultScreen from './pages/home/BookSearchResultScreen';
 
 const Stack = createStackNavigator();
 
@@ -65,7 +66,7 @@ const AppInner = () => {
                 <>
                     <Stack.Screen name="MainTab" component={TabNavigator} />
                     <Stack.Screen name="ScanScreen" component={ScanScreen} />
-                    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+
                     <Stack.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
                     <Stack.Screen name="BookDetailScreen" component={BookDetailScreen} />
                     <Stack.Screen name="ReviewCreateScreen" component={ReviewCreateScreen} />
@@ -82,6 +83,8 @@ const AppInner = () => {
                     <Stack.Screen name={"BookQuoteListScreen"} component={BookQuoteListScreen} />
 
                     <Stack.Screen name={"OCRScreen"} component={OCRScreen} />
+
+                    <Stack.Screen name={"BookSearchResultScreen"} component={BookSearchResultScreen} />
 
                 </>
             )}

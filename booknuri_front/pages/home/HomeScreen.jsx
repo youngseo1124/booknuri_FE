@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
-import CommonLayout from '../components/public/publicUtil/CommonLayout';
-import Header from '../components/public/publicHeader/Header';
-import { LoginContext } from '../contexts/LoginContextProvider';
-import HomeHeader from '../components/public/publicHeader/HomeHeader';
-import SearchInput from '../components/home/SearchInput';
-import VerticalGap from '../components/public/publicUtil/VerticalGap';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
+import { LoginContext } from '../../contexts/LoginContextProvider';
+import HomeHeader from '../../components/public/publicHeader/HomeHeader';
+import SearchInput from '../../components/home/SearchInput';
+import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 
 const { width, height } = Dimensions.get("window");
 
@@ -16,7 +15,7 @@ const HomeScreen = () => {
     const [gender, setGender] = useState('');
     const [libName, setLibName] = useState('');
     const [libCode, setLibCode] = useState('');
-    const [searchFocused, setSearchFocused] = useState(false); // 🔍 상태관리
+    const [searchFocused, setSearchFocused] = useState(false);
 
     useEffect(() => {
         if (userInfo) {
@@ -43,12 +42,11 @@ const HomeScreen = () => {
               <View style={{ width: '100%' }}>
                   <SearchInput
                     libCode={libCode}
-                    onSearchSubmit={(keyword) => console.log('🔍 검색:', keyword)}
-                    onFocusChange={setSearchFocused} // 🔥 연결 포인트
+                    onFocusChange={setSearchFocused}
                   />
               </View>
 
-              {!searchFocused && ( // 🔥 검색 포커스 중엔 아래 숨김
+              {!searchFocused && (
                 <>
                     <VerticalGap />
                     <Text style={styles.titleText}>🎉 홈화면</Text>

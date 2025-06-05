@@ -9,10 +9,13 @@ import { searchAutocomplete } from '../../apis/apiFunction_search';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
 import BookSuggestionCarousel from './BookSuggestionCarousel';
+import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const SearchInput = ({ libCode, onSearchSubmit, onFocusChange }) => {
+const SearchInput = ({ libCode, onFocusChange }) => {
+  const navigation = useNavigation();
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [recentKeywords, setRecentKeywords] = useState([]);
@@ -39,7 +42,6 @@ const SearchInput = ({ libCode, onSearchSubmit, onFocusChange }) => {
   const handleSearchSubmit = (keyword) => {
     if (!keyword.trim()) return;
 
-    onSearchSubmit(keyword);
     const newList = [keyword, ...recentKeywords.filter(k => k !== keyword)].slice(0, 10);
     setRecentKeywords(newList);
     AsyncStorage.setItem('recent_keywords', JSON.stringify(newList));
@@ -47,6 +49,8 @@ const SearchInput = ({ libCode, onSearchSubmit, onFocusChange }) => {
     setIsFocused(false);
     onFocusChange?.(false);
     Keyboard.dismiss();
+
+    navigation.navigate('BookSearchResultScreen', { libCode, keyword });
   };
 
   const handleKeywordDelete = (word) => {
@@ -116,8 +120,8 @@ const SearchInput = ({ libCode, onSearchSubmit, onFocusChange }) => {
                       <TouchableOpacity
                         key={word}
                         onPress={() => {
-                          setSearchKeyword(word);        // ✅ 검색창에 삽입
-                          inputRef.current?.focus();     // ✅ 포커스 다시
+                          setSearchKeyword(word);
+                          inputRef.current?.focus();
                         }}
                       >
                         <View style={styles.keywordChip}>
@@ -130,7 +134,6 @@ const SearchInput = ({ libCode, onSearchSubmit, onFocusChange }) => {
                     ))}
                   </View>
                 </ScrollView>
-
               </>
             ) : (
               <BookSuggestionCarousel
@@ -151,7 +154,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     backgroundColor: "#ffffff",
-    paddingBottom: fixwidth * 0.17,
   },
   inputBox: {
     flexDirection: 'row',

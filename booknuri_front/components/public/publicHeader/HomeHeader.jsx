@@ -22,13 +22,14 @@ const HomeHeader = ({ title = '제목' }) => {
 
 const styles = StyleSheet.create({
   header: {
-    paddingVertical: fixwidth * 0.02,
+    paddingVertical: fixwidth * 0.025,
     paddingHorizontal: fixwidth * 0.07,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     height: fixwidth * 0.101,
     width: '100%',
+    marginBottom: fixwidth * 0.0037,
   },
   title: {
     fontSize: fixwidth * 0.0447,

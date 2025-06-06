@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import PaginationBar from '../../components/public/publicUtil/PaginationBar';
 import { Divider } from 'react-native-paper';
 import DividerBlock from '../../components/public/publicUtil/DividerBlock';
+import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton'; // ✅ 버튼 import 추가
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronDown, faCircle, faDotCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -38,8 +39,10 @@ const BookSearchResultScreen = ({ route, navigation }) => {
   const [sort, setSort] = useState('like');
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [page, setPage] = useState(1);
-  const [searchFocused, setSearchFocused] = useState(false); // ✅ 포커스 여부 상태 추가
+  const [searchFocused, setSearchFocused] = useState(false);
   const limit = 15;
+
+  const scrollRef = useRef(null); // ✅ 스크롤 참조
 
   const fetchBooks = async () => {
     const offset = (page - 1) * limit;
@@ -65,6 +68,7 @@ const BookSearchResultScreen = ({ route, navigation }) => {
       <HomeHeader title={libName || '도서 검색 결과'} />
 
       <ScrollView
+        ref={scrollRef} // ✅ 스크롤뷰 연결
         style={{ flex: 1 }}
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
@@ -72,10 +76,8 @@ const BookSearchResultScreen = ({ route, navigation }) => {
         <SearchInput libCode={libCode} onFocusChange={setSearchFocused} />
         <VerticalGap height={fixwidth * 0.027} />
 
-
         {!searchFocused && (
           <>
-            {/* 총 N개 + 정렬 */}
             <DividerBlock height={fixwidth * 0.033} />
             <View style={styles.resultHeader}>
               <Text style={styles.resultText}>총 {totalCount}권</Text>
@@ -97,7 +99,6 @@ const BookSearchResultScreen = ({ route, navigation }) => {
 
             <VerticalGap height={fixwidth * 0.022} />
 
-            {/* 도서 리스트 View로 래핑 */}
             <View style={styles.bookListBox}>
               {bookList.map((book, index) => (
                 <View key={book.id} style={{ width: '100%' }}>
@@ -114,14 +115,19 @@ const BookSearchResultScreen = ({ route, navigation }) => {
             </View>
 
             <VerticalGap height={fixwidth * 0.027} />
-
             <PaginationBar page={page} totalPages={totalPages} onPageChange={setPage} />
             <VerticalGap height={fixwidth * 0.2} />
           </>
         )}
       </ScrollView>
 
-      {/* 정렬 조건 선택 모달 */}
+
+      {!searchFocused && (
+        <ScrollToTopButton
+          onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
+        />
+      )}
+
       <Modal
         visible={isSortModalVisible}
         transparent

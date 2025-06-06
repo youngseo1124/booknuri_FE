@@ -44,17 +44,17 @@ const PureQuoteContent = ({
                             showTitle = false,
                             bookTitle = '',
                             capture = false,
+                            height = fixwidth * 0.55, // ✅ 기본값 설정
                           }) => {
   const fontSize = fixwidth * 0.02 + fontScale * 0.6;
   const lineHeight = fontSize * 1.37;
   const radius = capture ? 0 : (showTitle ? 0 : fixwidth * 0.03);
-
   const transparentFontColor = hexToRgba(fontColor, 0.9);
 
   return (
     <ImageBackground
       source={backgroundImages[backgroundId] || backgroundImages[1]}
-      style={[styles.card, { borderRadius: radius }]}
+      style={[styles.card, { height, borderRadius: radius }]}
       imageStyle={[styles.bgImage, { borderRadius: radius }]}
     >
       <View style={styles.textWrapper}>
@@ -73,6 +73,7 @@ const PureQuoteContent = ({
     </ImageBackground>
   );
 };
+
 
 export default PureQuoteContent;
 

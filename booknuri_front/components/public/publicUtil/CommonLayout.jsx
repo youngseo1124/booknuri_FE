@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const CommonLayout = ({ children }) => {
     return (
         <>
-            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <StatusBar />
 
                 <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
                     {children}

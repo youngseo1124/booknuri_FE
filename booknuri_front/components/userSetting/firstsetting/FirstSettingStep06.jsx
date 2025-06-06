@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import FixedBottomButton from '../../public/publicButton/FixedBottomButton';
 import StepOneImage from '../../../image/firstSetting/stepOne.png';
 import { LoginContext } from '../../../contexts/LoginContextProvider';
+import {userinfo} from '../../../apis/apiFunction';
 
 const { height, width: fixwidth } = Dimensions.get('window');
 
@@ -19,14 +20,18 @@ const Step06 = () => {
   const navigation = useNavigation();
   const { setUserInfo } = useContext(LoginContext);
 
-  const onNext = () => {
-    setUserInfo(prev => ({
-      ...prev,
-      gender: 'male',
-      birth: 2001,
-      myLibrary: { id: 1, name: '대구중앙도서관' },
-    }));
-    navigation.navigate('MainTab');
+  const onNext = async () => {
+    try {
+      const res = await userinfo();
+      if (res.status === 200) {
+        setUserInfo(res.data); 
+        navigation.navigate('MainTab');
+      } else {
+        console.warn("유저 정보 가져오기 실패", res);
+      }
+    } catch (err) {
+      console.error('❌ 유저 정보 갱신 실패:', err);
+    }
   };
 
   return (

@@ -64,7 +64,8 @@ const DPBookQuotesBlock = ({
               quoteText={'아직 인용이 없어요.\n첫 인용을 작성해주세요.'}
               backgroundId={18}
               fontColor={'rgba(0,0,0,0.89)'}
-              fontScale={10}
+              fontScale={7.7}
+              height={fixwidth * 0.5}
             />
           </View>
           <VerticalGap height={fixwidth*0.022}/>

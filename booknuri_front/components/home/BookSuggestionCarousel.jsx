@@ -12,9 +12,13 @@ const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
   const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width);
   const [currentPage, setCurrentPage] = useState(0);
 
+  // ✅ 안전하게 pages 만들기 (빈 배열 방지)
   const pages = [];
   for (let i = 0; i < Math.min(books.length, booksPerPage * maxPage); i += booksPerPage) {
-    pages.push(books.slice(i, i + booksPerPage));
+    const sliced = books.slice(i, i + booksPerPage);
+    if (sliced.length > 0) {
+      pages.push(sliced);
+    }
   }
 
   const handleScroll = (event) => {
@@ -24,9 +28,7 @@ const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
   };
 
   return (
-    <View
-      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)} // 👈 부모의 실제 너비 측정
-    >
+    <View onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}>
       <ScrollView
         horizontal
         pagingEnabled
@@ -37,13 +39,13 @@ const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
         {pages.map((page, pageIndex) => (
           <View
             key={pageIndex}
-            style={[styles.page, { width: containerWidth }]} // 👈 부모 따라가게
+            style={[styles.page, { width: containerWidth }]}
           >
-            {page.map((book, index) => (
+            {(page || []).map((book, index) => (
               <TouchableOpacity
                 key={book.bookId}
                 activeOpacity={0.8}
-                onPress={() => onItemPress(book.bookname)}
+                onPress={() => onItemPress?.(book.bookname)}
               >
                 <View style={{ width: '100%' }}>
                   <BookSuggestionItem book={book} />

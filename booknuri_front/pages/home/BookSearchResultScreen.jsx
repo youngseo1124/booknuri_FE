@@ -46,16 +46,23 @@ const BookSearchResultScreen = ({ route, navigation }) => {
 
   const fetchBooks = async () => {
     const offset = (page - 1) * limit;
+    console.log(`[📚FETCH] keyword: ${keyword}, sort: ${sort}, offset: ${offset}, limit: ${limit}`);
     try {
       const res = await searchBooks({ libCode, keyword, sort, offset, limit });
       setBookList(res.data.results || []);
       setTotalCount(res.data.totalCount || 0);
+      console.log('[✅API 성공]', res.data);
     } catch (err) {
       console.log('❌ 검색 실패:', err);
     }
   };
 
   useEffect(() => {
+    setPage(1); // 🔥 keyword나 정렬 바뀌면 페이지 1로 초기화
+  }, [keyword, sort]);
+
+  useEffect(() => {
+    console.log('[🔍useEffect]', { keyword, sort, page, searchFocused });
     if (!searchFocused) {
       fetchBooks();
     }
@@ -73,7 +80,10 @@ const BookSearchResultScreen = ({ route, navigation }) => {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <SearchInput libCode={libCode} onFocusChange={setSearchFocused} />
+        <SearchInput libCode={libCode} onFocusChange={(focus) => {
+          console.log('[🧠포커스 전환]', focus);
+          setSearchFocused(focus);
+        }} />
         <VerticalGap height={fixwidth * 0.027} />
 
         {!searchFocused && (
@@ -100,6 +110,9 @@ const BookSearchResultScreen = ({ route, navigation }) => {
             <VerticalGap height={fixwidth * 0.022} />
 
             <View style={styles.bookListBox}>
+              {bookList.length === 0 && (
+                <Text style={{ color: 'red' }}>[⚠️] 책 리스트 없음!</Text>
+              )}
               {bookList.map((book, index) => (
                 <View key={book.id} style={{ width: '100%' }}>
                   <BookSuggestionItem

@@ -24,7 +24,7 @@ const Step06 = () => {
     try {
       const res = await userinfo();
       if (res.status === 200) {
-        setUserInfo(res.data); 
+        setUserInfo(res.data);
         navigation.navigate('MainTab');
       } else {
         console.warn("유저 정보 가져오기 실패", res);

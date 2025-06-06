@@ -14,7 +14,7 @@ const PaginationBar = ({ page, totalPages, onPageChange }) => {
       {/* 이전 페이지 그룹 */}
       {startPage > 1 && (
         <TouchableOpacity onPress={() => onPageChange(startPage - 1)}>
-          <Text style={styles.pageBtn}>{'<'}</Text>
+          <Text style={styles.pageBtntwo}>{'<'}</Text>
         </TouchableOpacity>
       )}
 
@@ -28,7 +28,7 @@ const PaginationBar = ({ page, totalPages, onPageChange }) => {
       {/* 다음 페이지 그룹 */}
       {endPage < totalPages && (
         <TouchableOpacity onPress={() => onPageChange(endPage + 1)}>
-          <Text style={styles.pageBtn}>{'>'}</Text>
+          <Text style={styles.pageBtntwo}>{'>'}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -42,15 +42,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: fixwidth * 0.03,
-    gap: fixwidth * 0.025,
   },
   pageBtn: {
-    fontSize: fixwidth * 0.038,
+    fontSize: fixwidth * 0.037,
     color: '#999',
+    paddingHorizontal: fixwidth * 0.022,
     fontFamily: 'NotoSansKR-Regular',
+    lineHeight: fixwidth * 0.063,
+  },
+  pageBtntwo: {
+    fontSize: fixwidth * 0.037,
+    color: '#999',
+    marginHorizontal: fixwidth * 0.01,
+    paddingHorizontal: fixwidth * 0.0177,
+    fontFamily: 'NotoSansKR-Regular',
+    lineHeight: fixwidth * 0.061,
+    borderWidth: fixwidth * 0.002,
+    borderRadius: fixwidth * 0.014,
+    borderColor:'rgba(0,0,0,0.13)',
   },
   activePage: {
-    color: '#000',
-    fontWeight: 'bold',
+    color: 'rgba(255,255,255,0.94)',
+    backgroundColor: 'rgba(99,146,255,0.77)',
+    borderRadius: fixwidth * 0.4,
+    fontFamily: 'NotoSansKR-SemiBold',
   },
 });

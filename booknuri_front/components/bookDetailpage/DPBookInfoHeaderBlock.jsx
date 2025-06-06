@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: '67%',
+    width: '62.7%',
     borderWidth: fixwidth*0.0017,
     borderColor: '#878787',
     borderRadius:fixwidth*0.0099,

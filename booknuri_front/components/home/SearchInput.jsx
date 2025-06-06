@@ -76,8 +76,9 @@ const SearchInput = ({ libCode, onFocusChange }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleBlurDismiss}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      {/* 입력창만 키보드 dismiss 감싸기 */}
+      <TouchableWithoutFeedback onPress={handleBlurDismiss}>
         <View style={styles.inputBox}>
           {isFocused && (
             <TouchableOpacity onPress={handleBlurDismiss}>
@@ -99,52 +100,54 @@ const SearchInput = ({ libCode, onFocusChange }) => {
             <FontAwesomeIcon icon={faSearch} size={fixwidth * 0.05} color="#888" />
           </TouchableOpacity>
         </View>
+      </TouchableWithoutFeedback>
 
-        {isFocused && (
-          <View style={styles.keywordBox}>
-            {searchKeyword.trim() === '' ? (
-              <>
-                <View style={styles.rowBetween}>
-                  <Text style={styles.sectionTitle}>최근 검색어</Text>
-                  <TouchableOpacity onPress={handleAllDelete}>
-                    <Text style={styles.clearAll}>전체삭제</Text>
-                  </TouchableOpacity>
+      {isFocused && (
+        <View style={styles.keywordBox}>
+          {searchKeyword.trim() === '' ? (
+            <>
+              <View style={styles.rowBetween}>
+                <Text style={styles.sectionTitle}>최근 검색어</Text>
+                <TouchableOpacity onPress={handleAllDelete}>
+                  <Text style={styles.clearAll}>전체삭제</Text>
+                </TouchableOpacity>
+              </View>
+              <ScrollView
+                horizontal
+                keyboardShouldPersistTaps="handled"
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ alignItems: 'center' }}
+              >
+                <View style={styles.keywordRow}>
+                  {recentKeywords.slice(0, 10).map((word) => (
+                    <TouchableOpacity
+                      key={word}
+                      onPress={() => {
+                        Keyboard.dismiss(); // ✅ 키보드 내리고
+                        setSearchKeyword(word); // ✅ 입력창에 값만 넣기 (submit은 안 함)
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={styles.keywordChip}>
+                        <Text style={styles.keywordText}>{word}</Text>
+                        <TouchableOpacity onPress={() => handleKeywordDelete(word)}>
+                          <Text style={styles.deleteX}>✕</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ alignItems: 'center' }}
-                >
-                  <View style={styles.keywordRow}>
-                    {recentKeywords.slice(0, 10).map((word) => (
-                      <TouchableOpacity
-                        key={word}
-                        onPress={() => {
-                          setSearchKeyword(word);
-                          inputRef.current?.focus();
-                        }}
-                      >
-                        <View style={styles.keywordChip}>
-                          <Text style={styles.keywordText}>{word}</Text>
-                          <TouchableOpacity onPress={() => handleKeywordDelete(word)}>
-                            <Text style={styles.deleteX}>✕</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </ScrollView>
-              </>
-            ) : (
-              <BookSuggestionCarousel
-                books={relatedKeywords}
-                onItemPress={handleSearchSubmit}
-              />
-            )}
-          </View>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
+              </ScrollView>
+            </>
+          ) : (
+            <BookSuggestionCarousel
+              books={relatedKeywords}
+              onItemPress={handleSearchSubmit}
+            />
+          )}
+        </View>
+      )}
+    </View>
   );
 };
 

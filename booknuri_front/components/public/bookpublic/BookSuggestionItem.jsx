@@ -1,11 +1,18 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+// BookSuggestionItem.jsx
+import { TouchableOpacity, Image, Text, View, StyleSheet, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookSuggestionItem = ({ book, thumbnailWidth = fixwidth * 0.167, thumbnailHeight = fixwidth * 0.23 }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate('BookDetailScreen', { isbn: book.isbn13 });
+  };
+
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity onPress={handlePress} style={styles.itemContainer} activeOpacity={0.77} >
       <Image
         source={{ uri: book.bookImageURL }}
         style={[styles.thumbnail, { width: thumbnailWidth, height: thumbnailHeight }]}
@@ -14,11 +21,12 @@ const BookSuggestionItem = ({ book, thumbnailWidth = fixwidth * 0.167, thumbnail
         <Text numberOfLines={1} style={styles.bookname}>{book.bookname}</Text>
         <Text numberOfLines={1} style={styles.authors}>{book.authors}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export default BookSuggestionItem;
+
 
 const styles = StyleSheet.create({
   itemContainer: {

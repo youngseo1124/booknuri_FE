@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { searchBooks } from '../../apis/apiFunction_search';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
@@ -17,8 +18,7 @@ import PaginationBar from '../../components/public/publicUtil/PaginationBar';
 import { Divider } from 'react-native-paper';
 import DividerBlock from '../../components/public/publicUtil/DividerBlock';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import CurvedTabBar from '../../components/CurvedTabBar'; // ✅ 직접 렌더링
+import { faChevronDown, faCircle, faDotCircle } from '@fortawesome/free-solid-svg-icons';
 
 const { width: fixwidth, height } = Dimensions.get('window');
 
@@ -26,7 +26,8 @@ const sortOptions = [
   { key: 'like', label: '인기순' },
   { key: 'score', label: '정확도순' },
   { key: 'new', label: '최신순' },
-  { key: 'review', label: '리뷰많은순' },
+  { key: 'old', label: '출판일순' },
+  { key: 'review', label: '리뷰 많은순' },
 ];
 
 const BookSearchResultScreen = ({ route, navigation }) => {
@@ -35,9 +36,10 @@ const BookSearchResultScreen = ({ route, navigation }) => {
   const [bookList, setBookList] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [sort, setSort] = useState('like');
-  const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [searchFocused, setSearchFocused] = useState(false); // ✅ 포커스 여부 상태 추가
+  const limit = 15;
 
   const fetchBooks = async () => {
     const offset = (page - 1) * limit;
@@ -51,8 +53,10 @@ const BookSearchResultScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    fetchBooks();
-  }, [keyword, sort, page]);
+    if (!searchFocused) {
+      fetchBooks();
+    }
+  }, [keyword, sort, page, searchFocused]);
 
   const totalPages = Math.ceil(totalCount / limit);
 
@@ -65,71 +69,92 @@ const BookSearchResultScreen = ({ route, navigation }) => {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <SearchInput libCode={libCode} onFocusChange={() => {}} />
+        <SearchInput libCode={libCode} onFocusChange={setSearchFocused} />
         <VerticalGap height={fixwidth * 0.027} />
-        <DividerBlock height={fixwidth * 0.037} />
 
-        {/* 총 N개 + 정렬 */}
-        <View style={styles.resultHeader}>
-          <Text style={styles.resultText}>총 {totalCount}개</Text>
-          <TouchableOpacity
-            onPress={() => setSortDropdownVisible(prev => !prev)}
-            style={styles.sortSelect}
-          >
-            <Text style={styles.sortText}>
-              {sortOptions.find(opt => opt.key === sort)?.label}
-            </Text>
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              size={fixwidth * 0.035}
-              color="#333"
-              style={{ marginLeft: fixwidth * 0.01 }}
-            />
-          </TouchableOpacity>
-        </View>
 
-        {/* 정렬 드롭다운 */}
-        {sortDropdownVisible && (
-          <View style={styles.dropdown}>
+        {!searchFocused && (
+          <>
+            {/* 총 N개 + 정렬 */}
+            <DividerBlock height={fixwidth * 0.033} />
+            <View style={styles.resultHeader}>
+              <Text style={styles.resultText}>총 {totalCount}권</Text>
+              <TouchableOpacity
+                onPress={() => setIsSortModalVisible(true)}
+                style={styles.sortSelect}
+              >
+                <Text style={styles.sortText}>
+                  {sortOptions.find(opt => opt.key === sort)?.label}
+                </Text>
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  size={fixwidth * 0.035}
+                  color="#333"
+                  style={{ marginLeft: fixwidth * 0.01 }}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <VerticalGap height={fixwidth * 0.022} />
+
+            {/* 도서 리스트 View로 래핑 */}
+            <View style={styles.bookListBox}>
+              {bookList.map((book, index) => (
+                <View key={book.id} style={{ width: '100%' }}>
+                  <BookSuggestionItem
+                    book={book}
+                    thumbnailWidth={fixwidth * 0.22}
+                    thumbnailHeight={fixwidth * 0.3}
+                  />
+                  {index !== bookList.length - 1 && (
+                    <Divider style={styles.divider} />
+                  )}
+                </View>
+              ))}
+            </View>
+
+            <VerticalGap height={fixwidth * 0.027} />
+
+            <PaginationBar page={page} totalPages={totalPages} onPageChange={setPage} />
+            <VerticalGap height={fixwidth * 0.2} />
+          </>
+        )}
+      </ScrollView>
+
+      {/* 정렬 조건 선택 모달 */}
+      <Modal
+        visible={isSortModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsSortModalVisible(false)}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.modalBackdrop}
+          onPressOut={() => setIsSortModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
             {sortOptions.map(opt => (
               <TouchableOpacity
                 key={opt.key}
+                style={styles.sortItem}
                 onPress={() => {
                   setSort(opt.key);
-                  setSortDropdownVisible(false);
+                  setIsSortModalVisible(false);
                   setPage(1);
                 }}
               >
-                <Text style={styles.dropdownItem}>{opt.label}</Text>
+                <Text style={styles.sortItemText}>{opt.label}</Text>
+                <FontAwesomeIcon
+                  icon={opt.key === sort ? faDotCircle : faCircle}
+                  color={opt.key === sort ? '#7ea4fa' : '#ccc'}
+                  size={fixwidth * 0.045}
+                />
               </TouchableOpacity>
             ))}
           </View>
-        )}
-
-        {/* 도서 리스트 */}
-        {bookList.map((book, index) => (
-          <View key={book.id} style={{ width: '100%' }}>
-            <BookSuggestionItem
-              book={book}
-              thumbnailWidth={fixwidth * 0.22}
-              thumbnailHeight={fixwidth * 0.3}
-            />
-            {index !== bookList.length - 1 && (
-              <Divider style={styles.divider} />
-            )}
-          </View>
-        ))}
-
-        <PaginationBar page={page} totalPages={totalPages} onPageChange={setPage} />
-        <VerticalGap height={fixwidth * 0.2} />
-        {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
-      </ScrollView>
-
-
-  {/*    // ✅ 포커스 없음 처리!
-      <CurvedTabBar focusedTabName={null} navigation={navigation} />*/}
-
-
+        </TouchableOpacity>
+      </Modal>
     </CommonLayout>
   );
 };
@@ -141,6 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     minHeight: height,
+    paddingBottom: fixwidth * 0.077,
   },
   resultHeader: {
     width: '100%',
@@ -148,44 +174,59 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: '5%',
     alignItems: 'center',
+    borderBottomWidth: fixwidth * 0.0024,
+    borderBottomColor: 'rgba(0,0,0,0.13)',
   },
   resultText: {
-    fontSize: fixwidth * 0.04,
-    fontFamily: 'NotoSansKR-Regular',
+    fontSize: fixwidth * 0.037,
+    fontFamily: 'NotoSansKR-Medium',
   },
   sortSelect: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: fixwidth * 0.03,
-    paddingVertical: fixwidth * 0.01,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: fixwidth * 0.015,
+    borderWidth: fixwidth * 0.0027,
+    borderColor: 'rgba(0,0,0,0.17)',
+    borderRadius: fixwidth * 0.011,
     backgroundColor: '#fff',
   },
   sortText: {
-    fontSize: fixwidth * 0.035,
+    fontSize: fixwidth * 0.03,
     fontFamily: 'NotoSansKR-Regular',
     color: '#333',
+    lineHeight: fixwidth * 0.071,
   },
-  dropdown: {
-    position: 'absolute',
-    top: fixwidth * 0.47,
-    right: fixwidth * 0.05,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: fixwidth * 0.01,
-    zIndex: 999,
-  },
-  dropdownItem: {
-    padding: fixwidth * 0.025,
-    fontSize: fixwidth * 0.035,
-    fontFamily: 'NotoSansKR-Regular',
+  bookListBox: {
+    width: '100%',
+    paddingHorizontal: fixwidth * 0.03,
   },
   divider: {
     marginVertical: fixwidth * 0.02,
-    backgroundColor: 'rgba(0,0,0,0.09)',
-    height: fixwidth * 0.001,
+    backgroundColor: 'rgba(0,0,0,0.12)',
+    height: fixwidth * 0.0011,
+  },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: fixwidth * 0.02,
+    paddingVertical: fixwidth * 0.02,
+  },
+  sortItem: {
+    paddingHorizontal: fixwidth * 0.04,
+    paddingVertical: fixwidth * 0.035,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sortItemText: {
+    fontSize: fixwidth * 0.035,
+    fontFamily: 'NotoSansKR-Regular',
+    color: '#333',
   },
 });

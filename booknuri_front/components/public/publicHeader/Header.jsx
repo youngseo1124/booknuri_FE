@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     right: 0,
     textAlign: 'center',
     transform: [{ translateY: -10 }],
-    fontSize: width * 0.0457,
+    fontSize: width * 0.0447,
     color: '#111',
-    fontFamily: 'NanumGothic-Bold',
+    fontFamily: 'NotoSansKR-Medium',
     lineHeight: width * 0.05,
 
   },

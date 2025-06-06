@@ -31,9 +31,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    fontSize: fixwidth * 0.0457,
+    fontSize: fixwidth * 0.0447,
     color: '#111',
-    fontFamily: 'NanumGothic-Bold',
+    fontFamily: 'NotoSansKR-Medium',
     lineHeight: fixwidth * 0.05,
     textAlign: 'center',
   },

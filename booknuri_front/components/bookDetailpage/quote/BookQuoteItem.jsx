@@ -14,6 +14,7 @@ const BookQuoteItem = ({
                          onEditPress,
                          onDeletePress,
                          onReportPress,
+                         onQuotePress,
                        }) => {
   const {
     quoteText,
@@ -25,6 +26,7 @@ const BookQuoteItem = ({
     likeCount,
     likedByCurrentUser,
     writtenByCurrentUser,
+    isbn13,
     id,
   } = item;
 
@@ -36,12 +38,21 @@ const BookQuoteItem = ({
   return (
     <View style={styles.container}>
       {/* 💬 순수 인용 카드 */}
-      <PureQuoteContent
-        quoteText={quoteText}
-        backgroundId={backgroundId}
-        fontColor={fontColor}
-        fontScale={fontScale}
-      />
+      <TouchableOpacity
+        activeOpacity={onQuotePress ? 0.907 : 1}
+        onPress={() => {
+          if (onQuotePress) {
+            onQuotePress(isbn13);
+          }
+        }}
+      >
+        <PureQuoteContent
+          quoteText={quoteText}
+          backgroundId={backgroundId}
+          fontColor={fontColor}
+          fontScale={fontScale}
+        />
+      </TouchableOpacity>
 
       <VerticalGap height={fixwidth*0.017}/>
 

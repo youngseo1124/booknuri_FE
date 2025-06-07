@@ -123,9 +123,9 @@ const PrivateRecommendBannerCarousel = () => {
       style={styles.container}
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
-      <VerticalGap height={fixwidth * 0.0127} />
+      <VerticalGap height={fixwidth * 0.0147} />
       <SectionHeaderWithIcon label="맞춤 추천" />
-      <VerticalGap height={fixwidth * 0.0127} />
+      <VerticalGap height={fixwidth * 0.0207} />
 
       <ScrollView
         ref={scrollRef}

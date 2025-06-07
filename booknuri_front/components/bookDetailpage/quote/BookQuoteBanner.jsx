@@ -9,6 +9,7 @@ const BookQuoteBanner = ({
                            onEditPress,
                            onDeletePress,
                            onReportPress,
+                           onQuotePress
                          }) => {
   const itemWidth = containerWidth * 0.9;
   const gap = containerWidth * 0.04;
@@ -32,6 +33,8 @@ const BookQuoteBanner = ({
               onEditPress={onEditPress}
               onDeletePress={onDeletePress}
               onReportPress={onReportPress}
+              //있을떄만
+              {...(onQuotePress && { onQuotePress })}
             />
           </View>
         )}
@@ -47,6 +50,6 @@ export default BookQuoteBanner;
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginVertical: fixwidth*0.022,
+    marginVertical: fixwidth*0.0,
   },
 });

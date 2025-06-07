@@ -92,3 +92,18 @@ export const extractTextFromImage = (imageAsset) => {
     },
   }).then(res => res.data.text);
 };
+
+/**
+ * 🔥 전체 인기 인용 리스트 조회
+ * 좋아요 수 + 작성일 기반 점수로 인기순 정렬됨
+ * 오래된 인용도 좋아요 많으면 상위 유지됨
+ * 최신 인용은 일시적으로 상위 노출 가능
+ *
+ * @param {number} offset - 시작 인덱스 (기본값 0)
+ * @param {number} limit - 개수 (기본값 10)
+ */
+export const getPopularBookQuotes = (offset = 0, limit = 10) => {
+  return api.get('/book/quote/popular', {
+    params: { offset, limit },
+  });
+};

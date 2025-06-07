@@ -11,6 +11,7 @@ import DividerBlock from '../../components/public/publicUtil/DividerBlock';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton';
 import DemographicRecommendationBlock from '../../components/home/DemographicRecommendationBlock';
+import TodayQuoteRecommendationBlock from '../../components/home/TodayQuoteRecommendationBlock';
 
 const { width: fixwidth, height } = Dimensions.get("window");
 
@@ -69,9 +70,15 @@ const HomeScreen = () => {
                     <PrivateRecommendBannerCarousel />
 
 
+
                     <View style={styles.horizontalLine} />
 
                     <BestsellerRecommendationBlock />
+
+                    {/* 🟨 여기다가 오늘의 인용 추가 */}
+                    <View style={styles.horizontalLine} />
+                    <TodayQuoteRecommendationBlock />
+
 
 
 
@@ -84,14 +91,6 @@ const HomeScreen = () => {
 
 
 
-
-                    <View style={styles.infoBox}>
-                        <Text style={styles.infoText}>👤 닉네임: {userInfo?.nickname}</Text>
-                        <Text style={styles.infoText}>🎂 연령대: {ageGroup}</Text>
-                        <Text style={styles.infoText}>🚻 성별: {gender}</Text>
-                        <Text style={styles.infoText}>🏛️ 도서관: {libName}</Text>
-                        <Text style={styles.infoText}>📘 도서관 코드: {libCode}</Text>
-                    </View>
                 </>
               )}
           </ScrollView>
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
         flexGrow: 1, // ✅ 요게 핵심!!!
         alignItems: 'center',
         paddingTop: fixwidth * 0.01,
-        paddingBottom: fixwidth * 0.2, // 하단 스크롤 여유
+        paddingBottom: fixwidth * 0.27, // 하단 스크롤 여유
         backgroundColor: '#ffffff',
     },
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator, Text } from 'react-native';
 import CommonLayout from '../components/public/publicUtil/CommonLayout';
 import Header from '../components/public/publicHeader/Header';
@@ -26,6 +26,7 @@ import DPBookQuotesBlock from '../components/bookDetailpage/DPBookQuotesBlock';
 import ScrollToTopButton from '../components/public/publicUtil/ScrollToTopButton';
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
 import { useFocusEffect } from '@react-navigation/native';
+import {BannerRefreshContext} from '../contexts/BannerRefreshContext';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -52,16 +53,15 @@ const BookDetailScreen = ({ route, navigation }) => {
 
     const [showToast, setShowToast] = useState(false);
     const [isReady, setIsReady] = useState(false);
+    const { increaseViewedBookCount } = useContext(BannerRefreshContext);
 
-    // ✅ 로그용
-    useEffect(() => {
-        console.log('[📗 bookData 변경됨]', bookData);
-        if (bookData?.bookInfo) {
-            console.log('✅ bookInfo 있음!', bookData.bookInfo.title);
-        } else {
-            console.log('❌ bookInfo 없음!');
-        }
-    }, [bookData]);
+
+    useFocusEffect(
+      useCallback(() => {
+          increaseViewedBookCount();
+          initLoad();
+      }, [isbn])
+    );
 
     useFocusEffect(
       useCallback(() => {

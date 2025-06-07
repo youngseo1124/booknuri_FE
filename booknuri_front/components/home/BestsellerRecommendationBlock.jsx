@@ -9,8 +9,6 @@ import {
 import SectionHeaderWithIcon from '../public/publicHeader/SectionHeaderWithIcon';
 import VerticalGap from '../public/publicUtil/VerticalGap';
 import BookSuggestionCarousel from '../public/bookpublic/BookSuggestionCarousel';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import CategorySelector from '../public/publicButton/CategorySelector';
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -25,35 +23,46 @@ const BestsellerRecommendationBlock = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('weekly');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryList, setCategoryList] = useState([]);
-  const [books, setBooks] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [carouselResetKey, setCarouselResetKey] = useState(0); // ✅ 리셋 트리거
+  const [carouselResetKey, setCarouselResetKey] = useState(0);
+  const [bookList, setBookList] = useState([]);
 
+  // 카테고리 목록 불러오기
   useEffect(() => {
     getMainCategoryList()
       .then(res => setCategoryList(res.data || []))
       .catch(err => console.error('🔥 카테고리 로드 실패:', err));
   }, []);
 
+  // 기간 or 카테고리 변경 시 도서 추천 다시 불러오기
   useEffect(() => {
+    let ignore = false;
+
     const fetchBooks = async () => {
       try {
         const res = await getBestsellerBooks({
           period: selectedPeriod,
-          mainCategoryId: selectedCategory || undefined,
+          mainCategoryId: selectedCategory ?? undefined,
         });
-        setBooks(res.data || []);
-      } catch (err) {
-        console.error('🔥 베스트셀러 추천 실패:', err);
+        if (!ignore) {
+          setBookList(res.data);
+          setCarouselResetKey(prev => prev + 1);
+        }
+      } catch (e) {
+        console.error('🔥 베스트셀러 불러오기 실패:', e);
       }
     };
+
     fetchBooks();
+
+    return () => {
+      ignore = true;
+    };
   }, [selectedPeriod, selectedCategory]);
 
   const handleCategorySelect = (id) => {
     setSelectedCategory(id);
     setModalVisible(false);
-    setCarouselResetKey(prev => prev + 1); // ✅ 페이지 리셋
   };
 
   return (
@@ -64,14 +73,13 @@ const BestsellerRecommendationBlock = () => {
       <View style={styles.periodButtonRow}>
         {periods.map((p, idx) => (
           <TouchableOpacity
-            activeOpacity={0.77}
             key={p.value}
+            onPress={() => setSelectedPeriod(p.value)}
             style={[
               styles.periodBtn,
               selectedPeriod === p.value && styles.periodBtnSelected,
               { marginRight: idx !== periods.length - 1 ? fixwidth * 0.02 : 0 },
             ]}
-            onPress={() => setSelectedPeriod(p.value)}
           >
             <Text
               style={[
@@ -83,7 +91,6 @@ const BestsellerRecommendationBlock = () => {
             </Text>
           </TouchableOpacity>
         ))}
-
         <CategorySelector
           selectedCategory={selectedCategory}
           categoryList={categoryList}
@@ -94,8 +101,8 @@ const BestsellerRecommendationBlock = () => {
       <VerticalGap height={fixwidth * 0.03} />
 
       <BookSuggestionCarousel
-        key={carouselResetKey} // ✅ 리셋용 key
-        books={books}
+        key={carouselResetKey}
+        books={bookList}
         booksPerPage={5}
         maxPage={4}
         thumbnailWidth={fixwidth * 0.22}
@@ -106,7 +113,7 @@ const BestsellerRecommendationBlock = () => {
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)} // ✅ 뒤로가기 대응
+        onRequestClose={() => setModalVisible(false)}
       >
         <TouchableOpacity
           style={styles.modalBackground}
@@ -143,9 +150,8 @@ const styles = StyleSheet.create({
   periodButtonRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: fixwidth * 0.0,
     paddingHorizontal: fixwidth * 0.014,
-    gap:fixwidth*0.037
+    gap: fixwidth * 0.037,
   },
   periodBtn: {
     flex: 1,
@@ -161,29 +167,12 @@ const styles = StyleSheet.create({
   periodBtnText: {
     fontSize: fixwidth * 0.035,
     fontFamily: 'NotoSansKR-Regular',
-    lineHeight:fixwidth * 0.047,
+    lineHeight: fixwidth * 0.047,
     color: '#333',
   },
   periodBtnTextSelected: {
     color: '#fff',
     fontFamily: 'NotoSansKR-Medium',
-  },
-  sortItem: {
-    paddingHorizontal: fixwidth * 0.04,
-    paddingVertical: fixwidth * 0.017,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: fixwidth * 0.017,
-    borderWidth: fixwidth * 0.001,
-    borderColor: 'rgba(0,0,0,0.57)',
-  },
-  sortItemText: {
-    fontSize: fixwidth * 0.035,
-    fontFamily: 'NotoSansKR-Regular',
-    lineHeight:fixwidth * 0.051,
-    color: '#333',
   },
   modalBackground: {
     flex: 1,

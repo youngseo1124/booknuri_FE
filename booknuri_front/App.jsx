@@ -33,6 +33,7 @@ import QuoteCaptureScreen from './pages/QuoteCaptureScreen';
 import OCRScreen from './pages/quote/OCRScreen';
 import BookQuoteListScreen from './pages/quote/BookQuoteListScreen';
 import BookSearchResultScreen from './pages/home/BookSearchResultScreen';
+import {BannerRefreshProvider} from './contexts/BannerRefreshContext';
 
 const Stack = createStackNavigator();
 
@@ -98,7 +99,9 @@ const App = () => {
         <NavigationContainer ref={navigationRef}>
             <SafeAreaProvider>
                 <LoginContextProvider>
-                    <AppInner />
+                    <BannerRefreshProvider>
+                        <AppInner />
+                    </BannerRefreshProvider>
                 </LoginContextProvider>
             </SafeAreaProvider>
         </NavigationContainer>

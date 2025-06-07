@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,76 +7,40 @@ import VerticalGap from '../public/publicUtil/VerticalGap';
 import TitleOnlyPopup from '../public/publicPopup_Alert_etc/TitleOnlyPopup';
 import BookQuoteBanner from '../bookDetailpage/quote/BookQuoteBanner';
 
-import {
-  getPopularBookQuotes,
-  toggleBookQuoteLike,
-  deleteBookQuote,
-} from '../../apis/apiFunction_bookQuote';
-
 const { width: fixwidth } = Dimensions.get('window');
 
-const TodayQuoteRecommendationBlock = () => {
+/**
+ * 🧠 오늘의 인용 블록 (props 기반)
+ * @param {object} props
+ * @param {Array} props.quotes - 인용 리스트
+ * @param {function} props.onLikePress - 좋아요 핸들러
+ * @param {function} props.onEditPress - 수정 이동 핸들러
+ * @param {function} props.onDeletePress - 삭제 핸들러 (팝업 띄우기용)
+ * @param {function} props.onReportPress - 신고 핸들러
+ */
+const TodayQuoteRecommendationBlock = ({
+                                         quotes = [],
+                                         onLikePress,
+                                         onEditPress,
+                                         onDeletePress,
+                                         onReportPress,
+                                       }) => {
   const navigation = useNavigation();
-
-  const [popularQuotes, setPopularQuotes] = useState([]);
   const [containerWidth, setContainerWidth] = useState(0);
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
   const [selectedQuoteId, setSelectedQuoteId] = useState(null);
 
-  // ✅ 인기 인용 목록 불러오기
-  const fetchQuotes = async () => {
-    try {
-      const res = await getPopularBookQuotes(0, 20);
-      setPopularQuotes(res.data.quotes);
-    } catch (err) {
-      console.error('❌ 인기 인용 불러오기 실패:', err);
-    }
-  };
 
-  useEffect(() => {
-    fetchQuotes();
-  }, []);
-
-  // ✅ 좋아요 핸들러
-  const handleLikeQuote = async (quoteId) => {
-    try {
-      await toggleBookQuoteLike(quoteId);
-      await fetchQuotes(); // 갱신
-    } catch (err) {
-      console.error('❌ 인용 좋아요 실패:', err);
-    }
-  };
-
-  // ✅ 수정 이동
-  const handleEditQuote = (quoteItem) => {
-    navigation.navigate('BookQuoteEditScreen', {
-      quoteId: quoteItem.id,
-      isbn13: quoteItem.isbn13,
-      returnScreenName: 'HomeScreen',
-    });
-  };
-
-  // ✅ 삭제 팝업 띄우기
-  const handleDeleteQuote = (quoteId) => {
+  const handleDelete = (quoteId) => {
     setSelectedQuoteId(quoteId);
     setDeletePopupVisible(true);
   };
 
-  // ✅ 삭제 확정
-  const confirmDeleteQuote = async () => {
-    try {
-      await deleteBookQuote(selectedQuoteId);
-      setDeletePopupVisible(false);
-      await fetchQuotes(); // 갱신
-    } catch (err) {
-      console.error('❌ 인용 삭제 실패:', err);
+  const confirmDelete = async () => {
+    if (onDeletePress) {
+      await onDeletePress(selectedQuoteId);
     }
-  };
-
-  // ✅ 신고
-  const handleReportQuote = (quoteId) => {
-    // 신고 로직 필요시 작성
-    console.log('🚨 신고:', quoteId);
+    setDeletePopupVisible(false);
   };
 
   return (
@@ -89,24 +53,23 @@ const TodayQuoteRecommendationBlock = () => {
 
       {containerWidth > 0 && (
         <BookQuoteBanner
-          quotes={popularQuotes}
+          quotes={quotes}
           containerWidth={containerWidth}
-          onLikePress={handleLikeQuote}
-          onEditPress={handleEditQuote}
-          onDeletePress={handleDeleteQuote}
-          onReportPress={handleReportQuote}
+          onLikePress={onLikePress}
+          onEditPress={onEditPress}
+          onDeletePress={handleDelete}
+          onReportPress={onReportPress}
           onQuotePress={(isbn13) => {
             navigation.navigate('BookDetailScreen', { isbn: isbn13 });
           }}
         />
       )}
 
-      {/* ✅ 삭제 확인 팝업 */}
       <TitleOnlyPopup
         visible={deletePopupVisible}
         title="이 인용을 삭제할까요?"
         onCancel={() => setDeletePopupVisible(false)}
-        onConfirm={confirmDeleteQuote}
+        onConfirm={confirmDelete}
       />
     </View>
   );

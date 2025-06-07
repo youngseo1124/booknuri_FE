@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator, Text } from 'react-native';
 import CommonLayout from '../components/public/publicUtil/CommonLayout';
 import Header from '../components/public/publicHeader/Header';
 import {
@@ -23,16 +23,15 @@ import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingS
 import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';
 import DPBookReflectionsBlock from '../components/bookDetailpage/DPBookReflectionsBlock';
 import DPBookQuotesBlock from '../components/bookDetailpage/DPBookQuotesBlock';
-import ScrollToTopButton from '../components/public/publicUtil/ScrollToTopButton'; // ✅ 추가
+import ScrollToTopButton from '../components/public/publicUtil/ScrollToTopButton';
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookDetailScreen = ({ route, navigation }) => {
     const { isbn } = route.params;
-
-    const scrollRef = useRef(null); // ✅ 스크롤 참조
+    const scrollRef = useRef(null);
 
     const [bookData, setBookData] = useState(null);
     const [sortedReviews, setSortedReviews] = useState([]);
@@ -54,21 +53,27 @@ const BookDetailScreen = ({ route, navigation }) => {
     const [showToast, setShowToast] = useState(false);
     const [isReady, setIsReady] = useState(false);
 
+    // ✅ 로그용
+    useEffect(() => {
+        console.log('[📗 bookData 변경됨]', bookData);
+        if (bookData?.bookInfo) {
+            console.log('✅ bookInfo 있음!', bookData.bookInfo.title);
+        } else {
+            console.log('❌ bookInfo 없음!');
+        }
+    }, [bookData]);
 
     useFocusEffect(
       useCallback(() => {
-          //  리뷰, 인용, 독후감 등 전체 데이터 새로고침
           initLoad();
       }, [isbn])
     );
 
-    // 📘 책 정보
     const fetchBookData = async () => {
         const res = await getBookTotalInfo(isbn);
         setBookData(res.data);
     };
 
-    // ✍ 리뷰
     const fetchSortedReviews = async (sort = 'like') => {
         const res = await getBookReviewList(isbn, sort);
         setSortedReviews(res.data.reviews);
@@ -78,7 +83,6 @@ const BookDetailScreen = ({ route, navigation }) => {
         setRatingDistribution(res.data.ratingDistribution);
     };
 
-    // 📖 독후감
     const fetchSortedReflections = async (sort = 'like') => {
         const res = await getBookReflectionList(isbn, sort);
         setSortedReflections(res.data.reflections);
@@ -87,12 +91,27 @@ const BookDetailScreen = ({ route, navigation }) => {
         setReflectionAverageRating(res.data.averageRating);
     };
 
-    // ✨ 인용
     const fetchSortedQuotes = async (sort = 'like') => {
         const res = await getBookQuoteListByIsbn(isbn, sort);
         setSortedQuotes(res.data.quotes);
         setQuoteTotalCount(res.data.totalCount);
         setQuoteSort(sort);
+    };
+
+    const initLoad = async () => {
+        try {
+            await Promise.all([
+                fetchBookData(),
+                fetchSortedReviews(),
+                fetchSortedReflections(),
+                fetchSortedQuotes(),
+            ]);
+            await new Promise((r) => setTimeout(r, 150));
+            scrollRef.current?.scrollTo({ y: 0, animated: false }); // ✅ 강제 초기 스크롤 위치 고정
+            setIsReady(true);
+        } catch (err) {
+            console.error('❌ 데이터 로딩 실패:', err);
+        }
     };
 
     const handleLike = async (reviewId) => {
@@ -127,25 +146,6 @@ const BookDetailScreen = ({ route, navigation }) => {
         setShowToast(true);
     };
 
-    const initLoad = async () => {
-        try {
-            await Promise.all([
-                fetchBookData(),
-                fetchSortedReviews(),
-                fetchSortedReflections(),
-                fetchSortedQuotes(),
-            ]);
-            await new Promise((r) => setTimeout(r, 150));
-            setIsReady(true);
-        } catch (err) {
-            console.error('❌ 데이터 로딩 실패:', err);
-        }
-    };
-
-    useEffect(() => {
-        initLoad();
-    }, [isbn]);
-
     if (!isReady) {
         return (
           <CommonLayout>
@@ -160,15 +160,23 @@ const BookDetailScreen = ({ route, navigation }) => {
       <CommonLayout>
           <Header title="책 상세 페이지" />
           <ScrollView
-            ref={scrollRef} // ✅ 연결
-            style={{ flex: 1 }}
+            ref={scrollRef}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
           >
-              <DPBookInfoHeaderBlock
-                bookInfo={bookData?.bookInfo}
-                onAddToBookshelf={handleAddToBookshelf}
-              />
+              {bookData?.bookInfo ? (
+                <>
+
+                    <DPBookInfoHeaderBlock
+                      key={bookData.bookInfo.isbn13}
+                      bookInfo={bookData.bookInfo}
+                      onAddToBookshelf={handleAddToBookshelf}
+                    />
+                </>
+              ) : (
+                <Text style={{ color: 'red' }}>📛 책 정보 없음</Text>
+              )}
+
               <DividerBlock />
               <DPBookInfoContentBlock description={bookData?.bookInfo?.description} />
               <DividerBlock />
@@ -214,10 +222,9 @@ const BookDetailScreen = ({ route, navigation }) => {
                 navigation={navigation}
               />
           </ScrollView>
-          {/* ✅ 맨 위로 버튼 */}
-          <ScrollToTopButton bottom={fixwidth * 0.17} right={fixwidth * 0.05}  onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} />
 
-          {/* ✅ 토스트 */}
+          <ScrollToTopButton bottom={fixwidth * 0.17} right={fixwidth * 0.05} onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} />
+
           {showToast && (
             <ToastPopup
               message="내 책장에 담겼습니다!"
@@ -234,11 +241,6 @@ const styles = StyleSheet.create({
     content: {
         alignItems: 'center',
         paddingVertical: fixwidth * 0.02,
-    },
-    divider: {
-        width: '100%',
-        height: fixwidth * 0.057,
-        backgroundColor: '#f3f3f3',
     },
     loadingContainer: {
         flex: 1,

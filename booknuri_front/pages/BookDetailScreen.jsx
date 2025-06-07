@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import CommonLayout from '../components/public/publicUtil/CommonLayout';
 import Header from '../components/public/publicHeader/Header';
@@ -20,11 +20,12 @@ import DPBookInfoHeaderBlock from '../components/bookDetailpage/DPBookInfoHeader
 import DPBookInfoContentBlock from '../components/bookDetailpage/DPBookInfoContentBlock';
 import DividerBlock from '../components/public/publicUtil/DividerBlock';
 import DPBookRatingSummaryBlock from '../components/bookDetailpage/DPBookRatingSummaryBlock';
-import DPBookReviewsBlock from '../components/bookDetailpage/review/DPBookReviewsBlock.';
+import DPBookReviewsBlock from '../components/bookDetailpage/DPBookReviewsBlock.';
 import DPBookReflectionsBlock from '../components/bookDetailpage/DPBookReflectionsBlock';
-import DPBookQuotesBlock from '../components/bookDetailpage/quote/DPBookQuotesBlock';
+import DPBookQuotesBlock from '../components/bookDetailpage/DPBookQuotesBlock';
 import ScrollToTopButton from '../components/public/publicUtil/ScrollToTopButton'; // ✅ 추가
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
+import {useFocusEffect} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -52,6 +53,14 @@ const BookDetailScreen = ({ route, navigation }) => {
 
     const [showToast, setShowToast] = useState(false);
     const [isReady, setIsReady] = useState(false);
+
+
+    useFocusEffect(
+      useCallback(() => {
+          //  리뷰, 인용, 독후감 등 전체 데이터 새로고침
+          initLoad();
+      }, [isbn])
+    );
 
     // 📘 책 정보
     const fetchBookData = async () => {

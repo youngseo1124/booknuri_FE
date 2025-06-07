@@ -18,7 +18,8 @@ import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox'
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import StarRatingBox from '../../components/public/etc/StarRatingBox';
-import TextInputBox from '../../components/public/publicInput/TextInputBox'; // ✅ 바뀐 부분
+import TextInputBox from '../../components/public/publicInput/TextInputBox';
+import {StackActions} from '@react-navigation/native'; // ✅ 바뀐 부분
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -42,7 +43,9 @@ const ReviewCreateScreen = ({ route, navigation }) => {
         rating,
         containsSpoiler,
       });
-      navigation.replace(returnScreenName, { isbn: isbn13 });
+
+      // ✅ 1개 pop해서 BookDetailScreen으로 강제 복귀!
+      navigation.dispatch(StackActions.pop(1));
     } catch (err) {
       console.error('❌ 리뷰 등록 실패:', err);
     }

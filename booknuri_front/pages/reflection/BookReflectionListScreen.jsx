@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -22,6 +22,7 @@ import {
   toggleLikeReflection,
   deleteReflection,
 } from '../../apis/apiFunction_bookReflection';
+import {useFocusEffect} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -70,6 +71,14 @@ const ReflectionListScreen = ({ route, navigation }) => {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      // 독후감 리스트 새로고침
+      fetchReflections(true);
+    }, [sort])
+  );
+
 
   useEffect(() => {
     fetchReflections(true);

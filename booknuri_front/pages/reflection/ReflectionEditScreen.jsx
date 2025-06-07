@@ -24,6 +24,7 @@ import MyIntentModule from '../../MyIntentModule';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VerticalGap from "../../components/public/publicUtil/VerticalGap";
+import {StackActions} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -168,7 +169,8 @@ const ReflectionEditScreen = ({ route, navigation }) => {
         );
       }
 
-      navigation.replace("BookDetailScreen", { isbn: isbn13 });
+      navigation.dispatch(StackActions.pop(1));
+
     } catch (err) {
       console.log('❌ 수정 실패:', err.response?.data || err.message || err);
       Alert.alert("실패", "독후감 수정에 실패했어요.");

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -20,6 +20,7 @@ import {
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
+import {useFocusEffect} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -64,6 +65,16 @@ const BookQuoteListScreen = ({ route, navigation }) => {
       setLoading(false);
     }
   };
+
+  // 인용 리스트 새로고침
+  useFocusEffect(
+    useCallback(() => {
+      fetchQuotes(true);
+    }, [sort])
+  );
+
+
+
 
   useEffect(() => {
     fetchQuotes(true);

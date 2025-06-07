@@ -23,6 +23,7 @@ import QuoteInputPreviewBlock from '../../components/bookDetailpage/quote/QuoteI
 import QuoteBackgroundSelector from '../../components/bookDetailpage/quote/QuoteBackgroundSelector';
 import QuoteFontSizeSlider from '../../components/bookDetailpage/quote/QuoteFontSizeSlider';
 import QuoteFontColorSelector from '../../components/bookDetailpage/quote/QuoteFontColorSelector';
+import {StackActions} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -71,7 +72,8 @@ const BookQuoteEditScreen = ({ route, navigation }) => {
         backgroundId,
         visibleToPublic,
       });
-      navigation.replace(returnScreenName, { isbn: isbn13 });
+      navigation.dispatch(StackActions.pop(1));
+
     } catch (err) {
       console.error('❌ 인용 수정 실패:', err);
     }

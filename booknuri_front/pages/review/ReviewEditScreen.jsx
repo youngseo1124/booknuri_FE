@@ -24,6 +24,7 @@ import ReviewEditFormBlock from '../../components/bookDetailpage/review/ReviewEd
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import StarRatingBox from '../../components/public/etc/StarRatingBox';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
+import {StackActions} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -46,7 +47,9 @@ const ReviewEditScreen = ({ route, navigation }) => {
         rating,
         containsSpoiler,
       });
-      navigation.replace('BookDetailScreen', { isbn: isbn13 });
+
+      // ✅ 1개 pop해서 BookDetailScreen으로 강제 복귀!
+      navigation.dispatch(StackActions.pop(1));
     } catch (err) {
       console.error('❌ 리뷰 수정 실패:', err);
     }

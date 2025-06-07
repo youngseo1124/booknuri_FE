@@ -30,6 +30,7 @@ import StarRatingBox from '../../components/public/etc/StarRatingBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import MyIntentModule from '../../MyIntentModule';
+import {StackActions} from '@react-navigation/native';
 
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -152,7 +153,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
       }
 
       //  완료 후 이동
-      navigation.replace("BookDetailScreen", { isbn: isbn13 });
+      navigation.dispatch(StackActions.pop(1));
     } catch (e) {
       console.log(" 에러 발생:", e.response?.data || e.message);
 

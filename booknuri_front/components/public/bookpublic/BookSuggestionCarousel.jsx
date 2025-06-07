@@ -88,12 +88,14 @@ export default BookSuggestionCarousel;
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: fixwidth * 0.01,
+    paddingTop: fixwidth * 0.00,
   },
   indicatorWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: fixwidth * 0.03,
+    marginBottom: fixwidth * 0.01,
+
   },
   dot: {
     width: fixwidth * 0.023,

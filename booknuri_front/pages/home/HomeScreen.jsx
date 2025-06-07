@@ -10,6 +10,7 @@ import BestsellerRecommendationBlock from '../../components/home/BestsellerRecom
 import DividerBlock from '../../components/public/publicUtil/DividerBlock';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton';
+import DemographicRecommendationBlock from '../../components/home/DemographicRecommendationBlock';
 
 const { width: fixwidth, height } = Dimensions.get("window");
 
@@ -70,10 +71,14 @@ const HomeScreen = () => {
 
                     <View style={styles.horizontalLine} />
 
-
-
-
                     <BestsellerRecommendationBlock />
+
+
+
+                    <View style={styles.horizontalLine} />
+
+                    <DemographicRecommendationBlock />
+
 
 
 
@@ -113,8 +118,8 @@ const styles = StyleSheet.create({
 
     horizontalLine: {
         width: '94%', // 부모 기준으로 가득
-        height: fixwidth*0.001,     // 두께
-        backgroundColor: 'rgba(0,0,0,0.33)', // 회색 선
+        height: fixwidth*0.00097,     // 두께
+        backgroundColor: 'rgba(0,0,0,0.27)', // 회색 선
         marginVertical: fixwidth*0.057, // 위아래 여백 (원하면 조절)
     },
 

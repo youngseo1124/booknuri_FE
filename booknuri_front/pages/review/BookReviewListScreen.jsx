@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -22,6 +22,7 @@ import {
   toggleLikeReview,
   deleteReview,
 } from '../../apis/apiFunction_book';
+import {useFocusEffect} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -69,6 +70,14 @@ const BookReviewListScreen = ({ route, navigation }) => {
       setLoading(false);
     }
   };
+
+  // 리뷰 리스트 새로고침
+  useFocusEffect(
+    useCallback(() => {
+      fetchReviews(true);
+    }, [sort])
+  );
+
 
   useEffect(() => {
     fetchReviews(true);

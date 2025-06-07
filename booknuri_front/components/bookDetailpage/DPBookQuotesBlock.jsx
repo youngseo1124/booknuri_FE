@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
-import SectionHeader from '../../public/publicHeader/SectionHeader';
-import SortTabs from '../../public/etc/SortTabs';
-import MoreButton from '../../public/publicButton/MoreButton';
-import BookQuoteBanner from './BookQuoteBanner';
-import WriteButton from '../../public/publicButton/WriteButton';
-import VerticalGap from '../../public/publicUtil/VerticalGap';
-import TitleOnlyPopup from '../../public/publicPopup_Alert_etc/TitleOnlyPopup';
-import { deleteBookQuote } from '../../../apis/apiFunction_bookQuote';
-import PureQuoteContent from './PureQuoteContent'; // ✅ 추가
+import SectionHeader from '../public/publicHeader/SectionHeader';
+import SortTabs from '../public/etc/SortTabs';
+import MoreButton from '../public/publicButton/MoreButton';
+import BookQuoteBanner from './quote/BookQuoteBanner';
+import WriteButton from '../public/publicButton/WriteButton';
+import VerticalGap from '../public/publicUtil/VerticalGap';
+import TitleOnlyPopup from '../public/publicPopup_Alert_etc/TitleOnlyPopup';
+import { deleteBookQuote } from '../../apis/apiFunction_bookQuote';
+import PureQuoteContent from './quote/PureQuoteContent'; // ✅ 추가
 
 const { width: fixwidth } = Dimensions.get('window');
 

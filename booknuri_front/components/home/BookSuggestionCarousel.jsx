@@ -5,17 +5,20 @@ import {
 import BookSuggestionItem from '../public/bookpublic/BookSuggestionItem';
 import VerticalGap from '../public/publicUtil/VerticalGap';
 
-const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
+const BookSuggestionCarousel = ({ books, onItemPress }) => {
   const booksPerPage = 3;
   const maxPage = 3;
 
   const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width);
   const [currentPage, setCurrentPage] = useState(0);
 
-  // ✅ 안전하게 pages 만들기 (빈 배열 방지)
+  // ✅ books null/undefined 방지
+  const validBooks = Array.isArray(books) ? books : [];
+
+  // ✅ 페이지 분할
   const pages = [];
-  for (let i = 0; i < Math.min(books.length, booksPerPage * maxPage); i += booksPerPage) {
-    const sliced = books.slice(i, i + booksPerPage);
+  for (let i = 0; i < Math.min(validBooks.length, booksPerPage * maxPage); i += booksPerPage) {
+    const sliced = validBooks.slice(i, i + booksPerPage);
     if (sliced.length > 0) {
       pages.push(sliced);
     }
@@ -26,6 +29,9 @@ const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
     const newPage = Math.round(offsetX / containerWidth);
     setCurrentPage(newPage);
   };
+
+  // 📌 책 없으면 아무것도 렌더 안 함 (옵션)
+  if (pages.length === 0) return null;
 
   return (
     <View onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}>
@@ -41,7 +47,7 @@ const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
             key={pageIndex}
             style={[styles.page, { width: containerWidth }]}
           >
-            {(page || []).map((book, index) => (
+            {page.map((book, index) => (
               <TouchableOpacity
                 key={book.bookId}
                 activeOpacity={0.8}
@@ -50,7 +56,9 @@ const BookSuggestionCarousel = ({ books = [], onItemPress }) => {
                 <View style={{ width: '100%' }}>
                   <BookSuggestionItem book={book} />
                 </View>
-                {index !== page.length - 1 && <VerticalGap height={containerWidth * 0.017} />}
+                {index !== page.length - 1 && (
+                  <VerticalGap height={containerWidth * 0.017} />
+                )}
               </TouchableOpacity>
             ))}
           </View>

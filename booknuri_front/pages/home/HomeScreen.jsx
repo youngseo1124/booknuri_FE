@@ -5,8 +5,10 @@ import { LoginContext } from '../../contexts/LoginContextProvider';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
 import SearchInput from '../../components/home/SearchInput';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
+import PrivateRecommendBannerCarousel from '../../components/home/PrivateRecommendBannerCarousel';
+import SectionHeaderWithIcon from '../../components/public/publicHeader/SectionHeaderWithIcon';
 
-const { width, height } = Dimensions.get("window");
+const { fixwidth, height } = Dimensions.get("window");
 
 const HomeScreen = () => {
     const { userInfo } = useContext(LoginContext);
@@ -49,7 +51,12 @@ const HomeScreen = () => {
               {!searchFocused && (
                 <>
                     <VerticalGap />
-                    <Text style={styles.titleText}>🎉 홈화면</Text>
+
+                    <VerticalGap height={fixwidth*0.017}/>
+                    <PrivateRecommendBannerCarousel /> {/* 🔥 여기 삽입 */}
+
+
+
 
                     <View style={styles.infoBox}>
                         <Text style={styles.infoText}>👤 닉네임: {userInfo?.nickname}</Text>
@@ -70,23 +77,23 @@ export default HomeScreen;
 const styles = StyleSheet.create({
     scrollContainer: {
         alignItems: "center",
-        paddingTop: width * 0.01,
+        paddingTop: fixwidth * 0.01,
         minHeight: height,
         backgroundColor: "#ffffff",
     },
     titleText: {
-        fontSize: width * 0.05,
+        fontSize: fixwidth * 0.05,
         fontWeight: '700',
-        marginVertical: width * 0.03,
+        marginVertical: fixwidth * 0.03,
     },
     infoBox: {
         width: '90%',
         backgroundColor: '#f5f5f5',
-        borderRadius: width * 0.03,
-        padding: width * 0.05,
+        borderRadius: fixwidth * 0.03,
+        padding: fixwidth * 0.05,
     },
     infoText: {
-        fontSize: width * 0.038,
-        marginBottom: width * 0.01,
+        fontSize: fixwidth * 0.038,
+        marginBottom: fixwidth * 0.01,
     },
 });

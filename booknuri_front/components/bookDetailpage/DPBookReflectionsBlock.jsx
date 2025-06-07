@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native';
-import SectionHeader from '../public/etc/SectionHeader';
+import SectionHeader from '../public/publicHeader/SectionHeader';
 import SortTabs from '../public/etc/SortTabs';
 import MoreButton from '../public/publicButton/MoreButton';
 import WriteButton from '../public/publicButton/WriteButton';

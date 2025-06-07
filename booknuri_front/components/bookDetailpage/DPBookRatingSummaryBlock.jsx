@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
-import SectionHeader from '../public/etc/SectionHeader';
+import SectionHeader from '../public/publicHeader/SectionHeader';
 
 const { width: fixwidth } = Dimensions.get('window');
 

@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { searchAutocomplete } from '../../apis/apiFunction_search';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
-import BookSuggestionCarousel from './BookSuggestionCarousel';
+import BookSuggestionCarousel from '../public/bookpublic/BookSuggestionCarousel';
 import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');

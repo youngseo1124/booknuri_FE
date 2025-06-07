@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '80%',
     backgroundColor: '#fff',
-    borderRadius: fixwidth * 0.02,
+    borderRadius: fixwidth * 0.01,
     paddingVertical: fixwidth * 0.02,
   },
   sortItem: {

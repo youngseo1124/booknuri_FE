@@ -36,3 +36,13 @@ export const getDemographicRecommendations = ({ gender, birthYearGroup }) => {
     params: { gender, birthYearGroup },
   });
 };
+
+/**
+ * 🗂 메인 카테고리 리스트 API
+ * 추천 도서 필터링용으로 사용할 수 있는 메인 카테고리 리스트를 반환함
+ * @returns {Promise<{ id: number, name: string }[]>}
+ */
+export const getMainCategoryList = () => {
+  return api.get('/recommend/categories');
+};
+

@@ -1,17 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
 import SearchInput from '../../components/home/SearchInput';
-import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import PrivateRecommendBannerCarousel from '../../components/home/PrivateRecommendBannerCarousel';
 import SectionHeaderWithIcon from '../../components/public/publicHeader/SectionHeaderWithIcon';
+import BestsellerRecommendationBlock from '../../components/home/BestsellerRecommendationBlock';
+import DividerBlock from '../../components/public/publicUtil/DividerBlock';
+import VerticalGap from '../../components/public/publicUtil/VerticalGap';
+import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton';
 
-const { fixwidth, height } = Dimensions.get("window");
+const { width: fixwidth, height } = Dimensions.get("window");
 
 const HomeScreen = () => {
     const { userInfo } = useContext(LoginContext);
+
+    const scrollRef = useRef(null);
 
     const [ageGroup, setAgeGroup] = useState('');
     const [gender, setGender] = useState('');
@@ -37,11 +42,13 @@ const HomeScreen = () => {
           <HomeHeader title={libName || '마이 홈'} />
 
           <ScrollView
+            ref={scrollRef}
             style={{ flex: 1 }}
             contentContainerStyle={styles.scrollContainer}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           >
-              <View style={{ width: '100%' }}>
+              <View style={{ width: '100%'  }}>
                   <SearchInput
                     libCode={libCode}
                     onFocusChange={setSearchFocused}
@@ -50,10 +57,25 @@ const HomeScreen = () => {
 
               {!searchFocused && (
                 <>
-                    <VerticalGap />
 
-                    <VerticalGap height={fixwidth*0.017}/>
-                    <PrivateRecommendBannerCarousel /> {/* 🔥 여기 삽입 */}
+
+
+
+                    <VerticalGap/>
+
+
+
+                    <PrivateRecommendBannerCarousel />
+
+
+                    <View style={styles.horizontalLine} />
+
+
+
+
+                    <BestsellerRecommendationBlock />
+
+
 
 
 
@@ -68,6 +90,12 @@ const HomeScreen = () => {
                 </>
               )}
           </ScrollView>
+
+          {!searchFocused && (
+            <ScrollToTopButton
+              onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
+            />
+          )}
       </CommonLayout>
     );
 };
@@ -76,24 +104,20 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
     scrollContainer: {
-        alignItems: "center",
+        flexGrow: 1, // ✅ 요게 핵심!!!
+        alignItems: 'center',
         paddingTop: fixwidth * 0.01,
-        minHeight: height,
-        backgroundColor: "#ffffff",
+        paddingBottom: fixwidth * 0.2, // 하단 스크롤 여유
+        backgroundColor: '#ffffff',
     },
-    titleText: {
-        fontSize: fixwidth * 0.05,
-        fontWeight: '700',
-        marginVertical: fixwidth * 0.03,
+
+    horizontalLine: {
+        width: '94%', // 부모 기준으로 가득
+        height: fixwidth*0.001,     // 두께
+        backgroundColor: 'rgba(0,0,0,0.33)', // 회색 선
+        marginVertical: fixwidth*0.057, // 위아래 여백 (원하면 조절)
     },
-    infoBox: {
-        width: '90%',
-        backgroundColor: '#f5f5f5',
-        borderRadius: fixwidth * 0.03,
-        padding: fixwidth * 0.05,
-    },
-    infoText: {
-        fontSize: fixwidth * 0.038,
-        marginBottom: fixwidth * 0.01,
-    },
+
+
+
 });

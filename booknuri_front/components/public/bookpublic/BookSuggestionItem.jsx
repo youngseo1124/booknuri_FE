@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bookname: {
-    fontSize: fixwidth * 0.037,
+    fontSize: fixwidth * 0.0387,
     fontWeight: '500',
     fontFamily: 'NotoSansKR-Medium',
   },
   authors: {
-    fontSize: fixwidth * 0.03,
+    fontSize: fixwidth * 0.0307,
     color: 'rgba(0,0,0,0.63)',
     fontFamily: 'NotoSansKR-Light',
   },

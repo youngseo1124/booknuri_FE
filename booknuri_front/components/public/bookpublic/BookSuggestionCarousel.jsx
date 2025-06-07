@@ -2,20 +2,24 @@ import React, { useState } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from 'react-native';
-import BookSuggestionItem from '../public/bookpublic/BookSuggestionItem';
-import VerticalGap from '../public/publicUtil/VerticalGap';
+import BookSuggestionItem from './BookSuggestionItem';
+import VerticalGap from '../publicUtil/VerticalGap';
 
-const BookSuggestionCarousel = ({ books, onItemPress }) => {
-  const booksPerPage = 3;
-  const maxPage = 3;
+const { width: fixwidth } = Dimensions.get('window');
 
-  const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width);
+const BookSuggestionCarousel = ({
+                                  books,
+                                  onItemPress,
+                                  booksPerPage = 3,
+                                  maxPage = 3,
+                                  thumbnailWidth = fixwidth * 0.167,     // ✅ 썸네일 크기 default 추가
+                                  thumbnailHeight = fixwidth * 0.23,
+                                }) => {
+  const [containerWidth, setContainerWidth] = useState(fixwidth);
   const [currentPage, setCurrentPage] = useState(0);
 
-  // ✅ books null/undefined 방지
   const validBooks = Array.isArray(books) ? books : [];
 
-  // ✅ 페이지 분할
   const pages = [];
   for (let i = 0; i < Math.min(validBooks.length, booksPerPage * maxPage); i += booksPerPage) {
     const sliced = validBooks.slice(i, i + booksPerPage);
@@ -30,7 +34,6 @@ const BookSuggestionCarousel = ({ books, onItemPress }) => {
     setCurrentPage(newPage);
   };
 
-  // 📌 책 없으면 아무것도 렌더 안 함 (옵션)
   if (pages.length === 0) return null;
 
   return (
@@ -43,10 +46,7 @@ const BookSuggestionCarousel = ({ books, onItemPress }) => {
         scrollEventThrottle={16}
       >
         {pages.map((page, pageIndex) => (
-          <View
-            key={pageIndex}
-            style={[styles.page, { width: containerWidth }]}
-          >
+          <View key={pageIndex} style={[styles.page, { width: containerWidth }]}>
             {page.map((book, index) => (
               <TouchableOpacity
                 key={book.bookId}
@@ -54,7 +54,11 @@ const BookSuggestionCarousel = ({ books, onItemPress }) => {
                 onPress={() => onItemPress?.(book.bookname)}
               >
                 <View style={{ width: '100%' }}>
-                  <BookSuggestionItem book={book} />
+                  <BookSuggestionItem
+                    book={book}
+                    thumbnailWidth={thumbnailWidth}        // ✅ 전달
+                    thumbnailHeight={thumbnailHeight}
+                  />
                 </View>
                 {index !== page.length - 1 && (
                   <VerticalGap height={containerWidth * 0.017} />
@@ -84,17 +88,17 @@ export default BookSuggestionCarousel;
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: Dimensions.get('window').width * 0.01,
+    paddingTop: fixwidth * 0.01,
   },
   indicatorWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: Dimensions.get('window').width * 0.03,
+    marginTop: fixwidth * 0.03,
   },
   dot: {
-    width: Dimensions.get('window').width * 0.02,
-    height: Dimensions.get('window').width * 0.02,
-    borderRadius: Dimensions.get('window').width * 0.01,
-    marginHorizontal: Dimensions.get('window').width * 0.01,
+    width: fixwidth * 0.023,
+    height: fixwidth * 0.023,
+    borderRadius: fixwidth * 0.1,
+    marginHorizontal: fixwidth * 0.012,
   },
 });

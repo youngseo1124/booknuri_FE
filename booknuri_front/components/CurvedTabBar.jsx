@@ -7,16 +7,15 @@ import {
   Dimensions,
   PermissionsAndroid,
   Platform,
-  Alert,
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
-  faBook,
-  faComments,
+  faHouse,
+  faBookOpen,
   faBarcode,
-  faBuilding,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
+  faCalendarDays,
+  faUser, faBook,
+} from '@fortawesome/free-solid-svg-icons'; // ✨ 수정된 아이콘들 import
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: fixwidth } = Dimensions.get('window');
@@ -38,7 +37,6 @@ const CurvedTabBar = ({ state, navigation }) => {
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         navigation.navigate('ScanScreen');
-      } else {
       }
     } else {
       navigation.navigate('ScanScreen');
@@ -46,25 +44,19 @@ const CurvedTabBar = ({ state, navigation }) => {
   };
 
   const tabOrder = [
-    { name: 'HomeTab', icon: faBook, label: '홈' },
-    { name: 'Recommend', icon: faComments, label: '추천' },
+    { name: 'HomeTab', icon: faHouse, label: '홈' }, // ✅ 변경됨
+    { name: 'MyShelfTab', icon: faBook, label: '서재' }, // ✅ Recommend → MyShelfScreen, 아이콘 변경
     null,
-    { name: 'MyLibrarySettingScreen', icon: faBuilding, label: '도서관' },
+    { name: 'CalendarScreen', icon: faCalendarDays, label: '캘린더' }, // ✅ 도서관 → 캘린더, 아이콘 변경
     { name: 'MyPage', icon: faUser, label: '마이페이지' },
   ];
 
   return (
     <View style={[styles.wrapper, { paddingBottom: insets.bottom + fixwidth * 0.02 }]}>
-      {/* 중앙 스캔 버튼 */}
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.fab}
-        onPress={handleScanPress}
-      >
+      <TouchableOpacity activeOpacity={1} style={styles.fab} onPress={handleScanPress}>
         <FontAwesomeIcon icon={faBarcode} size={fixwidth * 0.074} color="#fff" />
       </TouchableOpacity>
 
-      {/* 하단 탭 버튼들 */}
       <View style={styles.tabContainer}>
         {tabOrder.map((tab, index) => {
           if (tab === null) {
@@ -73,7 +65,6 @@ const CurvedTabBar = ({ state, navigation }) => {
 
           const isFocused = state.index >= 0 && state.routes[state.index]?.name === tab.name;
 
-
           return (
             <TouchableOpacity
               activeOpacity={1}
@@ -81,7 +72,7 @@ const CurvedTabBar = ({ state, navigation }) => {
               onPress={() => {
                 if (tab.name === 'HomeTab') {
                   navigation.navigate('HomeTab', {
-                    screen: 'HomeScreen', // ✅ HomeStack 내부로 정확히 이동
+                    screen: 'HomeScreen',
                   });
                 } else {
                   navigation.navigate(tab.name);
@@ -92,7 +83,7 @@ const CurvedTabBar = ({ state, navigation }) => {
               <FontAwesomeIcon
                 icon={tab.icon}
                 size={fixwidth * 0.065}
-                color={isFocused ? '#ffffff' : 'rgba(207,207,207,0.57)'}
+                color={isFocused ? '#ffffff' : 'rgba(0,0,0,0.17)'}
               />
               <Text style={[styles.label, isFocused && styles.activeLabel]}>
                 {tab.label}
@@ -132,9 +123,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
-    fontSize: fixwidth * 0.027,
-    color: '#888',
+    fontSize: fixwidth * 0.0257,
+    color: 'rgba(0,0,0,0.17)',
     marginTop: 2,
+    fontWeight: 'bold',
   },
   activeLabel: {
     color: '#eeeeee',

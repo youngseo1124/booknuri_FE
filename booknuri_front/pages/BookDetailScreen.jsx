@@ -54,17 +54,12 @@ const BookDetailScreen = ({ route, navigation }) => {
     const [showToast, setShowToast] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const { increaseViewedBookCount } = useContext(BannerRefreshContext);
+    const didScrollTopRef = useRef(false);
 
 
     useFocusEffect(
       useCallback(() => {
           increaseViewedBookCount();
-          initLoad();
-      }, [isbn])
-    );
-
-    useFocusEffect(
-      useCallback(() => {
           initLoad();
       }, [isbn])
     );
@@ -107,12 +102,19 @@ const BookDetailScreen = ({ route, navigation }) => {
                 fetchSortedQuotes(),
             ]);
             await new Promise((r) => setTimeout(r, 150));
-            scrollRef.current?.scrollTo({ y: 0, animated: false }); // ✅ 강제 초기 스크롤 위치 고정
+
+            // ✅ 한 번만 scrollTo 실행
+            if (!didScrollTopRef.current) {
+                scrollRef.current?.scrollTo({ y: 0, animated: false });
+                didScrollTopRef.current = true; // ✅ 이후에는 안함
+            }
+
             setIsReady(true);
         } catch (err) {
             console.error('❌ 데이터 로딩 실패:', err);
         }
     };
+
 
     const handleLike = async (reviewId) => {
         await toggleLikeReview(reviewId);
@@ -164,15 +166,12 @@ const BookDetailScreen = ({ route, navigation }) => {
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
           >
-              {bookData?.bookInfo ? (
-                <>
-
-                    <DPBookInfoHeaderBlock
-                      key={bookData.bookInfo.isbn13}
-                      bookInfo={bookData.bookInfo}
-                      onAddToBookshelf={handleAddToBookshelf}
-                    />
-                </>
+              {bookData?.bookInfo?.isbn13 ? (
+                <DPBookInfoHeaderBlock
+                  key={bookData.bookInfo.isbn13}
+                  bookInfo={bookData.bookInfo}
+                  onAddToBookshelf={handleAddToBookshelf}
+                />
               ) : (
                 <Text style={{ color: 'red' }}>📛 책 정보 없음</Text>
               )}

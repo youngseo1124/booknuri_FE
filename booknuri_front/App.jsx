@@ -29,11 +29,12 @@ import ReflectionEditScreen from './pages/reflection/ReflectionEditScreen';
 import ReflectionListScreen from './pages/reflection/BookReflectionListScreen';
 import BookQuoteCreateScreen from './pages/quote/BookQuoteCreateScreen';
 import BookQuoteEditScreen from './pages/quote/BookQuoteEditScreen';
-import QuoteCaptureScreen from './pages/QuoteCaptureScreen';
+import QuoteCaptureScreen from './pages/quote/QuoteCaptureScreen';
 import OCRScreen from './pages/quote/OCRScreen';
 import BookQuoteListScreen from './pages/quote/BookQuoteListScreen';
 import BookSearchResultScreen from './pages/home/BookSearchResultScreen';
 import {BannerRefreshProvider} from './contexts/BannerRefreshContext';
+import {BannerPageProvider} from './contexts/BannerPageContext';
 
 const Stack = createStackNavigator();
 
@@ -46,7 +47,12 @@ const AppInner = () => {
         userInfo?.birth == null || userInfo?.myLibrary == null;
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{
+            headerShown: false,
+            animation: 'fade_from_bottom',
+        }}
+      >
             {isLoading && (
                 <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
             )}
@@ -99,8 +105,11 @@ const App = () => {
         <NavigationContainer ref={navigationRef}>
             <SafeAreaProvider>
                 <LoginContextProvider>
+
                     <BannerRefreshProvider>
-                        <AppInner />
+                        <BannerPageProvider>
+                            <AppInner />
+                        </BannerPageProvider>
                     </BannerRefreshProvider>
                 </LoginContextProvider>
             </SafeAreaProvider>

@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, FlatList
 } from 'react-native';
-import {
-  getBestsellerBooks,
-  getMainCategoryList
-} from '../../apis/apiFunction_recommend';
+
 import SectionHeaderWithIcon from '../public/publicHeader/SectionHeaderWithIcon';
 import VerticalGap from '../public/publicUtil/VerticalGap';
 import BookSuggestionCarousel from '../public/bookpublic/BookSuggestionCarousel';
@@ -19,50 +16,21 @@ const periods = [
   { label: '연간', value: 'yearly' },
 ];
 
-const BestsellerRecommendationBlock = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('weekly');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [categoryList, setCategoryList] = useState([]);
+const BestsellerRecommendationBlock = ({
+                                         books = [],
+                                         categoryList = [],
+                                         selectedPeriod,
+                                         selectedCategory,
+                                         onPeriodChange,
+                                         onCategoryChange,
+                                       }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [carouselResetKey, setCarouselResetKey] = useState(0);
-  const [bookList, setBookList] = useState([]);
-
-  // 카테고리 목록 불러오기
-  useEffect(() => {
-    getMainCategoryList()
-      .then(res => setCategoryList(res.data || []))
-      .catch(err => console.error('🔥 카테고리 로드 실패:', err));
-  }, []);
-
-  // 기간 or 카테고리 변경 시 도서 추천 다시 불러오기
-  useEffect(() => {
-    let ignore = false;
-
-    const fetchBooks = async () => {
-      try {
-        const res = await getBestsellerBooks({
-          period: selectedPeriod,
-          mainCategoryId: selectedCategory ?? undefined,
-        });
-        if (!ignore) {
-          setBookList(res.data);
-          setCarouselResetKey(prev => prev + 1);
-        }
-      } catch (e) {
-        console.error('🔥 베스트셀러 불러오기 실패:', e);
-      }
-    };
-
-    fetchBooks();
-
-    return () => {
-      ignore = true;
-    };
-  }, [selectedPeriod, selectedCategory]);
 
   const handleCategorySelect = (id) => {
-    setSelectedCategory(id);
+    onCategoryChange(id);
     setModalVisible(false);
+    setCarouselResetKey(prev => prev + 1);
   };
 
   return (
@@ -74,12 +42,12 @@ const BestsellerRecommendationBlock = () => {
         {periods.map((p, idx) => (
           <TouchableOpacity
             key={p.value}
-            onPress={() => setSelectedPeriod(p.value)}
             style={[
               styles.periodBtn,
               selectedPeriod === p.value && styles.periodBtnSelected,
               { marginRight: idx !== periods.length - 1 ? fixwidth * 0.02 : 0 },
             ]}
+            onPress={() => onPeriodChange(p.value)}
           >
             <Text
               style={[
@@ -102,7 +70,7 @@ const BestsellerRecommendationBlock = () => {
 
       <BookSuggestionCarousel
         key={carouselResetKey}
-        books={bookList}
+        books={books}
         booksPerPage={5}
         maxPage={4}
         thumbnailWidth={fixwidth * 0.22}

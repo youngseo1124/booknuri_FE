@@ -9,18 +9,18 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { getMyQuoteById } from '../apis/apiFunction_bookQuote';
-import PureQuoteContent from '../components/bookDetailpage/quote/PureQuoteContent';
-import IconCheckBox from '../components/public/publicButton/CustomCheckBox';
-import VerticalGap from '../components/public/publicUtil/VerticalGap';
+import { getMyQuoteById } from '../../apis/apiFunction_bookQuote';
+import PureQuoteContent from '../../components/bookDetailpage/quote/PureQuoteContent';
+import IconCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 
-import Header from '../components/public/publicHeader/Header';
-import WriteButton from '../components/public/publicButton/WriteButton';
+import Header from '../../components/public/publicHeader/Header';
+import WriteButton from '../../components/public/publicButton/WriteButton';
 
 import { captureRef } from 'react-native-view-shot';
-import CommonLayout from '../components/public/publicUtil/CommonLayout';
+import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 
-import AlertPopup from '../components/public/publicPopup_Alert_etc/AlertPopup';  // 모달 팝업 임포트
+import AlertPopup from '../../components/public/publicPopup_Alert_etc/AlertPopup';  // 모달 팝업 임포트
 
 const { width: fixwidth } = Dimensions.get('window');
 const { MediaStoreModule } = NativeModules;

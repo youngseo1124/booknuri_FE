@@ -110,9 +110,7 @@ const BookSearchResultScreen = ({ route, navigation }) => {
             <VerticalGap height={fixwidth * 0.022} />
 
             <View style={styles.bookListBox}>
-              {bookList.length === 0 && (
-                <Text style={{ color: 'red' }}>[⚠️] 책 리스트 없음!</Text>
-              )}
+
               {bookList.map((book, index) => (
                 <View key={book.id} style={{ width: '100%' }}>
                   <BookSuggestionItem

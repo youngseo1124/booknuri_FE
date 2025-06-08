@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -12,10 +12,9 @@ import {
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
-import SectionHeaderWithIcon from '../public/publicHeader/SectionHeaderWithIcon';
 import VerticalGap from '../public/publicUtil/VerticalGap';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { getPersonalRecommendations } from '../../apis/apiFunction_recommend';
+import { useNavigation } from '@react-navigation/native';
+import { BannerPageContext } from '../../contexts/BannerPageContext';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -23,15 +22,21 @@ const backgroundColors = [
   '#ffdd99', '#cfc0ec', '#add3f3', '#bde5be', '#a5f1d1', '#f5b3ca', '#adebf3',
 ];
 
-const PrivateRecommendBannerCarousel = ({ onReady }) => {
+const PrivateRecommendBannerCarousel = ({ bookList = [], onReady }) => {
   const [recommendations, setRecommendations] = useState([]);
   const [containerWidth, setContainerWidth] = useState(fixwidth);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [scrollReady, setScrollReady] = useState(false);
   const [scrollVisible, setScrollVisible] = useState(false);
   const [imageVisible, setImageVisible] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(false);
+
+  const { currentBannerPage, setCurrentBannerPage } = useContext(BannerPageContext);
+  const [currentPage, _setCurrentPage] = useState(currentBannerPage);
+  const updatePage = (page) => {
+    _setCurrentPage(page);
+    setCurrentBannerPage(page);
+  };
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scrollRef = useRef(null);
@@ -39,36 +44,21 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
   const intervalRef = useRef(null);
   const navigation = useNavigation();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetch = async () => {
-        try {
-          const res = await getPersonalRecommendations();
-          const bookList = res.data || [];
-          if (bookList.length > 0) {
-            const extended = [
-              bookList[bookList.length - 1],
-              ...bookList,
-              bookList[0],
-            ];
-            setRecommendations(extended);
-          }
-        } catch (e) {
-          console.error('🔥 개인 추천 로딩 실패:', e);
-        }
-      };
-      fetch();
-    }, [])
-  );
+  useEffect(() => {
+    if (bookList.length > 0) {
+      const extended = [bookList[bookList.length - 1], ...bookList, bookList[0]];
+      setRecommendations(extended);
+    }
+  }, [bookList]);
 
   useLayoutEffect(() => {
     if (recommendations.length > 0 && containerWidth > 0) {
-      const startX = containerWidth;
+      const startX = containerWidth * currentBannerPage;
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           scrollRef.current?.scrollTo({ x: startX, animated: false });
           animatedValue.setValue(startX);
-          setCurrentPage(1);
+          _setCurrentPage(currentBannerPage);
           setScrollReady(true);
           setScrollVisible(true);
           onReady?.();
@@ -77,7 +67,7 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
             setScrollEnabled(true);
             Animated.timing(fadeAnim, {
               toValue: 1,
-              duration: 250,
+              duration: 170,
               useNativeDriver: true,
             }).start();
           }, 14);
@@ -94,21 +84,21 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
 
         Animated.timing(animatedValue, {
           toValue: targetX,
-          duration: 1000,
+          duration: 357,
           easing: Easing.out(Easing.quad),
           useNativeDriver: false,
         }).start(() => {
           if (nextPage === recommendations.length - 1) {
             scrollRef.current?.scrollTo({ x: containerWidth, animated: false });
             animatedValue.setValue(containerWidth);
-            setCurrentPage(1);
+            updatePage(1);
           } else {
             scrollRef.current?.scrollTo({ x: targetX, animated: false });
             animatedValue.setValue(targetX);
-            setCurrentPage(nextPage);
+            updatePage(nextPage);
           }
         });
-      }, 3000);
+      }, 2700);
     }
     return () => clearInterval(intervalRef.current);
   }, [isAutoPlay, currentPage, containerWidth, recommendations, scrollReady]);
@@ -128,15 +118,36 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
       const lastX = containerWidth * (recommendations.length - 2);
       scrollRef.current?.scrollTo({ x: lastX, animated: false });
       animatedValue.setValue(lastX);
-      setCurrentPage(recommendations.length - 2);
+      updatePage(recommendations.length - 2);
     } else if (newPage === recommendations.length - 1) {
       scrollRef.current?.scrollTo({ x: containerWidth, animated: false });
       animatedValue.setValue(containerWidth);
-      setCurrentPage(1);
+      updatePage(1);
     } else {
       animatedValue.setValue(containerWidth * newPage);
-      setCurrentPage(newPage);
+      updatePage(newPage);
     }
+  };
+
+  const formatTitleLines = (title) => {
+    if (!title) return ['', '', null];
+
+    const trimmed = title.trim();
+    const breakIndex = Math.min(
+      ...[':', '='].map((s) => trimmed.indexOf(s)).filter((i) => i !== -1)
+    );
+
+    if (breakIndex !== Infinity) {
+      const first = trimmed.slice(0, breakIndex).trim();
+      const second = trimmed.slice(breakIndex).trim().replace(/^[:=]/, ':');
+      return [first, second, 'symbol'];
+    }
+
+    if (trimmed.length > 16) {
+      return [trimmed.slice(0, 16), trimmed.slice(16), 'length'];
+    }
+
+    return [trimmed, '', null];
   };
 
   if (!scrollReady || recommendations.length <= 2 || containerWidth === 0) {
@@ -144,21 +155,6 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
   }
 
   const realCount = recommendations.length - 2;
-
-  const formatTitle = (title) => {
-    if (!title) return '';
-    const trimmed = title.trim();
-    const colonIndex = trimmed.indexOf(':');
-    if (colonIndex !== -1 && colonIndex <= 14) {
-      const first = trimmed.slice(0, colonIndex).trim();
-      const second = trimmed.slice(colonIndex).trim();
-      return `${first}\n${second}`;
-    }
-    if (trimmed.length > 16) {
-      return `${trimmed.slice(0, 16)}\n${trimmed.slice(16)}`;
-    }
-    return trimmed;
-  };
 
   return (
     <View
@@ -183,6 +179,8 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
               const realIndex = Math.max(index - 1, 0);
               const bgColor = backgroundColors[realIndex % backgroundColors.length];
 
+              const [line1, line2, reason] = formatTitleLines(data.bookname);
+
               return (
                 <TouchableOpacity
                   key={index}
@@ -197,9 +195,17 @@ const PrivateRecommendBannerCarousel = ({ onReady }) => {
                   }}
                 >
                   <View style={styles.textContainer}>
-                    <Text style={styles.title} numberOfLines={2}>
-                      {formatTitle(data.bookname)}
+                    <Text style={styles.title} numberOfLines={1}>
+                      {line1}
                     </Text>
+                    {line2 !== '' && (
+                      <Text
+                        style={reason === 'symbol' ? styles.titleSub : styles.title}
+                        numberOfLines={1}
+                      >
+                        {line2}
+                      </Text>
+                    )}
                     <Text style={styles.author} numberOfLines={1}>
                       {data.authors}
                     </Text>
@@ -260,12 +266,19 @@ const styles = StyleSheet.create({
     marginRight: fixwidth * 0.04,
   },
   title: {
-    fontSize: fixwidth * 0.047,
+    fontSize: fixwidth * 0.0497,
     fontWeight: 'bold',
     fontFamily: 'NotoSansKR-Medium',
-    lineHeight: fixwidth * 0.063,
-    marginBottom: fixwidth * 0.017,
+    lineHeight: fixwidth * 0.06,
+    marginBottom: fixwidth * 0.007,
     color: 'rgba(0,0,0,0.77)',
+  },
+  titleSub: {
+    fontSize: fixwidth * 0.0377,
+    fontFamily: 'NotoSansKR-Medium',
+    lineHeight: fixwidth * 0.053,
+    color: 'rgba(0,0,0,0.74)',
+    marginBottom: fixwidth * 0.007,
   },
   author: {
     fontFamily: 'NotoSansKR-Regular',

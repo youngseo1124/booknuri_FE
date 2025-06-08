@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     cancelButton: {
-        backgroundColor: 'rgba(97,156,245,0.6)',
+        backgroundColor: 'rgb(97,156,245)',
         paddingVertical: 14,
         borderRadius: 8,
         width: '25%',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     confirmButton: {
-        backgroundColor: 'rgba(97,156,245,0.95)',
+        backgroundColor: 'rgb(97,156,245)',
         paddingVertical: 14,
         borderRadius: 8,
         width: '25%',

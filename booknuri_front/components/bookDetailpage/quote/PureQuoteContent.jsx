@@ -36,6 +36,8 @@ const backgroundImages = {
   22: require('../../../image/quote/twentytwo.jpg'),
 };
 
+
+
 const PureQuoteContent = ({
                             quoteText,
                             backgroundId,
@@ -44,12 +46,24 @@ const PureQuoteContent = ({
                             showTitle = false,
                             bookTitle = '',
                             capture = false,
-                            height = fixwidth * 0.55, // ✅ 기본값 설정
+                            height = fixwidth * 0.55,
+
                           }) => {
   const fontSize = fixwidth * 0.02 + fontScale * 0.6;
   const lineHeight = fontSize * 1.37;
   const radius = capture ? 0 : (showTitle ? 0 : fixwidth * 0.03);
   const transparentFontColor = hexToRgba(fontColor, 0.9);
+
+
+  const formatTitle = (title) => {
+    if (!title) return '';
+    const index = Math.min(
+      ...[':', '=','-'].map((c) => title.indexOf(c)).filter((i) => i !== -1)
+    );
+    return index !== Infinity ? title.slice(0, index).trim() : title.trim();
+  };
+
+  const formattedTitle = formatTitle(bookTitle);
 
   return (
     <ImageBackground
@@ -66,7 +80,7 @@ const PureQuoteContent = ({
       {showTitle && (
         <View style={styles.titleWrapper}>
           <Text style={[styles.bookTitle, { color: transparentFontColor, fontSize: fontSize * 0.9 }]}>
-            - {bookTitle} -
+            - {formattedTitle} -
           </Text>
         </View>
       )}

@@ -210,8 +210,8 @@ const ReflectionEditScreen = ({ route, navigation }) => {
                 onChangeText={setTitle}
               />
               <TextInputBox
-                placeholder="최대 2000자까지 작성 가능"
-                maxLength={2000}
+                placeholder="최대 3000자까지 작성 가능"
+                maxLength={3000}
                 inputHeight={fixwidth * 0.5}
                 value={content}
                 onChangeText={setContent}

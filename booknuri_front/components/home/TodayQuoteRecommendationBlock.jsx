@@ -11,12 +11,11 @@ const { width: fixwidth } = Dimensions.get('window');
 
 /**
  * 🧠 오늘의 인용 블록 (props 기반)
- * @param {object} props
- * @param {Array} props.quotes - 인용 리스트
- * @param {function} props.onLikePress - 좋아요 핸들러
- * @param {function} props.onEditPress - 수정 이동 핸들러
- * @param {function} props.onDeletePress - 삭제 핸들러 (팝업 띄우기용)
- * @param {function} props.onReportPress - 신고 핸들러
+ * @param {Array} quotes - 인용 리스트
+ * @param {Function} onLikePress - 좋아요 클릭 핸들러
+ * @param {Function} onEditPress - 수정 이동 핸들러
+ * @param {Function} onDeletePress - 삭제 핸들러
+ * @param {Function} onReportPress - 신고 핸들러
  */
 const TodayQuoteRecommendationBlock = ({
                                          quotes = [],
@@ -30,12 +29,13 @@ const TodayQuoteRecommendationBlock = ({
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
   const [selectedQuoteId, setSelectedQuoteId] = useState(null);
 
-
+  // ✅ 삭제 팝업 띄우기
   const handleDelete = (quoteId) => {
     setSelectedQuoteId(quoteId);
     setDeletePopupVisible(true);
   };
 
+  // ✅ 삭제 확정
   const confirmDelete = async () => {
     if (onDeletePress) {
       await onDeletePress(selectedQuoteId);

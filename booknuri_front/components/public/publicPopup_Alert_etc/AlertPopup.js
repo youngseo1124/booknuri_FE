@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         lineHeight: fixwidth * 0.05,
     },
     button: {
-        backgroundColor: 'rgba(97,156,245,0.95)',
+        backgroundColor: 'rgb(97,156,245)',
         paddingVertical: fixwidth * 0.025,
         borderRadius: fixwidth * 0.02,
         width: fixwidth * 0.2,

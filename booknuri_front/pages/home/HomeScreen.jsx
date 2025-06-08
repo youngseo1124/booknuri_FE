@@ -82,7 +82,7 @@ const HomeScreen = () => {
         };
 
         fetchUpdatedPersonal();
-    }, [bannerTrigger]); // ✅ 이게 핵심!
+    }, [bannerTrigger]);
 
     // ✅ 초기 데이터 한꺼번에 로딩
     useEffect(() => {
@@ -191,8 +191,9 @@ const HomeScreen = () => {
                 {!searchFocused && (
                   <>
                       <View style={{ width: '100%', paddingHorizontal: fixwidth * 0.03, alignItems: 'flex-start' }}>
-                          <VerticalGap height={fixwidth * 0.0147} />
+                          <VerticalGap height={fixwidth * 0.0277} />
                           <SectionHeaderWithIcon label="맞춤 추천" />
+                          <VerticalGap height={fixwidth * 0.000} />
                       </View>
 
                       <View style={{ height: fixwidth * 0.47, justifyContent: 'flex-start' }}>

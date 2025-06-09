@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import {
   View, Text, Image, StyleSheet, Dimensions, Alert, Modal, Pressable, TouchableOpacity
 } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHeart as faSolidHeart, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 import CategorySelector from '../public/publicButton/CategorySelector';
 import { updateBookStatus } from '../../apis/apiFunction_myShelf';
+import {useNavigation} from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -15,10 +18,12 @@ const statusOptions = [
 ];
 
 const ShelfBookCardWithStatusSelector = ({ book }) => {
-  const { bookname, authors, bookImageURL, status, isbn13 } = book.shelfInfo;
+  const { bookname, authors, bookImageURL, status, isbn13, lifeBook } = book.shelfInfo;
+  const navigation = useNavigation();
 
   const [selectedStatus, setSelectedStatus] = useState(status);
   const [modalVisible, setModalVisible] = useState(false);
+
 
   const handleStatusChange = async (newStatus) => {
     try {
@@ -50,9 +55,24 @@ const ShelfBookCardWithStatusSelector = ({ book }) => {
 
   return (
     <View style={styles.card}>
-      <Image source={{ uri: bookImageURL }} style={styles.bookImage} />
+      <TouchableOpacity
+        style={styles.imageWrapper}
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate('BookDetailScreen', { isbn: isbn13 })}
+      >
+        <Image source={{ uri: bookImageURL }} style={styles.bookImage} />
+        {lifeBook && (
+          <View style={styles.heartOnImage}>
+            <FontAwesomeIcon
+              icon={faSolidHeart}
+              size={fixwidth * 0.045}
+              color="#e74c3c"
+            />
+          </View>
+        )}
+      </TouchableOpacity>
+
       <View style={styles.bookInfo}>
-        {/* 제목 + 저자 전체 묶기 */}
         <View style={styles.metaWrapper}>
           <Text numberOfLines={1} style={styles.title}>{line1}</Text>
           {line2 !== '' && (
@@ -73,6 +93,15 @@ const ShelfBookCardWithStatusSelector = ({ book }) => {
         </View>
       </View>
 
+      {/* ⋮ 책 상세 메뉴 */}
+      <TouchableOpacity
+        style={styles.menuButton}
+        onPress={() => console.log('도서 상세페이지 이동')}
+      >
+        <FontAwesomeIcon icon={faEllipsisV} size={fixwidth * 0.04} color="#444" />
+      </TouchableOpacity>
+
+      {/* 상태 변경 모달 */}
       <Modal
         visible={modalVisible}
         transparent
@@ -113,16 +142,29 @@ const styles = StyleSheet.create({
     marginBottom: fixwidth * 0.04,
     backgroundColor: '#fff',
     borderRadius: fixwidth * 0.02,
-    borderWidth: fixwidth * 0.001,
-    padding: fixwidth * 0.03,
+    padding: fixwidth * 0.0397,
+    position: 'relative',
   },
-  bookImage: {
+  imageWrapper: {
+    position: 'relative',
     width: fixwidth * 0.237,
     height: fixwidth * 0.337,
-    borderRadius: fixwidth * 0.0011,
     marginRight: fixwidth * 0.04,
-    borderWidth: fixwidth * 0.00077,
+  },
+  bookImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: fixwidth * 0.005,
+    borderWidth: fixwidth * 0.001,
     borderColor: 'rgba(0,0,0,0.77)',
+  },
+  heartOnImage: {
+    position: 'absolute',
+    bottom: fixwidth * 0.01,
+    right: fixwidth * 0.01,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: fixwidth * 0.03,
+    padding: fixwidth * 0.008,
   },
   bookInfo: {
     flex: 1,
@@ -142,7 +184,7 @@ const styles = StyleSheet.create({
     marginBottom: fixwidth * 0.007,
   },
   titleSub: {
-    fontSize: fixwidth * 0.0387,
+    fontSize: fixwidth * 0.0397,
     fontFamily: 'NotoSansKR-SemiBold',
     lineHeight: fixwidth * 0.05,
     paddingRight: fixwidth * 0.07,
@@ -157,6 +199,11 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: fixwidth * 0.057,
   },
+  menuButton: {
+    position: 'absolute',
+    top: fixwidth * 0.037,
+    right: fixwidth * 0.047,
+  },
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.23)',
@@ -165,7 +212,6 @@ const styles = StyleSheet.create({
   },
   modalBox: {
     width: fixwidth * 0.7,
-    maxHeight: fixwidth * 1.2,
     backgroundColor: '#fff',
     borderRadius: fixwidth * 0.005,
     paddingHorizontal: fixwidth * 0.04,

@@ -83,7 +83,7 @@ const CurvedTabBar = ({ state, navigation }) => {
               <FontAwesomeIcon
                 icon={tab.icon}
                 size={fixwidth * 0.065}
-                color={isFocused ? '#ffffff' : 'rgba(0,0,0,0.17)'}
+                color={isFocused ? '#ffffff' : 'rgba(106,106,106,0.37)'}
               />
               <Text style={[styles.label, isFocused && styles.activeLabel]}>
                 {tab.label}
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fixwidth * 0.0257,
-    color: 'rgba(0,0,0,0.17)',
+    color: 'rgba(106,106,106,0.37)',
     marginTop: 2,
     fontWeight: 'bold',
   },

@@ -53,7 +53,8 @@ export default MyShelfTabPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingTop:30,
+    paddingBottom:70,
   },
   emptyText: {
     textAlign: 'center',

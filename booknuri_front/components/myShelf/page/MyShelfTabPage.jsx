@@ -14,7 +14,7 @@ import MyShelfSettingBar from '../MyShelfSettingBar';
 import { useFocusEffect } from '@react-navigation/native';
 import ShelfFilterBottomSheet from '../ShelfFilterBottomSheet';
 
-const MyShelfTabPage = ({ parentWidth }) => {
+const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
   const [bookList, setBookList] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -103,6 +103,7 @@ const MyShelfTabPage = ({ parentWidth }) => {
 
       <FlatList
         data={bookList}
+        ref={scrollRef}
         keyExtractor={(item) => item.shelfInfo.isbn13}
         renderItem={({ item }) => (
           <ShelfBookCard

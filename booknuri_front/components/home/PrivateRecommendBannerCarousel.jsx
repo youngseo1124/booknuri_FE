@@ -84,7 +84,7 @@ const PrivateRecommendBannerCarousel = ({ bookList = [], onReady }) => {
 
         Animated.timing(animatedValue, {
           toValue: targetX,
-          duration: 357,
+          duration: 317,
           easing: Easing.out(Easing.quad),
           useNativeDriver: false,
         }).start(() => {

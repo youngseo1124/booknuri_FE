@@ -1,81 +1,54 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
-import { LoginContext } from '../../contexts/LoginContextProvider';
-
+import React, { useRef, useState } from 'react';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
-import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton';
-import VerticalGap from '../../components/public/publicUtil/VerticalGap';
+import ShelfTabSwitcher from '../../components/myShelf/ShelfTabSwitcher';
+import MyShelfTabPage from '../../components/myShelf/MyShelfTabPage';
+import MyHistoryTabPage from '../../components/myShelf/MyHistoryTabPage';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const MyShelfScreen = () => {
   const scrollRef = useRef(null);
-  const { userInfo } = useContext(LoginContext);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [isReady, setIsReady] = useState(false);
+  const handleTabPress = (index) => {
+    scrollRef.current?.scrollTo({ x: fixwidth * index, animated: true });
+    setCurrentIndex(index);
+  };
 
-  useEffect(() => {
-    // 👇 여기에 서재 초기 데이터 불러오는 코드 추가하면 됨!
-    const init = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 500)); // mock loading
-        setIsReady(true);
-      } catch (e) {
-        console.error('서재 초기화 실패:', e);
-      }
-    };
-
-    init();
-  }, []);
+  const handleScroll = (event) => {
+    const index = Math.round(event.nativeEvent.contentOffset.x / fixwidth);
+    setCurrentIndex(index);
+  };
 
   return (
     <CommonLayout>
       <HomeHeader title="내 서재" />
+      <ShelfTabSwitcher currentIndex={currentIndex} onTabPress={handleTabPress} />
 
-      {isReady ? (
-        <ScrollView
-          ref={scrollRef}
-          contentContainerStyle={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.section}>
-            <VerticalGap height={fixwidth * 0.04} />
-            {/* 🔽 여기에 서재 콘텐츠들 추가 */}
-          </View>
-        </ScrollView>
-      ) : (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="#333" />
-        </View>
-      )}
-
-      {isReady && (
-        <ScrollToTopButton onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} />
-      )}
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        pagingEnabled
+        onMomentumScrollEnd={handleScroll}
+        showsHorizontalScrollIndicator={false}
+        style={styles.scrollView}
+      >
+        <View style={styles.page}><MyShelfTabPage /></View>
+        <View style={styles.page}><MyHistoryTabPage /></View>
+      </ScrollView>
     </CommonLayout>
   );
 };
 
-export default MyShelfScreen;
-
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingTop: fixwidth * 0.01,
-    paddingBottom: fixwidth * 0.27,
-    backgroundColor: '#fff',
-  },
-  section: {
-    width: '100%',
-    paddingHorizontal: fixwidth * 0.03,
-  },
-  loaderContainer: {
+  scrollView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  },
+  page: {
+    width: fixwidth,
   },
 });
+
+export default MyShelfScreen;

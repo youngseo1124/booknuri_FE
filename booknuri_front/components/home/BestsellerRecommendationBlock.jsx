@@ -59,11 +59,13 @@ const BestsellerRecommendationBlock = ({
             </Text>
           </TouchableOpacity>
         ))}
-        <CategorySelector
-          selectedCategory={selectedCategory}
-          categoryList={categoryList}
-          onPress={() => setModalVisible(true)}
-        />
+        <View style={{ maxWidth: fixwidth * 0.22 }}>
+          <CategorySelector
+            selectedCategory={selectedCategory}
+            categoryList={categoryList}
+            onPress={() => setModalVisible(true)}
+          />
+        </View>
       </View>
 
       <VerticalGap height={fixwidth * 0.03} />

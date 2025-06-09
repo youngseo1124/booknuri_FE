@@ -4,7 +4,7 @@ import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 const { width: fixwidth } = Dimensions.get('window');
 
 const colorOptions = [
-  '#000000', '#4D4D4D', '#808080', '#B3B3B3', '#D9D9D9', '#FFFFFF',
+  '#000000', 'rgba(0,0,0,0.75)', 'rgba(128,128,128,0.81)','rgba(179,179,179,0.81)', 'rgba(217,217,217,0.8)', 'rgba(255,255,255,0.9)',
 ];
 
 const QuoteFontColorSelector = ({ fontColor, onSelect }) => {

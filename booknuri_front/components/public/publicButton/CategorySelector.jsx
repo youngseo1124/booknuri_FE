@@ -5,24 +5,32 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const CategorySelector = ({ selectedCategory, categoryList, onPress }) => {
+const CategorySelector = ({
+                            selectedCategory,
+                            categoryList,
+                            onPress,
+                            fontSize = fixwidth * 0.035,        // 기본값
+                            lineHeight = fixwidth * 0.05,       // 기본값
+                            borderRadius = fixwidth * 0.017,
+                          }) => {
   const selectedLabel = selectedCategory
     ? categoryList.find((c) => c.id === selectedCategory)?.name || '전체'
     : '전체';
 
   return (
     <TouchableOpacity
-      style={styles.sortItem}
+      style={[styles.sortItem, { borderRadius }]}
       onPress={onPress}
       activeOpacity={0.77}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={styles.sortItemText}>{selectedLabel}</Text>
+      <View style={styles.sortItemInner}>
+        <Text style={[styles.sortItemText, { fontSize, lineHeight }]}>
+          {selectedLabel}
+        </Text>
         <FontAwesomeIcon
           icon={faChevronDown}
           size={fixwidth * 0.035}
           color="#333"
-          style={{ marginLeft: fixwidth * 0.01 }}
         />
       </View>
     </TouchableOpacity>
@@ -33,20 +41,21 @@ export default CategorySelector;
 
 const styles = StyleSheet.create({
   sortItem: {
-    paddingHorizontal: fixwidth * 0.04,
-    paddingVertical: fixwidth * 0.017,
+    paddingHorizontal: fixwidth * 0.0277,
+    paddingVertical: fixwidth * 0.016,
+    backgroundColor: '#ffffff',
+    borderWidth: fixwidth * 0.0027,
+    borderColor: 'rgba(48,48,48,0.207)',
+  },
+  sortItemInner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: fixwidth * 0.017,
-    borderWidth: fixwidth * 0.001,
-    borderColor: 'rgba(0,0,0,0.57)',
+    width: '100%',
   },
   sortItemText: {
-    fontSize: fixwidth * 0.035,
     fontFamily: 'NotoSansKR-Regular',
     color: '#333',
-    lineHeight: fixwidth * 0.051,
+    // fontSize, lineHeight은 props로 override
   },
 });

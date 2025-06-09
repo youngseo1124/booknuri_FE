@@ -56,7 +56,7 @@ const BookSuggestionCarousel = ({
                 <View style={{ width: '100%' }}>
                   <BookSuggestionItem
                     book={book}
-                    thumbnailWidth={thumbnailWidth}        // ✅ 전달
+                    thumbnailWidth={thumbnailWidth}
                     thumbnailHeight={thumbnailHeight}
                   />
                 </View>

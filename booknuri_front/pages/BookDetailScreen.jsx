@@ -27,6 +27,7 @@ import ScrollToTopButton from '../components/public/publicUtil/ScrollToTopButton
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
 import { useFocusEffect } from '@react-navigation/native';
 import {BannerRefreshContext} from '../contexts/BannerRefreshContext';
+import {addBookToShelf} from '../apis/apiFunction_myShelf';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -55,6 +56,8 @@ const BookDetailScreen = ({ route, navigation }) => {
     const [isReady, setIsReady] = useState(false);
     const { increaseViewedBookCount } = useContext(BannerRefreshContext);
     const didScrollTopRef = useRef(false);
+    const [isInShelf, setIsInShelf] = useState(false);
+
 
 
     useFocusEffect(
@@ -67,7 +70,10 @@ const BookDetailScreen = ({ route, navigation }) => {
     const fetchBookData = async () => {
         const res = await getBookTotalInfo(isbn);
         setBookData(res.data);
+        setIsInShelf(res.data.addedToBookshelf);
     };
+
+
 
     const fetchSortedReviews = async (sort = 'like') => {
         const res = await getBookReviewList(isbn, sort);
@@ -139,14 +145,23 @@ const BookDetailScreen = ({ route, navigation }) => {
         });
     };
 
+
+
     const handleQuoteDelete = async (quoteId) => {
         await deleteBookQuote(quoteId);
         await fetchSortedQuotes(quoteSort);
     };
 
-    const handleAddToBookshelf = () => {
-        setShowToast(true);
+    const handleAddToBookshelf = async () => {
+        try {
+            await addBookToShelf(isbn);
+            setShowToast(true);
+            setIsInShelf(true);
+        } catch (err) {
+            console.error('책장 추가 실패:', err);
+        }
     };
+
 
     if (!isReady) {
         return (
@@ -170,8 +185,10 @@ const BookDetailScreen = ({ route, navigation }) => {
                 <DPBookInfoHeaderBlock
                   key={bookData.bookInfo.isbn13}
                   bookInfo={bookData.bookInfo}
+                  isInShelf={isInShelf}
                   onAddToBookshelf={handleAddToBookshelf}
                 />
+
               ) : (
                 <Text style={{ color: 'red' }}>📛 책 정보 없음</Text>
               )}

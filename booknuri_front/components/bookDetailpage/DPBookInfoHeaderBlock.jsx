@@ -5,7 +5,7 @@ import AddToBookshelfButton from './AddToBookshelfButton';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const DPBookInfoHeaderBlock = ({ bookInfo, onAddToBookshelf }) => {
+const DPBookInfoHeaderBlock = ({ bookInfo,  isInShelf,onAddToBookshelf }) => {
   const [aspectRatio, setAspectRatio] = useState(0.7); // 📐 기본 비율
 
 
@@ -82,7 +82,10 @@ const DPBookInfoHeaderBlock = ({ bookInfo, onAddToBookshelf }) => {
         )}
 
         {/*책장담기버튼*/}
-        <AddToBookshelfButton onPress={onAddToBookshelf} />
+        <AddToBookshelfButton
+          onPress={onAddToBookshelf}
+          isInShelf={isInShelf}
+        />
 
 
 

@@ -1,5 +1,4 @@
-import { apiClient } from './apiClient'; // axios 인스턴스
-// baseURL 설정된 apiClient를 기반으로 모든 요청 처리함
+import api from './api';
 
 /**
  * ✅ 내가 작성한 리뷰 목록 조회 (책 기준 그룹화)
@@ -10,7 +9,7 @@ import { apiClient } from './apiClient'; // axios 인스턴스
  * @returns {Promise<MyReviewGroupedPageResponseDto>}
  */
 export const getMyGroupedReviews = async (offset = 0, limit = 10) => {
-  const res = await apiClient.get(`/book/review/my/grouped`, {
+  const res = await api.get(`/book/review/my/grouped`, {
     params: { offset, limit },
   });
   return res.data;
@@ -25,7 +24,7 @@ export const getMyGroupedReviews = async (offset = 0, limit = 10) => {
  * @returns {Promise<MyReflectionGroupedPageResponseDto>}
  */
 export const getMyGroupedReflections = async (offset = 0, limit = 10) => {
-  const res = await apiClient.get(`/book/reflection/my/grouped`, {
+  const res = await api.get(`/book/reflection/my/grouped`, {
     params: { offset, limit },
   });
   return res.data;
@@ -40,7 +39,7 @@ export const getMyGroupedReflections = async (offset = 0, limit = 10) => {
  * @returns {Promise<MyQuoteGroupedPageResponseDto>}
  */
 export const getMyGroupedQuotes = async (offset = 0, limit = 10) => {
-  const res = await apiClient.get(`/book/quote/my/grouped`, {
+  const res = await api.get(`/book/quote/my/grouped`, {
     params: { offset, limit },
   });
   return res.data;
@@ -53,7 +52,7 @@ export const getMyGroupedQuotes = async (offset = 0, limit = 10) => {
  * @returns {Promise<string>} - 성공 메시지 또는 오류 메시지
  */
 export const addBookToShelf = async (isbn13) => {
-  const res = await apiClient.post(`/shelf-book/add`, { isbn13 });
+  const res = await api.post(`/shelf-book/add`, { isbn13 });
   return res.data;
 };
 
@@ -65,7 +64,7 @@ export const addBookToShelf = async (isbn13) => {
  * @returns {Promise<string>} - 성공 메시지
  */
 export const updateBookStatus = async (isbn13, status) => {
-  const res = await apiClient.put(`/shelf-book/status/${isbn13}`, null, {
+  const res = await api.put(`/shelf-book/status/${isbn13}`, null, {
     params: { status },
   });
   return res.data;
@@ -78,7 +77,7 @@ export const updateBookStatus = async (isbn13, status) => {
  * @returns {Promise<string>} - 성공 메시지
  */
 export const toggleLifeBook = async (isbn13) => {
-  const res = await apiClient.put(`/shelf-book/life-book/${isbn13}`);
+  const res = await api.put(`/shelf-book/life-book/${isbn13}`);
   return res.data;
 };
 
@@ -93,6 +92,6 @@ export const toggleLifeBook = async (isbn13) => {
 export const getMyShelfBooks = async (page = 0, size = 10, status) => {
   const params = { page, size };
   if (status) params.status = status;
-  const res = await apiClient.get(`/shelf-book/my`, { params });
+  const res = await api.get(`/shelf-book/my`, { params });
   return res.data;
 };

@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: fixwidth * 0.037,
     backgroundColor: '#ffffff',
-    borderRadius: fixwidth * 0.033,
+    borderRadius: fixwidth * 0.017,
     marginHorizontal: fixwidth * 0.033,
     borderWidth: fixwidth * 0.0037,
     borderColor: 'rgba(0,0,0,0.17)',

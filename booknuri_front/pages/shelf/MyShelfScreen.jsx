@@ -3,8 +3,8 @@ import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
 import ShelfTabSwitcher from '../../components/myShelf/ShelfTabSwitcher';
-import MyShelfTabPage from '../../components/myShelf/MyShelfTabPage';
-import MyHistoryTabPage from '../../components/myShelf/MyHistoryTabPage';
+import MyShelfTabPage from '../../components/myShelf/page/MyShelfTabPage';
+import MyHistoryTabPage from '../../components/myShelf/page/MyHistoryTabPage';
 
 const { width: fixwidth } = Dimensions.get('window');
 

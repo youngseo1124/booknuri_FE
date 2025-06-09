@@ -17,7 +17,7 @@ const statusOptions = [
   { id: 'FINISHED', name: '완독한 책' },
 ];
 
-const ShelfBookCardWithStatusSelector = ({ book }) => {
+const ShelfBookCard = ({ book }) => {
   const { bookname, authors, bookImageURL, status, isbn13, lifeBook } = book.shelfInfo;
   const navigation = useNavigation();
 
@@ -134,7 +134,7 @@ const ShelfBookCardWithStatusSelector = ({ book }) => {
   );
 };
 
-export default ShelfBookCardWithStatusSelector;
+export default ShelfBookCard;
 
 const styles = StyleSheet.create({
   card: {

@@ -11,7 +11,7 @@ import {
 
 import { getMyQuoteById } from '../../apis/apiFunction_bookQuote';
 import PureQuoteContent from '../../components/bookDetailpage/quote/PureQuoteContent';
-import IconCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import IconCheckBox from '../../components/public/publicUtil/CustomCheckBox';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 
 import Header from '../../components/public/publicHeader/Header';

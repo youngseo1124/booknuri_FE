@@ -5,7 +5,7 @@ import {
     Modal,
     TouchableOpacity,
     StyleSheet,
-    useWindowDimensions,
+    useWindowDimensions, Dimensions,
 } from 'react-native';
 
 const ConfirmPopup = ({
@@ -41,6 +41,8 @@ const ConfirmPopup = ({
 
 export default ConfirmPopup;
 
+const { width: fixwidth } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
@@ -50,57 +52,58 @@ const styles = StyleSheet.create({
     },
     popup: {
         backgroundColor: 'white',
-        paddingVertical: 24,
-        paddingHorizontal: 24,
-        borderRadius: 12,
-        width: '80%',
+        paddingVertical: fixwidth * 0.06,
+        paddingHorizontal: fixwidth * 0.06,
+        borderRadius: fixwidth * 0.03,
+        width: fixwidth * 0.8,
         alignItems: 'center',
-
+        borderWidth: fixwidth * 0.001,
+        borderColor: 'rgba(0,0,0,0.38)',
     },
     popupLandscape: {
-        width: '60%',
+        width: fixwidth * 0.6,
     },
     title: {
-        fontSize: 18,
+        fontSize: fixwidth * 0.045,
         fontFamily: 'NotoSansKR-SemiBold',
         color: '#000',
-        marginBottom: 12,
+        marginBottom: fixwidth * 0.02,
         textAlign: 'center',
-        lineHeight: 20,
-        paddingVertical: 8,
+        lineHeight: fixwidth * 0.05,
+        paddingVertical: fixwidth * 0.02,
     },
     message: {
-        fontSize: 15,
+        fontSize: fixwidth * 0.037,
         fontFamily: 'NotoSansKR-Regular',
         color: '#333',
-        marginBottom: 16,
+        marginBottom: fixwidth * 0.04,
         textAlign: 'center',
-        lineHeight: 20,
+        lineHeight: fixwidth * 0.05,
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 12,
+        gap: fixwidth * 0.03,
     },
     cancelButton: {
         backgroundColor: 'rgb(97,156,245)',
-        paddingVertical: 14,
-        borderRadius: 8,
-        width: '25%',
+        paddingVertical: fixwidth * 0.0197,
+        borderRadius: fixwidth * 0.02,
+        width: fixwidth * 0.22,
         alignItems: 'center',
-        marginRight: 12,
+        marginRight: fixwidth * 0.03,
     },
     confirmButton: {
         backgroundColor: 'rgb(97,156,245)',
-        paddingVertical: 14,
-        borderRadius: 8,
-        width: '25%',
+        paddingVertical: fixwidth * 0.0197,
+        borderRadius: fixwidth * 0.02,
+        width: fixwidth * 0.22,
         alignItems: 'center',
     },
     buttonText: {
         color: 'white',
-        fontSize: 15,
-        lineHeight: 20,
+        fontSize: fixwidth * 0.037,
+        lineHeight: fixwidth * 0.05,
         fontFamily: 'NotoSansKR-Medium',
     },
 });

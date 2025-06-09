@@ -5,9 +5,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart as faSolidHeart, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
-import CategorySelector from '../public/publicButton/CategorySelector';
+import CategorySelector from '../public/selector/CategorySelector';
 import { updateBookStatus } from '../../apis/apiFunction_myShelf';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -17,19 +17,17 @@ const statusOptions = [
   { id: 'FINISHED', name: '완독한 책' },
 ];
 
-const ShelfBookCard = ({ book }) => {
+const ShelfBookCard = ({ book, onStatusUpdate }) => {
   const { bookname, authors, bookImageURL, status, isbn13, lifeBook } = book.shelfInfo;
   const navigation = useNavigation();
 
-  const [selectedStatus, setSelectedStatus] = useState(status);
   const [modalVisible, setModalVisible] = useState(false);
-
 
   const handleStatusChange = async (newStatus) => {
     try {
       await updateBookStatus(isbn13, newStatus);
-      setSelectedStatus(newStatus);
       setModalVisible(false);
+      onStatusUpdate?.(isbn13, newStatus);
     } catch (err) {
       console.error('상태 변경 실패', err);
       Alert.alert('오류', '책 상태 변경에 실패했어요.');
@@ -67,6 +65,7 @@ const ShelfBookCard = ({ book }) => {
               icon={faSolidHeart}
               size={fixwidth * 0.045}
               color="#e74c3c"
+              paddingHorizontal={fixwidth * 0.01}
             />
           </View>
         )}
@@ -83,7 +82,7 @@ const ShelfBookCard = ({ book }) => {
 
         <View style={{ maxWidth: fixwidth * 0.287 }}>
           <CategorySelector
-            selectedCategory={selectedStatus}
+            selectedCategory={status} // ✅ 상태 그대로 props로 보여줌
             categoryList={statusOptions}
             onPress={() => setModalVisible(true)}
             fontSize={fixwidth * 0.03}
@@ -96,7 +95,11 @@ const ShelfBookCard = ({ book }) => {
       {/* ⋮ 책 상세 메뉴 */}
       <TouchableOpacity
         style={styles.menuButton}
-        onPress={() => console.log('도서 상세페이지 이동')}
+        onPress={() =>
+          navigation.navigate('ShelfBookDetailSettingScreen', {
+            shelfBook: book.shelfInfo,
+          })
+        }
       >
         <FontAwesomeIcon icon={faEllipsisV} size={fixwidth * 0.0417} color="#444" />
       </TouchableOpacity>
@@ -120,7 +123,7 @@ const ShelfBookCard = ({ book }) => {
                 <Text
                   style={[
                     styles.optionText,
-                    selectedStatus === option.id && { color: '#4a90e2', fontWeight: 'bold' },
+                    status === option.id && {  fontFamily: 'NotoSansKR-Medium'},
                   ]}
                 >
                   {option.name}
@@ -144,7 +147,7 @@ const styles = StyleSheet.create({
     borderRadius: fixwidth * 0.02,
     padding: fixwidth * 0.0397,
     position: 'relative',
-    width:"100%"
+    width: '100%',
   },
   imageWrapper: {
     position: 'relative',
@@ -163,7 +166,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: fixwidth * 0.01,
     right: fixwidth * 0.01,
-    backgroundColor: 'rgba(255,255,255,0.85)',
     borderRadius: fixwidth * 0.03,
     padding: fixwidth * 0.008,
   },

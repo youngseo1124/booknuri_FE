@@ -82,16 +82,34 @@ export const toggleLifeBook = async (isbn13) => {
 };
 
 /**
- * ✅ 내 책장 책 목록 조회 (최신순, 상태 필터 가능)
+ * ✅ 내 책장 책 목록 조회 (최신순, 상태 + 인생책 + 키워드 필터 가능)
  *
  * @param {number} page - 페이지 번호 (기본 0)
  * @param {number} size - 페이지당 항목 수 (기본 10)
  * @param {'WANT_TO_READ' | 'READING' | 'FINISHED'} [status] - 상태 필터 (없으면 전체 조회)
+ * @param {boolean} [lifeBookOnly] - 인생책 필터 (true일 경우 인생책만)
+ * @param {string} [keyword] - 책 제목 키워드 (부분 검색)
  * @returns {Promise<Page<MyShelfBookWithExtrasResponseDto>>}
  */
-export const getMyShelfBooks = async (page = 0, size = 10, status) => {
+export const getMyShelfBooks = async (page = 0, size = 10, status, lifeBookOnly, keyword) => {
   const params = { page, size };
+
   if (status) params.status = status;
+  if (lifeBookOnly) params.lifeBookOnly = lifeBookOnly;
+  if (keyword) params.keyword = keyword;
+
   const res = await api.get(`/shelf-book/my`, { params });
+  return res.data;
+};
+
+/**
+ * ✅ 책장에서 책 삭제
+ * 해당 ISBN13에 해당하는 책을 내 책장에서 제거함
+ *
+ * @param {string} isbn13 - 삭제할 책의 ISBN13
+ * @returns {Promise<string>} - 성공 메시지
+ */
+export const removeBookFromShelf = async (isbn13) => {
+  const res = await api.delete(`/shelf-book/remove/${isbn13}`);
   return res.data;
 };

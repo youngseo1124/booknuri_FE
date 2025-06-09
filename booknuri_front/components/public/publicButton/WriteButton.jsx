@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     paddingVertical: fixwidth * 0.028,
     borderRadius: fixwidth * 0.017,
     borderColor: 'rgba(0,0,0,0.15)',
-    backgroundColor: 'rgb(97,156,245)'
+    backgroundColor: '#7ea4fa'
   },
   text: {
     fontSize: fixwidth * 0.0377,

@@ -15,7 +15,7 @@ import Header from '../../components/public/publicHeader/Header';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
-import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import CustomCheckBox from '../../components/public/publicUtil/CustomCheckBox';
 
 
 

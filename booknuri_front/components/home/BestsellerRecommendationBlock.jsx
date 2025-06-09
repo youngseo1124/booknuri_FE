@@ -6,7 +6,7 @@ import {
 import SectionHeaderWithIcon from '../public/publicHeader/SectionHeaderWithIcon';
 import VerticalGap from '../public/publicUtil/VerticalGap';
 import BookSuggestionCarousel from '../public/bookpublic/BookSuggestionCarousel';
-import CategorySelector from '../public/publicButton/CategorySelector';
+import CategorySelector from '../public/selector/CategorySelector';
 
 const { width: fixwidth } = Dimensions.get('window');
 

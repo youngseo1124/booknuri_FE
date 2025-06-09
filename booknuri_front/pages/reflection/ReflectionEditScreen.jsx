@@ -8,7 +8,7 @@ import Header from '../../components/public/publicHeader/Header';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import { getBookTotalInfo } from '../../apis/apiFunction_book';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
-import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import CustomCheckBox from '../../components/public/publicUtil/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ImageUploaderBox from '../../components/public/etc/ImageUploaderBox';

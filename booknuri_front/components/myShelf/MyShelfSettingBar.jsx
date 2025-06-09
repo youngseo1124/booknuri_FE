@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, useWindowDimensions } 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
-const MyShelfSettingBar = ({ totalCount, selectedStatus, onStatusChange, onSearchPress }) => {
+const MyShelfSettingBar = ({ totalCount, selectedStatus, onStatusChange, onSearchPress, onSettingPress }) => {
   const { width: fixwidth } = useWindowDimensions();
 
   const styles = getStyles(fixwidth);
@@ -17,7 +17,7 @@ const MyShelfSettingBar = ({ totalCount, selectedStatus, onStatusChange, onSearc
           <FontAwesomeIcon icon={faMagnifyingGlass} size={fixwidth * 0.0427} color='rgba(149,149,149,0.77)'/>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconBtn}>
+        <TouchableOpacity onPress={onSettingPress} style={styles.iconBtn}>
           <Image
             source={require('../../image/utill/setting_icon.png')}
             style={styles.settingIcon}

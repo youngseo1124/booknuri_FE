@@ -14,7 +14,7 @@ import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import { createReview, getBookTotalInfo } from '../../apis/apiFunction_book';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import ReviewFormBlock from '../../components/bookDetailpage/review/ReviewWriteFormBlock';
-import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import CustomCheckBox from '../../components/public/publicUtil/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import StarRatingBox from '../../components/public/etc/StarRatingBox';

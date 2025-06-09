@@ -1,15 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import { View, ScrollView, useWindowDimensions } from 'react-native';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
 import ShelfTabSwitcher from '../../components/myShelf/ShelfTabSwitcher';
 import MyShelfTabPage from '../../components/myShelf/page/MyShelfTabPage';
 import MyHistoryTabPage from '../../components/myShelf/page/MyHistoryTabPage';
+import {useFocusEffect} from '@react-navigation/native';
 
 const MyShelfScreen = () => {
   const scrollRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [containerWidth, setContainerWidth] = useState(null); // ✅ 실측 너비
+
+
 
   const handleTabPress = (index) => {
     if (containerWidth !== null) {

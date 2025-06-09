@@ -17,7 +17,7 @@ import {
   getMyReviewByIsbn, getBookTotalInfo,
 } from '../../apis/apiFunction_book';
 import ReviewFormBlock from '../../components/bookDetailpage/review/ReviewWriteFormBlock';
-import CustomCheckBox from '../../components/public/publicButton/CustomCheckBox';
+import CustomCheckBox from '../../components/public/publicUtil/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ReviewEditFormBlock from '../../components/bookDetailpage/review/ReviewEditFormBlock';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MyShelfScreen from '../pages/shelf/MyShelfScreen';
+import ShelfBookDetailSettingScreen from '../pages/shelf/ShelfBookDetailSettingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +14,7 @@ const MyShelfStack = () => {
       }}
     >
       <Stack.Screen name="MyShelfScreen" component={MyShelfScreen} />
+
 
     </Stack.Navigator>
   );

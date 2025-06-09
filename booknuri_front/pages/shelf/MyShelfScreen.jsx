@@ -1,24 +1,25 @@
 import React, { useRef, useState } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, useWindowDimensions } from 'react-native';
 import CommonLayout from '../../components/public/publicUtil/CommonLayout';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
 import ShelfTabSwitcher from '../../components/myShelf/ShelfTabSwitcher';
 import MyShelfTabPage from '../../components/myShelf/page/MyShelfTabPage';
 import MyHistoryTabPage from '../../components/myShelf/page/MyHistoryTabPage';
 
-const { width: fixwidth } = Dimensions.get('window');
-
 const MyShelfScreen = () => {
   const scrollRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(null); // ✅ 실측 너비
 
   const handleTabPress = (index) => {
-    scrollRef.current?.scrollTo({ x: fixwidth * index, animated: true });
-    setCurrentIndex(index);
+    if (containerWidth !== null) {
+      scrollRef.current?.scrollTo({ x: containerWidth * index, animated: true });
+      setCurrentIndex(index);
+    }
   };
 
   const handleScroll = (event) => {
-    const index = Math.round(event.nativeEvent.contentOffset.x / fixwidth);
+    const index = Math.round(event.nativeEvent.contentOffset.x / containerWidth);
     setCurrentIndex(index);
   };
 
@@ -27,28 +28,34 @@ const MyShelfScreen = () => {
       <HomeHeader title="내 서재" />
       <ShelfTabSwitcher currentIndex={currentIndex} onTabPress={handleTabPress} />
 
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        onMomentumScrollEnd={handleScroll}
-        showsHorizontalScrollIndicator={false}
-        style={styles.scrollView}
+      <View
+        style={{ flex: 1 }}
+        onLayout={(e) => {
+          const { width } = e.nativeEvent.layout;
+          setContainerWidth(width);
+        }}
       >
-        <View style={styles.page}><MyShelfTabPage /></View>
-        <View style={styles.page}><MyHistoryTabPage /></View>
-      </ScrollView>
+        {containerWidth !== null && (
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            pagingEnabled
+            onMomentumScrollEnd={handleScroll}
+            showsHorizontalScrollIndicator={false}
+            style={{ flex: 1 }}
+          >
+            <View style={{ width: containerWidth }}>
+              <MyShelfTabPage parentWidth={containerWidth} />
+            </View>
+            <View style={{ width: containerWidth }}>
+              <MyHistoryTabPage parentWidth={containerWidth} />
+            </View>
+          </ScrollView>
+        )}
+      </View>
     </CommonLayout>
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  page: {
-    width: fixwidth,
-  },
-});
 
 export default MyShelfScreen;

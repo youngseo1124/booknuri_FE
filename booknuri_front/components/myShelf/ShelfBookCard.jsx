@@ -98,7 +98,7 @@ const ShelfBookCard = ({ book }) => {
         style={styles.menuButton}
         onPress={() => console.log('도서 상세페이지 이동')}
       >
-        <FontAwesomeIcon icon={faEllipsisV} size={fixwidth * 0.04} color="#444" />
+        <FontAwesomeIcon icon={faEllipsisV} size={fixwidth * 0.0417} color="#444" />
       </TouchableOpacity>
 
       {/* 상태 변경 모달 */}
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: fixwidth * 0.02,
     padding: fixwidth * 0.0397,
     position: 'relative',
+    width:"100%"
   },
   imageWrapper: {
     position: 'relative',
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     position: 'absolute',
-    top: fixwidth * 0.037,
+    top: fixwidth * 0.0397,
     right: fixwidth * 0.047,
   },
   modalBackdrop: {

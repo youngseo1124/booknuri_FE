@@ -21,7 +21,12 @@ import CustomCheckBox from '../../components/public/publicUtil/CustomCheckBox';
 import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ImageUploaderBox from '../../components/public/etc/ImageUploaderBox';
-import {createReflection, getMyReflectionByIsbn, uploadReflectionImages} from '../../apis/apiFunction_bookReflection';
+import {
+  checkAlreadyReflected,
+  createReflection, getLatestMyReflectionId,
+  getMyReflectionByIsbn,
+  uploadReflectionImages,
+} from '../../apis/apiFunction_bookReflection';
 import api from '../../apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -51,6 +56,8 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
   const [isReady, setIsReady] = useState(false);
   const [title, setTitle] = useState('');
+  const [alreadyExistPopupVisible, setAlreadyExistPopupVisible] = useState(false);
+
 
   useEffect(() => {
     const fetchBookData = async () => {
@@ -98,7 +105,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     const accessToken = await AsyncStorage.getItem('accessToken');
 
     const response = await axios.post(
-      `http://192.168.0.13:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
+      `http://172.18.8.19:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
       formData,
       {
         headers: {
@@ -126,40 +133,93 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
 
 
   const handleSubmit = async () => {
+    console.log('--- handleSubmit 시작 ---');
+    console.log('초기 상태:');
+    console.log('isbn13:', isbn13);
+    console.log('title:', title);
+    console.log('content 길이:', content.length);
+    console.log('rating:', rating);
+    console.log('containsSpoiler:', containsSpoiler);
+    console.log('visibleToPublic:', visibleToPublic);
+    console.log('images 개수:', images.length);
+
     try {
-      await createReflection({
+      //  1. 공개 독후감인지 확인
+      console.log('1. 공개 독후감 작성 여부 확인 시작...');
+      if (visibleToPublic) {
+        console.log('공개 독후감이므로 checkAlreadyReflected 호출...');
+        const res = await checkAlreadyReflected(isbn13);
+        console.log('checkAlreadyReflected 응답:', res.data);
+        if (res.data.alreadyReflected) {
+          setAlreadyExistPopupVisible(true); // ❗팝업 띄움
+          console.log('❌ 이미 공개 독후감을 작성했습니다. 팝업 표시.');
+          return;
+        }
+        console.log('✅ 공개 독후감 작성 가능.');
+      } else {
+        console.log('비공개 독후감이므로 작성 여부 확인 건너뜀.');
+      }
+
+      //  2. 독후감 작성 시도
+      console.log('2. 독후감 작성 시도...');
+      const reflectionData = {
         isbn13,
         title,
         content,
         rating,
         containsSpoiler,
         visibleToPublic,
-      });
-    } catch (err) {
-    }
+      };
+      console.log('createReflection에 보낼 데이터:', reflectionData);
 
-    try {
+      const createResponse = await createReflection(reflectionData);
+      console.log('createReflection 응답:', createResponse.data);
+      console.log('✅ 독후감 작성 성공.');
 
-      const res = await getMyReflectionByIsbn(isbn13);
-      const reflectionId = res?.data?.reflectionId || res?.data?.id; // 둘 다 대비 가능하게!
+      // 3. 작성 후 ID 조회: getMyReflectionByIsbn 대신 getLatestMyReflectionId 사용
+      console.log('3. 독후감 ID 조회 시작...');
+      console.log('getLatestMyReflectionId 호출 (isbn13:', isbn13, ')');
+      const latestIdRes = await getLatestMyReflectionId(isbn13);
+      console.log('getLatestMyReflectionId 응답:', latestIdRes.data);
+
+      const reflectionId = latestIdRes?.data?.reflectionId;
+      console.log('추출된 reflectionId:', reflectionId);
 
       if (!reflectionId) {
+        console.log('❌ reflectionId를 찾을 수 없습니다. 함수 종료.');
+        Alert.alert("오류", "독후감 저장 후 ID를 찾을 수 없어요.");
         return;
       }
+      console.log('✅ reflectionId 성공적으로 획득:', reflectionId);
 
-      //  이미지 업로드
+      //  4. 이미지 업로드
+      console.log('4. 이미지 업로드 시작...');
       if (images.length > 0) {
+        console.log(`${images.length}개의 이미지 업로드 시도 (reflectionId: ${reflectionId})...`);
         await uploadReflectionImages(reflectionId, images);
+        console.log('✅ 이미지 업로드 성공.');
+      } else {
+        console.log('업로드할 이미지가 없습니다. 이미지 업로드 건너뜀.');
       }
 
-      //  완료 후 이동
+      //  5. 화면 이동
+      console.log('5. 화면 이동 시작...');
       navigation.dispatch(StackActions.pop(1));
-    } catch (e) {
-      console.log(" 에러 발생:", e.response?.data || e.message);
+      console.log('✅ 독후감 작성 및 처리 완료. 이전 화면으로 이동.');
 
+    } catch (err) {
+      console.log('--- ❌ 독후감 작성 에러 발생 ---');
+      console.log('에러 객체:', err);
+      console.log('에러 메시지:', err.message);
+      if (err.response) {
+        console.log('에러 응답 데이터 (err.response.data):', err.response.data);
+        console.log('에러 응답 상태 (err.response.status):', err.response.status);
+        console.log('에러 응답 헤더 (err.response.headers):', err.response.headers);
+      }
+      Alert.alert("작성 실패", `독후감 작성 중 오류가 발생했어요: ${err.response?.data?.message || err.message}`);
     }
+    console.log('--- handleSubmit 종료 (에러 발생 또는 성공) ---');
   };
-
 
   const handleAddImage = async (fromCamera = false) => {
     if (images.length >= 3) {
@@ -309,6 +369,12 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
             title="이미지를 삭제할까요?"
             onCancel={() => setDeletePopupVisible(false)}
             onConfirm={deleteImage}
+          />
+          <TitleOnlyPopup
+            visible={alreadyExistPopupVisible}
+            title="이미 공개 독후감을 작성했어요"
+            onCancel={() => setAlreadyExistPopupVisible(false)}
+            onConfirm={() => setAlreadyExistPopupVisible(false)}
           />
         </View>
       </TouchableWithoutFeedback>

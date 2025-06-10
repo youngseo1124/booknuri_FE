@@ -30,36 +30,31 @@ const statusOptions = [
 ];
 
 const ShelfBookDetailSettingScreen = () => {
-
   const route = useRoute();
   const navigation = useNavigation();
-  const { isbn13 } = route.params;
-
+  const { isbn13, onUpdateShelfBookInfo } = route.params;
   const [book, setBook] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   const fetchBook = async () => {
     try {
-      console.log('📡 내 서재 도서 API 호출 중:', isbn13); // ✅ ISBN 확인
       const res = await getMyShelfBookByIsbn(isbn13);
-      console.log('📘 내 서재 도서 응답:', res); // ✅ 응답 내용 확인
       setBook(res.shelfInfo);
     } catch (err) {
-      console.error('❌ 책 정보 불러오기 실패:', err);
+      console.error(err);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchBook();
-    }, [isbn13])
-  );
+  useFocusEffect(useCallback(() => {
+    fetchBook();
+  }, [isbn13]));
 
   const handleChangeStatus = async (newStatus) => {
     try {
       await updateBookStatus(isbn13, newStatus);
       setBook((prev) => ({ ...prev, status: newStatus }));
+      onUpdateShelfBookInfo?.(isbn13, { status: newStatus }); // ✅ 반영
       setModalVisible(false);
     } catch {
       alert('상태 변경 실패');
@@ -69,15 +64,18 @@ const ShelfBookDetailSettingScreen = () => {
   const handleToggleLife = async () => {
     try {
       await toggleLifeBook(isbn13);
-      setBook((prev) => ({ ...prev, lifeBook: !prev.lifeBook }));
+      const newLife = !book.lifeBook;
+      setBook((prev) => ({ ...prev, lifeBook: newLife }));
+      onUpdateShelfBookInfo?.(isbn13, { lifeBook: newLife }); // ✅ 반영
     } catch {
-      alert('인생책 토글 실패');
+      alert('실패');
     }
   };
 
   const handleDelete = async () => {
     try {
       await removeBookFromShelf(isbn13);
+      onUpdateShelfBookInfo?.(isbn13, null); // 삭제는 null로 전달
       setConfirmVisible(false);
       navigation.goBack();
     } catch {
@@ -128,8 +126,8 @@ const ShelfBookDetailSettingScreen = () => {
               </View>
 
               <InfoRow label="인용" value={`${book.quoteCount}`} onPress={() => navigation.navigate('MyQuotesScreen', { isbn13 })} />
-              <InfoRow label="독후감" value={`${book.reflectionCount}`} onPress={() => navigation.navigate('MyReflectionsScreen')} />
-              <InfoRow label="리뷰" value={`${book.reviewCount}`} onPress={() => navigation.navigate('MyReviewsScreen')} />
+              <InfoRow label="독후감" value={`${book.reflectionCount}`} onPress={() => navigation.navigate('MyReflectionsScreen',{isbn13})} />
+              <InfoRow label="리뷰" value={`${book.reviewCount}`} onPress={() => navigation.navigate('MyReviewsScreen',{isbn13})} />
 
               <View style={styles.infoItemRow}>
                 <Text style={styles.selectorLabel}>인생책</Text>

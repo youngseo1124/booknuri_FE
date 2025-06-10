@@ -1,49 +1,6 @@
 import api from './api';
 
-/**
- * ✅ 내가 작성한 리뷰 목록 조회 (책 기준 그룹화)
- * 책 1권당 하나의 리뷰만 존재하며, 최신순으로 정렬됨
- *
- * @param {number} offset - 페이지 시작 위치 (기본 0)
- * @param {number} limit - 한 페이지에 가져올 개수 (기본 10)
- * @returns {Promise<MyReviewGroupedPageResponseDto>}
- */
-export const getMyGroupedReviews = async (offset = 0, limit = 10) => {
-  const res = await api.get(`/book/review/my/grouped`, {
-    params: { offset, limit },
-  });
-  return res.data;
-};
 
-/**
- * ✅ 내가 작성한 독후감 목록 조회 (책 기준 그룹화)
- * 책 1권당 하나의 독후감만 존재하며, 최신 작성순 정렬됨
- *
- * @param {number} offset - 페이지 시작 위치
- * @param {number} limit - 페이지당 개수
- * @returns {Promise<MyReflectionGroupedPageResponseDto>}
- */
-export const getMyGroupedReflections = async (offset = 0, limit = 10) => {
-  const res = await api.get(`/book/reflection/my/grouped`, {
-    params: { offset, limit },
-  });
-  return res.data;
-};
-
-/**
- * ✅ 내가 작성한 인용 목록 조회 (책 기준 그룹화)
- * 한 책에 여러 인용 존재 가능하며, 최신 인용 작성일 기준 정렬됨
- *
- * @param {number} offset - 페이지 시작 위치
- * @param {number} limit - 한 번에 불러올 책 개수
- * @returns {Promise<MyQuoteGroupedPageResponseDto>}
- */
-export const getMyGroupedQuotes = async (offset = 0, limit = 10) => {
-  const res = await api.get(`/book/quote/my/grouped`, {
-    params: { offset, limit },
-  });
-  return res.data;
-};
 
 /**
  * ✅ 책장에 책 추가 (기본 상태: WANT_TO_READ)
@@ -150,5 +107,61 @@ export const getMyQuotesByBookIsbn = async (isbn13) => {
  */
 export const getMyShelfBookByIsbn = async (isbn13) => {
   const res = await api.get(`/shelf-book/my/info/${isbn13}`);
+  return res.data;
+};
+
+
+/**
+ * ✅ 특정 책에 대해 내가 작성한 독후감 목록 조회
+ *
+ * 로그인한 사용자가 특정 책(ISBN13 기준)에 대해 작성한 모든 독후감을 반환함.
+ *
+ * - 해당 API는 로그인한 사용자 본인의 독후감만 반환함
+ * - 공개 여부와 관계없이 반환되며, 비활성화된 독후감은 제외됨
+ * - 응답은 BookReflectionResponseDto[] 배열이며, 각 독후감은 이미지, 좋아요 여부,
+ *   작성자 여부, 스포일러 포함 여부, 공개 여부 등을 포함함
+ *
+ * @param {string} isbn13 - 독후감을 조회할 책의 ISBN13 (예: '9788998441012')
+ * @returns {Promise<BookReflectionResponseDto[]>}
+ *
+ * @example
+ * const reflections = await getMyReflectionsByBookIsbn('9788998441012');
+ * console.log(reflections[0].title); // "자극적인 소재 없이도 재밌게 읽힌다"
+ */
+export const getMyReflectionsByBookIsbn = async (isbn13) => {
+  const res = await api.get(`/book/reflection/my/isbn/${isbn13}`);
+  return res.data;
+};
+
+
+/**
+ * ✅ 내가 쓴 글이 있는 책 목록 조회 (리뷰 / 인용 / 독후감 중 선택)
+ *
+ * 로그인한 사용자가 작성한 글이 하나라도 있는 책 목록을 반환함.
+ * - type 파라미터로 조회할 글 종류 지정: review | quote | reflection
+ * - keyword 파라미터로 책 제목 또는 저자 키워드로 필터 가능 (선택)
+ * - 책 하나에 여러 글이 있어도 가장 최근 작성 기준으로 정렬
+ * - 각 책의 리뷰/인용/독후감 개수가 함께 포함됨
+ *
+ * @param {'review' | 'quote' | 'reflection'} type - 글 종류
+ * @param {string} [keyword] - 책 제목 또는 저자 키워드 (선택)
+ * @param {number} [page] - 페이지 번호 (기본 0)
+ * @param {number} [size] - 페이지당 개수 (기본 10)
+ * @returns {Promise<Page<BookInfoDto>>} - 작성한 글이 있는 책 목록 (페이징)
+ *
+ * @example
+ * const res = await getMyGroupedWrittenBooks('quote', '데미안', 0, 5);
+ * console.log(res.content[0].bookTitle); // '데미안'
+ */
+export const getMyGroupedWrittenBooks = async (
+  type,
+  keyword,
+  page = 0,
+  size = 10
+) => {
+  const params = { type, page, size };
+  if (keyword) params.keyword = keyword;
+
+  const res = await api.get(`/book/my/grouped`, { params });
   return res.data;
 };

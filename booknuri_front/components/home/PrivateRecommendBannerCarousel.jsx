@@ -84,7 +84,7 @@ const PrivateRecommendBannerCarousel = ({ bookList = [], onReady }) => {
 
         Animated.timing(animatedValue, {
           toValue: targetX,
-          duration: 317,
+          duration: 777,
           easing: Easing.out(Easing.quad),
           useNativeDriver: false,
         }).start(() => {
@@ -98,7 +98,7 @@ const PrivateRecommendBannerCarousel = ({ bookList = [], onReady }) => {
             updatePage(nextPage);
           }
         });
-      }, 2700);
+      }, 2777);
     }
     return () => clearInterval(intervalRef.current);
   }, [isAutoPlay, currentPage, containerWidth, recommendations, scrollReady]);

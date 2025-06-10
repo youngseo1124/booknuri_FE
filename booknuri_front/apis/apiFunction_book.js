@@ -37,7 +37,7 @@ export const createReview = (data) => {
 
 
 /**
- * ✍️ 특정 책에 대한 내가 작성한 리뷰 조회 (리뷰 수정용)
+ * ✍️ 특정 책에 대한 내가 작성한 리뷰 조회
  * @param {string} isbn13 - 책 ISBN13
  * @returns {Promise} BookReviewResponseDto
  */

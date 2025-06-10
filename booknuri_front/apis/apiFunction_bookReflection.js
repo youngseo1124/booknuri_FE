@@ -32,13 +32,14 @@ export const uploadReflectionImages = (reflectionId, images) => {
 };
 
 /**
- * ✏️ 내가 작성한 독후감 불러오기 (수정용)
- * @param {string} isbn13 - 책 ISBN13
- * @returns {Promise} 독후감 정보 + 이미지 목록 포함
+ * ✅ 독후감 ID로 내 독후감 상세 조회 (수정용)
+ * @param {number} reflectionId
+ * @returns {Promise<BookReflectionResponseDto>}
  */
-export const getMyReflectionByIsbn = (isbn13) => {
-  return api.get(`/book/reflection/my/${isbn13}`);
+export const getMyReflectionById = (reflectionId) => {
+  return api.get(`/book/reflection/my/edit/${reflectionId}`);
 };
+
 
 /**
  * 🛠️ 독후감 수정
@@ -93,4 +94,13 @@ export const getBookReflectionList = (isbn13, sort = 'like', offset = 0, limit =
   return api.get(`/book/reflection/list/${isbn13}`, {
     params: { sort, offset, limit },
   });
+};
+
+/**
+ * 🆔 특정 책(ISBN13)에 대해 내가 작성한 가장 최신 독후감의 ID를 조회
+ * @param {string} isbn13 - 책 ISBN13
+ * @returns {Promise<object>} { reflectionId: number | null }
+ */
+export const getLatestMyReflectionId = (isbn13) => {
+  return api.get(`/book/reflection/my/latest-id/${isbn13}`);
 };

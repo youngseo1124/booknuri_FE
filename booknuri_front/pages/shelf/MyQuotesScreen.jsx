@@ -116,7 +116,7 @@ const MyQuotesScreen = () => {
         ListEmptyComponent={
           <View style={styles.centered}>
             <Text style={styles.emptyText}>
-              아직 인용이 없어요.{'\n'}첫 인용을 작성해주세요.
+              아직 이 책에 대한 인용이 없어요.{'\n'}첫 인용을 작성해주세요.
             </Text>
           </View>
         }
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: height * 0.67,
+    minHeight: height * 0.7,
   },
   emptyText: {
     fontSize: fixwidth * 0.037,

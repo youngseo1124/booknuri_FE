@@ -28,13 +28,14 @@ import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
 import { useFocusEffect } from '@react-navigation/native';
 import {BannerRefreshContext} from '../contexts/BannerRefreshContext';
 import {addBookToShelf} from '../apis/apiFunction_myShelf';
+import {useShelf} from '../contexts/ShelfContext';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookDetailScreen = ({ route, navigation }) => {
     const { isbn } = route.params;
     const scrollRef = useRef(null);
-
+    const { addToShelf } = useShelf();
     const [bookData, setBookData] = useState(null);
     const [sortedReviews, setSortedReviews] = useState([]);
     const [reviewSort, setReviewSort] = useState('new');
@@ -72,6 +73,7 @@ const BookDetailScreen = ({ route, navigation }) => {
         setBookData(res.data);
         setIsInShelf(res.data.addedToBookshelf);
     };
+
 
 
 
@@ -155,6 +157,7 @@ const BookDetailScreen = ({ route, navigation }) => {
     const handleAddToBookshelf = async () => {
         try {
             await addBookToShelf(isbn);
+            addToShelf(isbn, { status: 'WANT_TO_READ', lifeBook: false }); //  전역 반영
             setShowToast(true);
             setIsInShelf(true);
         } catch (err) {

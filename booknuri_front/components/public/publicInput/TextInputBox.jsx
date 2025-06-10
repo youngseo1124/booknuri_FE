@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     width: '100%',
-    padding: fixwidth * 0.04,
+    padding: fixwidth * 0.037,
     paddingBottom: fixwidth * 0.09, // 글자수 띄울 공간
     backgroundColor: '#fff',
     borderRadius: fixwidth * 0.02,

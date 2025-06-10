@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Text,
   RefreshControl,
+  InteractionManager,
+  ActivityIndicator,
 } from 'react-native';
 
 import ShelfBookCard from '../ShelfBookCard';
@@ -13,66 +15,88 @@ import VerticalGap from '../../public/publicUtil/VerticalGap';
 import MyShelfSettingBar from '../MyShelfSettingBar';
 import { useFocusEffect } from '@react-navigation/native';
 import ShelfFilterBottomSheet from '../ShelfFilterBottomSheet';
+import {useShelf} from '../../../contexts/ShelfContext';
 
-const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
+// ... import 생략
+const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffsetY }) => {
   const [bookList, setBookList] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [lifeBookOnly, setLifeBookOnly] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [keyword, setKeyword] = useState('');
+  const { shelfMap } = useShelf();
 
-  // 🔁 백업용
+  const restoredRef = useRef(false);
+  const skipScrollCountRef = useRef(0);
+  const internalFlatListRef = useRef(null);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
   const [prevStatus, setPrevStatus] = useState(null);
   const [prevLifeBookOnly, setPrevLifeBookOnly] = useState(false);
 
-  // ✅ 추가: 스크롤 위치 저장용
-  const [scrollOffsetY, setScrollOffsetY] = useState(0);
-  const internalFlatListRef = useRef(null); // 내부에서 scroll 복구용
-
   const fetchShelfBooks = useCallback(async () => {
+    setIsLoading(true);
     const data = await getMyShelfBooks(0, 10, selectedStatus, lifeBookOnly, keyword);
     setBookList(data.content || []);
     setTotalCount(data.totalCount || 0);
     setPage(1);
-    setHasMore((data.content || []).length === 10);
+    setHasMore((data.content?.length || 0) === 10);
+    restoredRef.current = false;
+    setIsLayoutReady(false);
+    setIsLoading(false);
   }, [selectedStatus, lifeBookOnly, keyword]);
 
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchShelfBooks(); // ✅ MyQuotesScreen에서 돌아올 때 자동 재조회!
-    }, [selectedStatus, lifeBookOnly, keyword])
-  );
-
-  // ✅ api 재호출 후 스크롤 복구
   useEffect(() => {
-    if (internalFlatListRef.current && scrollOffsetY > 0) {
-      internalFlatListRef.current.scrollToOffset({ offset: scrollOffsetY, animated: false });
+    fetchShelfBooks();
+  }, [fetchShelfBooks]);
+
+  const handleUpdateShelfBookInfo = (isbn13, updatedFields) => {
+    if (updatedFields === null) {
+      //  삭제된 경우: 리스트에서 제거
+      setBookList((prev) => prev.filter((book) => book.shelfInfo.isbn13 !== isbn13));
+    } else {
+      //  상태 변경 or 인생책 변경
+      setBookList((prev) =>
+        prev.map((book) =>
+          book.shelfInfo.isbn13 === isbn13
+            ? {
+              ...book,
+              shelfInfo: {
+                ...book.shelfInfo,
+                ...updatedFields,
+              },
+            }
+            : book
+        )
+      );
     }
-  }, [bookList]);
+  };
+
+
+  useEffect(() => {
+    // 책장 Map이 바뀌면 다시 불러오도록!
+    fetchShelfBooks();
+  }, [shelfMap]);
 
   const fetchNextPage = async () => {
     if (!hasMore) return;
-    try {
-      const data = await getMyShelfBooks(page, 10, selectedStatus, lifeBookOnly, keyword);
-      setBookList((prev) => {
-        const newBooks = data.content || [];
-        const merged = [...prev, ...newBooks];
-        const uniqueBooksMap = new Map();
-        merged.forEach((book) => {
-          uniqueBooksMap.set(book.shelfInfo.isbn13, book);
-        });
-        return Array.from(uniqueBooksMap.values());
+    const data = await getMyShelfBooks(page, 10, selectedStatus, lifeBookOnly, keyword);
+    const newBooks = data.content || [];
+    setBookList((prev) => {
+      const merged = [...prev, ...newBooks];
+      const uniqueBooksMap = new Map();
+      merged.forEach((book) => {
+        uniqueBooksMap.set(book.shelfInfo.isbn13, book);
       });
-      setPage((prev) => prev + 1);
-      setHasMore((data.content || []).length === 10);
-    } catch (err) {
-      console.error('다음 페이지 불러오기 실패:', err);
-    }
+      return Array.from(uniqueBooksMap.values());
+    });
+    const nextPage = page + 1;
+    setPage(nextPage);
+    setHasMore(nextPage * 10 < (data.totalCount || 0));
   };
 
   const handleRefresh = async () => {
@@ -81,23 +105,15 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
     setRefreshing(false);
   };
 
-  const handleUpdateShelfBookStatus = (isbn13, newStatus) => {
-    setBookList((prev) =>
-      prev.map((book) =>
-        book.shelfInfo.isbn13 === isbn13
-          ? {
-            ...book,
-            shelfInfo: {
-              ...book.shelfInfo,
-              status: newStatus,
-            },
-          }
-          : book
-      )
-    );
-  };
-
   const styles = getStyles(parentWidth);
+
+  if (isLoading) {
+    return (
+      <View style={[styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#888" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, width: '100%' }}>
@@ -120,19 +136,24 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
       <FlatList
         data={bookList}
         ref={(ref) => {
-          scrollRef.current = ref;             // 부모에서 넘겨준 ref
-          internalFlatListRef.current = ref;   // 내부 scroll 복구용 ref
+          scrollRef.current = ref;
+          internalFlatListRef.current = ref;
         }}
+        onLayout={() => setIsLayoutReady(true)}
         keyExtractor={(item) => item.shelfInfo.isbn13}
         renderItem={({ item }) => (
           <ShelfBookCard
             book={item}
             parentWidth={parentWidth}
-            onStatusUpdate={handleUpdateShelfBookStatus}
+            onUpdateShelfBookInfo={handleUpdateShelfBookInfo}
           />
         )}
         onScroll={(e) => {
-          setScrollOffsetY(e.nativeEvent.contentOffset.y); // ✅ 스크롤 위치 저장
+          if (skipScrollCountRef.current > 0) {
+            skipScrollCountRef.current -= 1;
+            return;
+          }
+          setScrollOffsetY(e.nativeEvent.contentOffset.y);
         }}
         ListHeaderComponent={
           <MyShelfSettingBar
@@ -160,7 +181,7 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
         contentContainerStyle={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         onEndReached={fetchNextPage}
-        onEndReachedThreshold={0.2}
+        onEndReachedThreshold={0.01}
         ListEmptyComponent={
           <Text style={styles.emptyText}>책장에 추가된 책이 없습니다 📚</Text>
         }
@@ -168,6 +189,7 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
     </View>
   );
 };
+
 
 export default MyShelfTabPage;
 
@@ -192,5 +214,16 @@ const getStyles = (width) =>
       bottom: 0,
       backgroundColor: 'rgba(0,0,0,0.17)',
       zIndex: 9,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loadingText: {
+      marginTop: width * 0.02,
+      fontSize: width * 0.038,
+      fontFamily: 'NotoSansKR-Regular',
+      color: '#666',
     },
   });

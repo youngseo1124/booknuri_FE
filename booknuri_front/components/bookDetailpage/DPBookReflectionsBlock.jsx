@@ -33,7 +33,10 @@ const DPBookReflectionsBlock = ({
       onLikePress={onLikePress}
       onReportPress={onReportPress}
       onEditPress={(reflection) =>
-        navigation.navigate('ReflectionEditScreen', { reflection, isbn13 })
+        navigation.navigate('ReflectionEditScreen', {
+          reflectionId: reflection.id,
+          isbn13: isbn13,
+        })
       }
       onDeletePress={(reflectionId) => {
         setSelectedReflectionId(reflectionId);
@@ -44,20 +47,11 @@ const DPBookReflectionsBlock = ({
 
   const limitedReflections = reflections?.filter(r => r.visibleToPublic).slice(0, 4) || [];
 
-  const handleWritePress = async () => {
-    try {
-      const res = await checkAlreadyReflected(isbn13); // 이미 썼는지 확인!
-      if (res.data.alreadyReflected) {
-        setAlertVisible(true);
-        return;
-      }
 
-      navigation.navigate('ReflectionCreateScreen', { isbn13 });
-
-    } catch (err) {
-      console.error('❌ 독후감 여부 확인 실패:', err);
-    }
+  const handleWritePress = () => {
+    navigation.navigate('ReflectionCreateScreen', { isbn13 });
   };
+
 
   const handleDeleteConfirm = async () => {
     try {

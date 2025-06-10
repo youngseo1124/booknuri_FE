@@ -80,6 +80,8 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
       ) : (
         // 펼쳐진 상태
         <TouchableOpacity onPress={() => setIsExpanded(false)} activeOpacity={0.9}>
+
+
           <View
             style={{
               backgroundColor: '#f5f5f5',
@@ -89,6 +91,30 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
               paddingBottom: fixwidth * 0.025,
             }}
           >
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('DetailReflectionScreen', {
+                  reflectionId: item.id,
+                  isbn13: item.isbn13,
+                })
+              }
+              style={{ marginTop: fixwidth * 0.025 }}
+            >
+              <Text
+                style={{
+                  fontSize: fixwidth * 0.032,
+                  color: 'rgba(0,0,0,0.57)',
+                  fontFamily: 'NotoSansKR-Medium',
+                  lineHeight: fixwidth * 0.047,
+                  textAlign: 'left',
+                  textDecorationLine: 'underline',
+                  paddingTop: fixwidth * 0.017,
+                  paddingVertical: fixwidth * 0.01,
+                }}
+              >
+                상세페이지로 보기
+              </Text>
+            </TouchableOpacity>
             {item.imageList.map((imgObj, idx) => (
               <Image
                 key={imgObj.id || idx}
@@ -120,6 +146,7 @@ const BookReflectionItem = ({ item, onLikePress, onReportPress, onEditPress, onD
           {item.writtenByCurrentUser ? (
             <>
               <TouchableOpacity onPress={() => onEditPress(item)}>
+                console.log("🛠️ onEditPress 호출됨", item);
                 <Text style={styles.footerText}>수정</Text>
               </TouchableOpacity>
 

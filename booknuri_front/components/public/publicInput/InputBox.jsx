@@ -46,5 +46,6 @@ const styles = StyleSheet.create({
     fontSize: fixwidth * 0.04,
     borderWidth: fixwidth * 0.0047,
     borderColor: 'rgba(0,0,0,0.15)',
+    paddingHorizontal: fixwidth * 0.037,
   },
 });

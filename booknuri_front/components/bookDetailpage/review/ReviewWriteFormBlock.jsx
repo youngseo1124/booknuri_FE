@@ -66,6 +66,7 @@ const ReviewFormBlock = ({
         />
         <Text style={styles.countText}>{text.length}/{maxLength}</Text>
       </View>
+
     </View>
   );
 };

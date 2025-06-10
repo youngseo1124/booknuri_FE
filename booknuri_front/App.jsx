@@ -37,6 +37,10 @@ import {BannerRefreshProvider} from './contexts/BannerRefreshContext';
 import {BannerPageProvider} from './contexts/BannerPageContext';
 import ShelfBookDetailSettingScreen from './pages/shelf/ShelfBookDetailSettingScreen';
 import MyQuotesScreen from './pages/shelf/MyQuotesScreen';
+import MyReflectionsScreen from './pages/shelf/MyReflectionsScreen';
+import DetailReflectionScreen from './pages/shelf/DetailReflectionScreen';
+import MyReviewsScreen from './pages/shelf/MyReviewsScreen';
+import {ShelfProvider} from './contexts/ShelfContext';
 
 const Stack = createStackNavigator();
 
@@ -52,7 +56,7 @@ const AppInner = () => {
       <Stack.Navigator
         screenOptions={{
             headerShown: false,
-            animation: 'fade_from_bottom',
+            animation: 'fade',
         }}
       >
             {isLoading && (
@@ -99,6 +103,12 @@ const AppInner = () => {
 
                     <Stack.Screen name="MyQuotesScreen" component={MyQuotesScreen} />
 
+                   <Stack.Screen name="MyReflectionsScreen" component={MyReflectionsScreen} />
+
+                  <Stack.Screen name="DetailReflectionScreen" component={DetailReflectionScreen} />
+
+                  <Stack.Screen name="MyReviewsScreen" component={MyReviewsScreen} />
+
 
 
                 </>
@@ -116,7 +126,9 @@ const App = () => {
 
                     <BannerRefreshProvider>
                         <BannerPageProvider>
+                          <ShelfProvider>
                             <AppInner />
+                          </ShelfProvider>
                         </BannerPageProvider>
                     </BannerRefreshProvider>
                 </LoginContextProvider>

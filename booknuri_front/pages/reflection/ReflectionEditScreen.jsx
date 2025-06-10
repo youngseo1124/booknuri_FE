@@ -13,9 +13,8 @@ import WriteButton from '../../components/public/publicButton/WriteButton';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 import ImageUploaderBox from '../../components/public/etc/ImageUploaderBox';
 import {
-  getMyReflectionByIsbn,
+  getMyReflectionById,
   updateReflection,
-
 } from '../../apis/apiFunction_bookReflection';
 import InputBox from '../../components/public/publicInput/InputBox';
 import TextInputBox from '../../components/public/publicInput/TextInputBox';
@@ -24,16 +23,17 @@ import MyIntentModule from '../../MyIntentModule';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VerticalGap from "../../components/public/publicUtil/VerticalGap";
-import {StackActions} from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-
 const ReflectionEditScreen = ({ route, navigation }) => {
-  const { isbn13 } = route.params;
+  const { reflectionId } = route.params;
+  const{isbn13}=route.params;
+
+  console.log("📦 reflectionId:", reflectionId);
 
   const [bookData, setBookData] = useState(null);
-  const [reflectionId, setReflectionId] = useState(null);
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
@@ -41,7 +41,6 @@ const ReflectionEditScreen = ({ route, navigation }) => {
   const [visibleToPublic, setVisibleToPublic] = useState(true);
   const [images, setImages] = useState([]);
   const [deletedImageIds, setDeletedImageIds] = useState([]);
-
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
   const [imageToDeleteIdx, setImageToDeleteIdx] = useState(null);
@@ -50,21 +49,17 @@ const ReflectionEditScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bookRes, reflectionRes] = await Promise.all([
-          getBookTotalInfo(isbn13),
-          getMyReflectionByIsbn(isbn13),
-        ]);
+        const reflectionRes = await getMyReflectionById(reflectionId);
+        const reflection = reflectionRes.data;
+        const bookRes = await getBookTotalInfo(isbn13);
 
         setBookData(bookRes.data.bookInfo);
-
-        const data = reflectionRes.data;
-        setReflectionId(data.id);
-        setTitle(data.title);
-        setContent(data.content);
-        setRating(data.rating);
-        setContainsSpoiler(data.containsSpoiler);
-        setVisibleToPublic(data.visibleToPublic);
-        setImages(data.imageList.map(img => ({
+        setTitle(reflection.title);
+        setContent(reflection.content);
+        setRating(reflection.rating);
+        setContainsSpoiler(reflection.containsSpoiler);
+        setVisibleToPublic(reflection.visibleToPublic);
+        setImages(reflection.imageList.map(img => ({
           uri: img.url,
           isNew: false,
           id: img.id,
@@ -72,17 +67,13 @@ const ReflectionEditScreen = ({ route, navigation }) => {
 
         setIsReady(true);
       } catch (error) {
-
+        console.log('❌ 데이터 불러오기 실패', error);
+        Alert.alert("불러오기 실패", "독후감 정보를 불러오지 못했어요.");
       }
     };
 
     fetchData();
-  }, [isbn13]);
-
-  const extractImageId = (url) => {
-    const filename = url.split('/').pop();
-    return filename.substring(0, filename.lastIndexOf('.'));
-  };
+  }, [reflectionId]);
 
   const confirmDeleteImage = (index) => {
     setImageToDeleteIdx(index);
@@ -123,7 +114,6 @@ const ReflectionEditScreen = ({ route, navigation }) => {
         title,
       });
 
-      // 삭제할 이미지 보내기
       const accessToken = await AsyncStorage.getItem('accessToken');
       const uniqueDeletedImageIds = [...new Set(deletedImageIds)];
 
@@ -132,7 +122,7 @@ const ReflectionEditScreen = ({ route, navigation }) => {
           console.log("📤 삭제 요청 전송:", imageId);
           await axios({
             method: 'delete',
-            url: `http://192.168.94.109:8080/book/reflection/image/${imageId}`,
+            url: `http://172.18.8.19:8080/book/reflection/image/${imageId}`,
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -143,8 +133,6 @@ const ReflectionEditScreen = ({ route, navigation }) => {
         }
       }
 
-
-      // 새 이미지들 업로드
       const newImages = images.filter(img => img.isNew);
       if (newImages.length > 0) {
         const formData = new FormData();
@@ -157,7 +145,7 @@ const ReflectionEditScreen = ({ route, navigation }) => {
         });
 
         await axios.post(
-          `http://192.168.94.109:8080/book/reflection/image/${reflectionId}/upload`,
+          `http://172.18.8.19:8080/book/reflection/image/${reflectionId}/upload`,
           formData,
           {
             headers: {
@@ -230,7 +218,7 @@ const ReflectionEditScreen = ({ route, navigation }) => {
                 </View>
               </View>
 
-              <VerticalGap height={fixwidth*0.003} />
+              <VerticalGap height={fixwidth * 0.003} />
 
               <WriteButton
                 label="수정 완료"
@@ -265,9 +253,6 @@ const ReflectionEditScreen = ({ route, navigation }) => {
 };
 
 export default ReflectionEditScreen;
-
-// styles 객체는 이전 코드와 동일하게 유지!
-
 
 const styles = StyleSheet.create({
   contentContainer: {

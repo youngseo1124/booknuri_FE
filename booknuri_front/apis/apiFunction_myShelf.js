@@ -113,3 +113,42 @@ export const removeBookFromShelf = async (isbn13) => {
   const res = await api.delete(`/shelf-book/remove/${isbn13}`);
   return res.data;
 };
+
+
+/**
+ * ✅ 특정 책에 대해 내가 작성한 인용 목록 조회
+ *
+ * 로그인한 사용자가 특정 책(ISBN13 기준)에 대해 작성한 모든 인용을 불러온다.
+ *
+ * - 이 API는 로그인한 사용자 본인의 인용만 조회함 (공개 여부와 무관하게 모두 반환)
+ * - 인용이 여러 개일 수 있으며, 최신순 또는 고정 정렬 없음 (서버 구현 기준)
+ *
+ * 응답 결과는 BookQuoteResponseDto 배열이며, 각 인용에는 스타일 정보, 작성 시간,
+ * 좋아요 수, 좋아요 여부, 작성자 여부, 공개 여부, isbn13 등이 포함됨.
+ *
+ * @param {string} isbn13 - 인용을 조회할 책의 ISBN13 (예: '9791161571188')
+ * @returns {Promise<BookQuoteResponseDto[]>} - 사용자가 해당 책에 쓴 인용 목록
+ *
+ * @example
+ * const quotes = await getMyQuotesByBookIsbn("9791161571188");
+ * console.log(quotes[0].quoteText);
+ */
+export const getMyQuotesByBookIsbn = async (isbn13) => {
+  const res = await api.get(`/book/quote/my/isbn/${isbn13}`);
+  return res.data;
+};
+
+/**
+ * ✅ 내 책장에 있는 특정 책 1권 정보 조회 (shelfInfo만 반환)
+ *
+ * @param {string} isbn13 - 조회할 책의 ISBN13
+ * @returns {Promise<{ shelfInfo: MyShelfBookResponseDto }>}
+ *
+ * @example
+ * const { shelfInfo } = await getMyShelfBookByIsbn('9788937460449');
+ * console.log(shelfInfo.bookname); // "데미안"
+ */
+export const getMyShelfBookByIsbn = async (isbn13) => {
+  const res = await api.get(`/shelf-book/my/info/${isbn13}`);
+  return res.data;
+};

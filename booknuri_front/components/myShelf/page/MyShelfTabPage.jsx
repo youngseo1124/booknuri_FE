@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
   View,
   FlatList,
@@ -29,6 +29,10 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
   const [prevStatus, setPrevStatus] = useState(null);
   const [prevLifeBookOnly, setPrevLifeBookOnly] = useState(false);
 
+  // ✅ 추가: 스크롤 위치 저장용
+  const [scrollOffsetY, setScrollOffsetY] = useState(0);
+  const internalFlatListRef = useRef(null); // 내부에서 scroll 복구용
+
   const fetchShelfBooks = useCallback(async () => {
     const data = await getMyShelfBooks(0, 10, selectedStatus, lifeBookOnly, keyword);
     setBookList(data.content || []);
@@ -37,11 +41,19 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
     setHasMore((data.content || []).length === 10);
   }, [selectedStatus, lifeBookOnly, keyword]);
 
+
   useFocusEffect(
     useCallback(() => {
-      fetchShelfBooks();
-    }, [fetchShelfBooks])
+      fetchShelfBooks(); // ✅ MyQuotesScreen에서 돌아올 때 자동 재조회!
+    }, [selectedStatus, lifeBookOnly, keyword])
   );
+
+  // ✅ api 재호출 후 스크롤 복구
+  useEffect(() => {
+    if (internalFlatListRef.current && scrollOffsetY > 0) {
+      internalFlatListRef.current.scrollToOffset({ offset: scrollOffsetY, animated: false });
+    }
+  }, [bookList]);
 
   const fetchNextPage = async () => {
     if (!hasMore) return;
@@ -107,7 +119,10 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
 
       <FlatList
         data={bookList}
-        ref={scrollRef}
+        ref={(ref) => {
+          scrollRef.current = ref;             // 부모에서 넘겨준 ref
+          internalFlatListRef.current = ref;   // 내부 scroll 복구용 ref
+        }}
         keyExtractor={(item) => item.shelfInfo.isbn13}
         renderItem={({ item }) => (
           <ShelfBookCard
@@ -116,20 +131,23 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
             onStatusUpdate={handleUpdateShelfBookStatus}
           />
         )}
+        onScroll={(e) => {
+          setScrollOffsetY(e.nativeEvent.contentOffset.y); // ✅ 스크롤 위치 저장
+        }}
         ListHeaderComponent={
           <MyShelfSettingBar
             totalCount={totalCount}
             onSettingPress={() => setFilterVisible(true)}
             onSearch={(keyword) => {
-              setPrevStatus(selectedStatus);        // ✅ 필터 상태 백업
+              setPrevStatus(selectedStatus);
               setPrevLifeBookOnly(lifeBookOnly);
-              setSelectedStatus(null);              // 필터 초기화
+              setSelectedStatus(null);
               setLifeBookOnly(false);
-              setKeyword(keyword);                  // 키워드 설정
+              setKeyword(keyword);
             }}
             onSearchCancel={() => {
-              setKeyword('');                       // 검색 종료 시
-              setSelectedStatus(prevStatus);        // ✅ 필터 복원
+              setKeyword('');
+              setSelectedStatus(prevStatus);
               setLifeBookOnly(prevLifeBookOnly);
             }}
             onFilterReset={() => {

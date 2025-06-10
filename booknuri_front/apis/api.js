@@ -6,7 +6,7 @@ import EncryptedStorage from "react-native-encrypted-storage";
 //학교 반 192.168.0.98
 // Axios 인스턴스 생성
 const api = axios.create({
-  baseURL: "http://192.168.98.109:8080",
+  baseURL: "http://192.168.0.98:8080",
   headers: {
     "Content-Type": "application/json",
   },

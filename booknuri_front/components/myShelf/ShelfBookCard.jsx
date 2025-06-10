@@ -97,7 +97,7 @@ const ShelfBookCard = ({ book, onStatusUpdate }) => {
         style={styles.menuButton}
         onPress={() =>
           navigation.navigate('ShelfBookDetailSettingScreen', {
-            shelfBook: book.shelfInfo,
+            isbn13: book.shelfInfo.isbn13, // 이렇게 정확히 넘겨!
           })
         }
       >

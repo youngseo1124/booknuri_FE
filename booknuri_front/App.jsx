@@ -97,7 +97,7 @@ const AppInner = () => {
 
                     <Stack.Screen name="ShelfBookDetailSettingScreen" component={ShelfBookDetailSettingScreen} />
 
-                  <Stack.Screen name="MyQuotesScreen" component={MyQuotesScreen} />
+                    <Stack.Screen name="MyQuotesScreen" component={MyQuotesScreen} />
 
 
 

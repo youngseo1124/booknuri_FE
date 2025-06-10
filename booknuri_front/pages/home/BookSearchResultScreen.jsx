@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { searchBooks } from '../../apis/apiFunction_search';
 import HomeHeader from '../../components/public/publicHeader/HomeHeader';
@@ -15,9 +16,8 @@ import SearchInput from '../../components/home/SearchInput';
 import BookSuggestionItem from '../../components/public/bookpublic/BookSuggestionItem';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import PaginationBar from '../../components/public/publicUtil/PaginationBar';
-import { Divider } from 'react-native-paper';
 import DividerBlock from '../../components/public/publicUtil/DividerBlock';
-import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton'; // ✅ 버튼 import 추가
+import ScrollToTopButton from '../../components/public/publicUtil/ScrollToTopButton';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronDown, faCircle, faDotCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -40,13 +40,17 @@ const BookSearchResultScreen = ({ route, navigation }) => {
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [page, setPage] = useState(1);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ 로딩 상태
   const limit = 15;
 
-  const scrollRef = useRef(null); // ✅ 스크롤 참조
+  const scrollRef = useRef(null);
 
   const fetchBooks = async () => {
     const offset = (page - 1) * limit;
     console.log(`[📚FETCH] keyword: ${keyword}, sort: ${sort}, offset: ${offset}, limit: ${limit}`);
+
+    setLoading(true); // ✅ 시작할 때 로딩 true
+
     try {
       const res = await searchBooks({ libCode, keyword, sort, offset, limit });
       setBookList(res.data.results || []);
@@ -54,18 +58,18 @@ const BookSearchResultScreen = ({ route, navigation }) => {
       console.log('[✅API 성공]', res.data);
     } catch (err) {
       console.log('❌ 검색 실패:', err);
+    } finally {
+      setLoading(false); // ✅ 완료되면 로딩 false
     }
   };
 
   useEffect(() => {
-    setPage(1); // 🔥 keyword나 정렬 바뀌면 페이지 1로 초기화
+    setPage(1); // keyword나 정렬 바뀌면 페이지 초기화
   }, [keyword, sort]);
 
   useEffect(() => {
     console.log('[🔍useEffect]', { keyword, sort, page, searchFocused });
-    if (!searchFocused) {
-      fetchBooks();
-    }
+    if (!searchFocused) fetchBooks();
   }, [keyword, sort, page, searchFocused]);
 
   const totalPages = Math.ceil(totalCount / limit);
@@ -74,66 +78,72 @@ const BookSearchResultScreen = ({ route, navigation }) => {
     <CommonLayout>
       <HomeHeader title={libName || '도서 검색 결과'} />
 
-      <ScrollView
-        ref={scrollRef} // ✅ 스크롤뷰 연결
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}
-      >
-        <SearchInput libCode={libCode} onFocusChange={(focus) => {
-          console.log('[🧠포커스 전환]', focus);
-          setSearchFocused(focus);
-        }} />
-        <VerticalGap height={fixwidth * 0.027} />
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#7ea4fa" />
+        </View>
+      ) : (
+        <ScrollView
+          ref={scrollRef}
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <SearchInput
+            libCode={libCode}
+            onFocusChange={(focus) => {
 
-        {!searchFocused && (
-          <>
-            <DividerBlock height={fixwidth * 0.033} />
-            <View style={styles.resultHeader}>
-              <Text style={styles.resultText}>총 {totalCount}권</Text>
-              <TouchableOpacity
-                onPress={() => setIsSortModalVisible(true)}
-                style={styles.sortSelect}
-              >
-                <Text style={styles.sortText}>
-                  {sortOptions.find(opt => opt.key === sort)?.label}
-                </Text>
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  size={fixwidth * 0.035}
-                  color="#333"
-                  style={{ marginLeft: fixwidth * 0.01 }}
-                />
-              </TouchableOpacity>
-            </View>
+              setSearchFocused(focus);
+            }}
+          />
+          <VerticalGap height={fixwidth * 0.027} />
 
-            <VerticalGap height={fixwidth * 0.022} />
-
-            <View style={styles.bookListBox}>
-
-              {bookList.map((book, index) => (
-                <View key={book.id} style={{ width: '100%' }}>
-                  <BookSuggestionItem
-                    book={book}
-                    thumbnailWidth={fixwidth * 0.22}
-                    thumbnailHeight={fixwidth * 0.3}
+          {!searchFocused && (
+            <>
+              <DividerBlock height={fixwidth * 0.033} />
+              <View style={styles.resultHeader}>
+                <Text style={styles.resultText}>총 {totalCount}권</Text>
+                <TouchableOpacity
+                  onPress={() => setIsSortModalVisible(true)}
+                  style={styles.sortSelect}
+                >
+                  <Text style={styles.sortText}>
+                    {sortOptions.find(opt => opt.key === sort)?.label}
+                  </Text>
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    size={fixwidth * 0.035}
+                    color="#333"
+                    style={{ marginLeft: fixwidth * 0.01 }}
                   />
-                  {index !== bookList.length - 1 && (
-                    <Divider style={styles.divider} />
-                  )}
-                </View>
-              ))}
-            </View>
+                </TouchableOpacity>
+              </View>
 
-            <VerticalGap height={fixwidth * 0.027} />
-            <PaginationBar page={page} totalPages={totalPages} onPageChange={setPage} />
-            <VerticalGap height={fixwidth * 0.2} />
-          </>
-        )}
-      </ScrollView>
+              <VerticalGap height={fixwidth * 0.022} />
+              <View style={styles.bookListBox}>
+                {bookList.map((book, index) => (
+                  <View key={book.id} style={{ width: '100%' }}>
+                    <BookSuggestionItem
+                      book={book}
+                      thumbnailWidth={fixwidth * 0.22}
+                      thumbnailHeight={fixwidth * 0.3}
+                    />
+                    {index !== bookList.length - 1 && (
+                      <View style={styles.divider} />
+                    )}
+                  </View>
+                ))}
+              </View>
 
+              <VerticalGap height={fixwidth * 0.027} />
+              <PaginationBar page={page} totalPages={totalPages} onPageChange={setPage} />
+              <VerticalGap height={fixwidth * 0.2} />
+            </>
+          )}
+        </ScrollView>
+      )}
 
-      {!searchFocused && (
+      {!searchFocused && !loading && (
         <ScrollToTopButton
           onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
         />
@@ -184,6 +194,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     minHeight: height,
     paddingBottom: fixwidth * 0.077,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height,
   },
   resultHeader: {
     width: '100%',

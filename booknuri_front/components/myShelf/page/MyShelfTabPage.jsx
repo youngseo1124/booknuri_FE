@@ -20,33 +20,42 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
   const [hasMore, setHasMore] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [lifeBookOnly, setLifeBookOnly] = useState(false); // ✅ 인생책 필터
-  const [filterVisible, setFilterVisible] = useState(false); // ✅ 바텀시트 열림 여부
+  const [lifeBookOnly, setLifeBookOnly] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [keyword, setKeyword] = useState('');
 
+  // 🔁 백업용
+  const [prevStatus, setPrevStatus] = useState(null);
+  const [prevLifeBookOnly, setPrevLifeBookOnly] = useState(false);
 
   const fetchShelfBooks = useCallback(async () => {
-    const data = await getMyShelfBooks(0, 10, selectedStatus, lifeBookOnly);
+    const data = await getMyShelfBooks(0, 10, selectedStatus, lifeBookOnly, keyword);
     setBookList(data.content || []);
     setTotalCount(data.totalCount || 0);
     setPage(1);
     setHasMore((data.content || []).length === 10);
-  }, [selectedStatus, lifeBookOnly]);
-
+  }, [selectedStatus, lifeBookOnly, keyword]);
 
   useFocusEffect(
     useCallback(() => {
       fetchShelfBooks();
-
     }, [fetchShelfBooks])
   );
-
 
   const fetchNextPage = async () => {
     if (!hasMore) return;
     try {
-      const data = await getMyShelfBooks(page, 10, selectedStatus, lifeBookOnly);
-      setBookList((prev) => [...prev, ...(data.content || [])]);
+      const data = await getMyShelfBooks(page, 10, selectedStatus, lifeBookOnly, keyword);
+      setBookList((prev) => {
+        const newBooks = data.content || [];
+        const merged = [...prev, ...newBooks];
+        const uniqueBooksMap = new Map();
+        merged.forEach((book) => {
+          uniqueBooksMap.set(book.shelfInfo.isbn13, book);
+        });
+        return Array.from(uniqueBooksMap.values());
+      });
       setPage((prev) => prev + 1);
       setHasMore((data.content || []).length === 10);
     } catch (err) {
@@ -80,10 +89,7 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
 
   return (
     <View style={{ flex: 1, width: '100%' }}>
-      {/*  바텀시트 열릴 때만 반투명 오버레이 */}
-      {filterVisible && (
-        <View style={styles.overlayBackground} />
-      )}
+      {filterVisible && <View style={styles.overlayBackground} />}
 
       <ShelfFilterBottomSheet
         visible={filterVisible}
@@ -93,11 +99,9 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
         lifeBookOnly={lifeBookOnly}
         setLifeBookOnly={setLifeBookOnly}
         onApply={(newStatus, newLifeBookOnly) => {
-          console.log('[📌 MyShelfTabPage] onApply:', newStatus, newLifeBookOnly);
-          setSelectedStatus(newStatus);        // 새 필터값 설정
-          setLifeBookOnly(newLifeBookOnly);    // 인생책 여부 설정
-          setFilterVisible(false);             //  모달 닫기
-
+          setSelectedStatus(newStatus);
+          setLifeBookOnly(newLifeBookOnly);
+          setFilterVisible(false);
         }}
       />
 
@@ -115,18 +119,28 @@ const MyShelfTabPage = ({ parentWidth, scrollRef }) => {
         ListHeaderComponent={
           <MyShelfSettingBar
             totalCount={totalCount}
-            selectedStatus={selectedStatus}
-            onStatusChange={setSelectedStatus}
-            onSearchPress={() => console.log('검색')}
-            onSettingPress={() => setFilterVisible(true)} // ✅ 버튼 누르면 열기
-            parentWidth={parentWidth}
+            onSettingPress={() => setFilterVisible(true)}
+            onSearch={(keyword) => {
+              setPrevStatus(selectedStatus);        // ✅ 필터 상태 백업
+              setPrevLifeBookOnly(lifeBookOnly);
+              setSelectedStatus(null);              // 필터 초기화
+              setLifeBookOnly(false);
+              setKeyword(keyword);                  // 키워드 설정
+            }}
+            onSearchCancel={() => {
+              setKeyword('');                       // 검색 종료 시
+              setSelectedStatus(prevStatus);        // ✅ 필터 복원
+              setLifeBookOnly(prevLifeBookOnly);
+            }}
+            onFilterReset={() => {
+              setSelectedStatus(null);
+              setLifeBookOnly(false);
+            }}
           />
         }
         ListFooterComponent={<VerticalGap height={parentWidth * 0.07} />}
         contentContainerStyle={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         onEndReached={fetchNextPage}
         onEndReachedThreshold={0.2}
         ListEmptyComponent={

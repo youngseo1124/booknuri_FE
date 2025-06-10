@@ -104,9 +104,9 @@ const ShelfBookDetailSettingScreen = () => {
           </View>
 
           {/* 인용 / 독후감 / 리뷰 */}
-          <InfoRow label="인용" value={`${shelfBook.quoteCount}`} onPress={() => navigation.navigate('MyQuotes')} />
-          <InfoRow label="독후감" value={`${shelfBook.reflectionCount}`} onPress={() => navigation.navigate('MyReflections')} />
-          <InfoRow label="리뷰" value={`${shelfBook.reviewCount}`} onPress={() => navigation.navigate('MyReviews')} />
+          <InfoRow label="인용" value={`${shelfBook.quoteCount}`} onPress={() => navigation.navigate('MyQuotesScreen')} />
+          <InfoRow label="독후감" value={`${shelfBook.reflectionCount}`} onPress={() => navigation.navigate('MyReflectionsScreen')} />
+          <InfoRow label="리뷰" value={`${shelfBook.reviewCount}`} onPress={() => navigation.navigate('MyReviewsScreen')} />
 
           {/* 인생책 */}
           <View style={styles.infoItemRow}>

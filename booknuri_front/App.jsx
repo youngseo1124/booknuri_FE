@@ -36,6 +36,7 @@ import BookSearchResultScreen from './pages/home/BookSearchResultScreen';
 import {BannerRefreshProvider} from './contexts/BannerRefreshContext';
 import {BannerPageProvider} from './contexts/BannerPageContext';
 import ShelfBookDetailSettingScreen from './pages/shelf/ShelfBookDetailSettingScreen';
+import MyQuotesScreen from './pages/shelf/MyQuotesScreen';
 
 const Stack = createStackNavigator();
 
@@ -94,7 +95,11 @@ const AppInner = () => {
 
                     <Stack.Screen name={"BookSearchResultScreen"} component={BookSearchResultScreen} />
 
-                  <Stack.Screen name="ShelfBookDetailSettingScreen" component={ShelfBookDetailSettingScreen} />
+                    <Stack.Screen name="ShelfBookDetailSettingScreen" component={ShelfBookDetailSettingScreen} />
+
+                  <Stack.Screen name="MyQuotesScreen" component={MyQuotesScreen} />
+
+
 
                 </>
             )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,33 +14,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 /**
- * ✅ 공통 검색/설정 바 (책장, 내 기록 등에서 사용)
- *
- * @param {string} countLabel - 왼쪽 상단 텍스트 (예: '총 3권', '인용 5권' 등)
- * @param {function} onSearch - 검색 실행 시 (키워드 입력 후 엔터)
- * @param {function} onSearchCancel - 검색 종료 시
- * @param {function} onFilterReset - 검색 이전 필터 복원용
- * @param {function} onSettingPress - 설정 버튼 클릭 시 실행
- * @param {boolean} showSetting - 설정 아이콘 보일지 여부 (기본 true)
+ * 📚 책장 전용 검색/필터 바
  */
-const MyShelfSettingBar = ({
-                             countLabel = '총 0권',
-                             onSearch,
-                             onSearchCancel,
-                             onFilterReset,
-                             onSettingPress,
-                             showSetting = true,
-                           }) => {
+const MyShelfSettingBar_two = ({
+                                 totalCount,
+                                 keyword,
+                                 setKeyword,
+                                 searching,
+                                 setSearching,
+                                 onSearch,
+                                 onFilterReset,
+                                 onSettingPress,
+                                 onSearchCancel,
+                               }) => {
   const { width: fixwidth } = useWindowDimensions();
-  const [searching, setSearching] = useState(false);
-  const [keyword, setKeyword] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearchPress = () => {
     if (!searching) {
       setSearching(true);
     } else {
-      onSearch?.(keyword);    // 검색 실행만!
-      Keyboard.dismiss();     // 키보드만 닫고
+      onFilterReset?.();
+      onSearch?.(); // 부모에서 keyword 참조함
+      Keyboard.dismiss();
     }
   };
 
@@ -62,9 +58,7 @@ const MyShelfSettingBar = ({
 
   return (
     <View style={styles.wrapper}>
-      {!searching && (
-        <Text style={styles.totalText}>{countLabel}</Text>
-      )}
+      {!searching && <Text style={styles.totalText}>총 {totalCount}권</Text>}
 
       <View style={styles.iconGroup}>
         {searching && (
@@ -73,10 +67,14 @@ const MyShelfSettingBar = ({
             placeholderTextColor="#888"
             value={keyword}
             onChangeText={setKeyword}
-            onSubmitEditing={handleSearchPress}
+            onSubmitEditing={() => {
+              Keyboard.dismiss();
+              setHasSearched(true); // ✅ 한 번 검색했으니 포커스 안 주기
+              handleSearchPress();
+            }}
             style={styles.searchInput}
-            autoFocus
             returnKeyType="search"
+            autoFocus={!hasSearched} // ✅ 처음엔 true, 이후엔 false
           />
         )}
 
@@ -88,20 +86,18 @@ const MyShelfSettingBar = ({
           />
         </TouchableOpacity>
 
-        {showSetting && (
-          <TouchableOpacity onPress={onSettingPress} style={styles.iconBtn}>
-            <Image
-              source={require('../../image/utill/setting_icon.png')}
-              style={styles.settingIcon}
-            />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity onPress={onSettingPress} style={styles.iconBtn}>
+          <Image
+            source={require('../../image/utill/setting_icon.png')}
+            style={styles.settingIcon}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default MyShelfSettingBar;
+export default MyShelfSettingBar_two;
 
 const getStyles = (fixwidth) =>
   StyleSheet.create({

@@ -75,9 +75,9 @@ export default MyGroupedWrittenBooksScreen;
 
 const styles = StyleSheet.create({
   list: {
-    paddingHorizontal: fixwidth * 0.04,
-    paddingTop: fixwidth * 0.03,
-    paddingBottom: fixwidth * 0.15,
+    paddingHorizontal: fixwidth * 0.0,
+    paddingTop: fixwidth * 0.0,
+    paddingBottom: fixwidth * 0.2,
   },
   centered: {
     flex: 1,

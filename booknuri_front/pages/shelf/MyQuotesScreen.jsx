@@ -99,7 +99,7 @@ const MyQuotesScreen = () => {
   return (
     <CommonLayout>
       <Header title="내 인용" />
-      <VerticalGap height={fixwidth * 0.007} />
+
       <FlatList
         data={quotes}
         keyExtractor={(item) => item.id.toString()}
@@ -113,6 +113,7 @@ const MyQuotesScreen = () => {
         )}
         contentContainerStyle={styles.scrollContent}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListHeaderComponent={<VerticalGap height={fixwidth * 0.007} />}
         ListEmptyComponent={
           <View style={styles.centered}>
             <Text style={styles.emptyText}>
@@ -138,8 +139,9 @@ export default MyQuotesScreen;
 
 const styles = StyleSheet.create({
   scrollContent: {
+    paddingTop: fixwidth*0,
     paddingBottom: fixwidth * 0.197,
-    paddingHorizontal: fixwidth * 0.03,
+    paddingHorizontal: fixwidth * 0.037,
   },
   separator: {
     height: 1,

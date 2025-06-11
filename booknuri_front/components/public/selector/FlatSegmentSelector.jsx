@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    paddingVertical: fixwidth * 0.0237,
+    paddingVertical: fixwidth * 0.02,
     borderWidth: fixwidth * 0.0017,
     borderColor: 'rgba(188,188,188,0.77)',
     alignItems: 'center',

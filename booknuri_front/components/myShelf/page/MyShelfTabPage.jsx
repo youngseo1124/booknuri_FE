@@ -1,89 +1,60 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+;import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   FlatList,
-  StyleSheet,
   Text,
   RefreshControl,
-  InteractionManager,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 
 import ShelfBookCard from '../ShelfBookCard';
 import { getMyShelfBooks } from '../../../apis/apiFunction_myShelf';
 import VerticalGap from '../../public/publicUtil/VerticalGap';
-import MyShelfSettingBar from '../MyShelfSettingBar';
-import { useFocusEffect } from '@react-navigation/native';
+import MyShelfSettingBar_two from '../MyShelfSettingBar_two';
 import ShelfFilterBottomSheet from '../ShelfFilterBottomSheet';
-import {useShelf} from '../../../contexts/ShelfContext';
+import { useShelf } from '../../../contexts/ShelfContext';
 
-// ... import 생략
 const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffsetY }) => {
   const [bookList, setBookList] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true); // ✅ 최초 로딩
+  const [loadingMore, setLoadingMore] = useState(false);      // ✅ 추가 로딩
+
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [lifeBookOnly, setLifeBookOnly] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [keyword, setKeyword] = useState('');
-  const { shelfMap } = useShelf();
 
-  const restoredRef = useRef(false);
-  const skipScrollCountRef = useRef(0);
-  const internalFlatListRef = useRef(null);
-  const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [inputKeyword, setInputKeyword] = useState('');
+  const [searching, setSearching] = useState(false);
   const [prevStatus, setPrevStatus] = useState(null);
   const [prevLifeBookOnly, setPrevLifeBookOnly] = useState(false);
 
+  const { shelfMap } = useShelf();
+  const skipScrollCountRef = useRef(0);
+  const internalFlatListRef = useRef(null);
+
   const fetchShelfBooks = useCallback(async () => {
-    setIsLoading(true);
+    setInitialLoading(true);
     const data = await getMyShelfBooks(0, 10, selectedStatus, lifeBookOnly, keyword);
     setBookList(data.content || []);
     setTotalCount(data.totalCount || 0);
     setPage(1);
     setHasMore((data.content?.length || 0) === 10);
-    restoredRef.current = false;
-    setIsLayoutReady(false);
-    setIsLoading(false);
+    setInitialLoading(false);
   }, [selectedStatus, lifeBookOnly, keyword]);
 
   useEffect(() => {
     fetchShelfBooks();
-  }, [fetchShelfBooks]);
-
-  const handleUpdateShelfBookInfo = (isbn13, updatedFields) => {
-    if (updatedFields === null) {
-      //  삭제된 경우: 리스트에서 제거
-      setBookList((prev) => prev.filter((book) => book.shelfInfo.isbn13 !== isbn13));
-    } else {
-      //  상태 변경 or 인생책 변경
-      setBookList((prev) =>
-        prev.map((book) =>
-          book.shelfInfo.isbn13 === isbn13
-            ? {
-              ...book,
-              shelfInfo: {
-                ...book.shelfInfo,
-                ...updatedFields,
-              },
-            }
-            : book
-        )
-      );
-    }
-  };
-
-
-  useEffect(() => {
-    // 책장 Map이 바뀌면 다시 불러오도록!
-    fetchShelfBooks();
-  }, [shelfMap]);
+  }, [fetchShelfBooks, shelfMap]);
 
   const fetchNextPage = async () => {
-    if (!hasMore) return;
+    if (!hasMore || loadingMore) return;
+    setLoadingMore(true);
     const data = await getMyShelfBooks(page, 10, selectedStatus, lifeBookOnly, keyword);
     const newBooks = data.content || [];
     setBookList((prev) => {
@@ -94,9 +65,9 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
       });
       return Array.from(uniqueBooksMap.values());
     });
-    const nextPage = page + 1;
-    setPage(nextPage);
-    setHasMore(nextPage * 10 < (data.totalCount || 0));
+    setPage(page + 1);
+    setHasMore((page + 1) * 10 < (data.totalCount || 0));
+    setLoadingMore(false);
   };
 
   const handleRefresh = async () => {
@@ -105,11 +76,12 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
     setRefreshing(false);
   };
 
-  const styles = getStyles(parentWidth);
+  const styles = getStyles(parentWidth || 360);
 
-  if (isLoading) {
+  // ✅ 최초 로딩 중일 땐 스피너만 보여주기
+  if (initialLoading) {
     return (
-      <View style={[styles.loadingContainer]}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#888" />
       </View>
     );
@@ -139,13 +111,27 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
           scrollRef.current = ref;
           internalFlatListRef.current = ref;
         }}
-        onLayout={() => setIsLayoutReady(true)}
         keyExtractor={(item) => item.shelfInfo.isbn13}
         renderItem={({ item }) => (
+
           <ShelfBookCard
             book={item}
             parentWidth={parentWidth}
-            onUpdateShelfBookInfo={handleUpdateShelfBookInfo}
+            onUpdateShelfBookInfo={(isbn13, update) => {
+              if (!update) {
+                //  삭제된 경우: 리스트에서 제거
+                setBookList(prev => prev.filter(b => b.shelfInfo.isbn13 !== isbn13));
+              } else {
+                // 업데이트된 필드 반영 (status, lifeBook 등)
+                setBookList(prev =>
+                  prev.map(b =>
+                    b.shelfInfo.isbn13 === isbn13
+                      ? { ...b, shelfInfo: { ...b.shelfInfo, ...update } }
+                      : b
+                  )
+                );
+              }
+            }}
           />
         )}
         onScroll={(e) => {
@@ -156,28 +142,41 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
           setScrollOffsetY(e.nativeEvent.contentOffset.y);
         }}
         ListHeaderComponent={
-          <MyShelfSettingBar
+          <MyShelfSettingBar_two
             totalCount={totalCount}
-            onSettingPress={() => setFilterVisible(true)}
-            onSearch={(keyword) => {
+            searching={searching}
+            setSearching={setSearching}
+            keyword={inputKeyword}
+            setKeyword={setInputKeyword}
+            onSearch={() => {
               setPrevStatus(selectedStatus);
               setPrevLifeBookOnly(lifeBookOnly);
               setSelectedStatus(null);
               setLifeBookOnly(false);
-              setKeyword(keyword);
+              setKeyword(inputKeyword);
             }}
             onSearchCancel={() => {
               setKeyword('');
+              setInputKeyword('');
               setSelectedStatus(prevStatus);
               setLifeBookOnly(prevLifeBookOnly);
+              setSearching(false);
             }}
             onFilterReset={() => {
+              setPrevStatus(selectedStatus);
+              setPrevLifeBookOnly(lifeBookOnly);
               setSelectedStatus(null);
               setLifeBookOnly(false);
             }}
+            onSettingPress={() => setFilterVisible(true)}
           />
         }
-        ListFooterComponent={<VerticalGap height={parentWidth * 0.07} />}
+        ListFooterComponent={
+          <View style={{ paddingVertical: (parentWidth || 360) * 0.07 }}>
+            {loadingMore && <ActivityIndicator size="small" color="#888" />}
+            <VerticalGap />
+          </View>
+        }
         contentContainerStyle={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         onEndReached={fetchNextPage}
@@ -189,7 +188,6 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
     </View>
   );
 };
-
 
 export default MyShelfTabPage;
 
@@ -219,11 +217,6 @@ const getStyles = (width) =>
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    loadingText: {
-      marginTop: width * 0.02,
-      fontSize: width * 0.038,
-      fontFamily: 'NotoSansKR-Regular',
-      color: '#666',
+      backgroundColor: 'white',
     },
   });

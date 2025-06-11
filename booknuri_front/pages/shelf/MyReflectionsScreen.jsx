@@ -107,7 +107,6 @@ const MyReflectionsScreen = () => {
   return (
     <CommonLayout>
       <Header title="내 독후감" />
-      <VerticalGap height={fixwidth * 0.007} />
 
       <FlatList
         data={reflections}
@@ -121,9 +120,11 @@ const MyReflectionsScreen = () => {
               onDeletePress={() => handleDeletePress(item.id)}
               onReportPress={(id) => console.log('신고 ID:', id)}
             />
+            <VerticalGap height={fixwidth * 0.01} />
           </View>
         )}
         contentContainerStyle={styles.scrollContent}
+        ListHeaderComponent={<VerticalGap height={fixwidth * 0.007} />}
         ListEmptyComponent={
           <View style={styles.centered}>
             <Text style={styles.emptyText}>
@@ -157,7 +158,7 @@ export default MyReflectionsScreen;
 const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: fixwidth * 0.197,
-    paddingHorizontal: fixwidth * 0.03,
+    paddingHorizontal: fixwidth * 0.037,
   },
   itemWrapper: {
     marginBottom: fixwidth * 0.03,

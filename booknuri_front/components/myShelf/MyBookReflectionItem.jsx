@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart, faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as emptyStar } from '@fortawesome/free-regular-svg-icons';
 import { useNavigation } from '@react-navigation/native';
+import VerticalGap from '../public/publicUtil/VerticalGap';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -42,7 +43,7 @@ const MyBookReflectionItem = ({ item, onLikePress, onEditPress, onDeletePress })
 
   return (
     <View style={styles.card}>
-      {/* ⭐ 별점 */}
+
       <View style={styles.stars}>{renderStars(item.rating)}</View>
 
       {/* 요약 형태 본문 */}
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
   contentText: {
     flex: 1,
     fontSize: fixwidth * 0.037,
-    lineHeight: fixwidth * 0.058,
+    lineHeight: fixwidth * 0.052,
     fontFamily: 'NotoSansKR-Regular',
     color: '#333',
   },
@@ -136,14 +137,14 @@ const styles = StyleSheet.create({
     fontSize: fixwidth * 0.04,
     color: '#222',
     fontFamily: 'NotoSansKR-Bold',
-    lineHeight: fixwidth * 0.07,
+    lineHeight: fixwidth * 0.06,
   },
   date: {
     fontSize: fixwidth * 0.032,
     fontFamily: 'NotoSansKR-Light',
     color: '#888',
     marginTop: fixwidth * 0.01,
-    lineHeight: fixwidth * 0.0677,
+    lineHeight: fixwidth * 0.05,
   },
   footerRow: {
     flexDirection: 'row',

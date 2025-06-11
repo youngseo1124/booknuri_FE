@@ -6,6 +6,7 @@ import MyPageScreen from '../pages/dummy/MyPageScreen';
 import CurvedTabBar from '../components/CurvedTabBar';
 import MyShelfStack from './MyShelfStack';
 import HomeStack from './HomeStack';
+import MyShelfScreen from '../pages/shelf/MyShelfScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,7 +17,7 @@ const TabNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="HomeTab" component={HomeStack} />
-      <Tab.Screen name="MyShelfTab" component={MyShelfStack} />
+      <Tab.Screen name="MyShelfTab" component={MyShelfScreen} />
       <Tab.Screen name="MyLibrarySettingScreen" component={MyLibrarySettingScreen} />
       <Tab.Screen name="MyPage" component={MyPageScreen} />
     </Tab.Navigator>

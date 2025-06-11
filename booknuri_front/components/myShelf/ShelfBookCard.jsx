@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import {
-  View, Text, Image, StyleSheet, Dimensions, Alert, Modal, Pressable, TouchableOpacity
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  Alert,
+  Modal,
+  Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeart as faSolidHeart, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
@@ -16,56 +24,89 @@ const statusOptions = [
   { id: 'READING', name: '읽고 있는 책' },
   { id: 'FINISHED', name: '완독한 책' },
 ];
-const ShelfBookCard = ({ book, parentWidth, onUpdateShelfBookInfo }) => {
+
+const ShelfBookCard = ({ book, onUpdateShelfBookInfo, parentWidth }) => {
   const { bookname, authors, bookImageURL, status, isbn13, lifeBook } = book.shelfInfo;
   const navigation = useNavigation();
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleStatusChange = async (newStatus) => {
     try {
       await updateBookStatus(isbn13, newStatus);
       setModalVisible(false);
-      onUpdateShelfBookInfo?.(isbn13, { status: newStatus }); // ✅ 리스트 반영
+      onUpdateShelfBookInfo?.(isbn13, { status: newStatus }); // 부모에게 상태 변경 알려줌
     } catch (err) {
+      console.error('상태 변경 실패', err);
       Alert.alert('오류', '책 상태 변경에 실패했어요.');
     }
   };
+
+  const formatTitleLines = (title) => {
+    if (!title) return ['', ''];
+    const trimmed = title.trim();
+    const breakIndex = Math.min(...[':', '='].map((s) => trimmed.indexOf(s)).filter(i => i !== -1));
+    if (breakIndex !== Infinity) {
+      const first = trimmed.slice(0, breakIndex).trim();
+      const second = trimmed.slice(breakIndex).trim().replace(/^[:=]/, ':');
+      return [first, second];
+    }
+    if (trimmed.length > 16) {
+      return [trimmed.slice(0, 16), trimmed.slice(16)];
+    }
+    return [trimmed, ''];
+  };
+
+  const [line1, line2] = formatTitleLines(bookname);
 
   return (
     <View style={styles.card}>
       <TouchableOpacity
         style={styles.imageWrapper}
-        onPress={() =>
-          navigation.navigate('BookDetailScreen', { isbn: isbn13 })
-        }
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate('BookDetailScreen', { isbn: isbn13 })}
       >
         <Image source={{ uri: bookImageURL }} style={styles.bookImage} />
         {lifeBook && (
           <View style={styles.heartOnImage}>
-            <FontAwesomeIcon icon={faSolidHeart} size={fixwidth * 0.045} color="#e74c3c" />
+            <FontAwesomeIcon
+              icon={faSolidHeart}
+              size={fixwidth * 0.045}
+              color="#e74c3c"
+              paddingHorizontal={fixwidth * 0.01}
+            />
           </View>
         )}
       </TouchableOpacity>
 
       <View style={styles.bookInfo}>
-        <Text style={styles.title}>{bookname}</Text>
-        <Text style={styles.author}>{authors}</Text>
-        <CategorySelector
-          selectedCategory={status}
-          categoryList={statusOptions}
-          onPress={() => setModalVisible(true)}
-          fontSize={fixwidth * 0.03}
-          lineHeight={fixwidth * 0.042}
-          borderRadius={fixwidth * 0.007}
-        />
+        <View style={styles.metaWrapper}>
+          <Text numberOfLines={1} style={styles.title}>{line1}</Text>
+          {line2 !== '' && (
+            <Text numberOfLines={1} style={styles.titleSub}>{line2}</Text>
+          )}
+          <Text numberOfLines={1} style={styles.author}>{authors}</Text>
+        </View>
+
+        <View style={{ maxWidth: fixwidth * 0.287 }}>
+          <CategorySelector
+            selectedCategory={status} // ✅ 상태 prop 직접 사용!
+            categoryList={statusOptions}
+            onPress={() => setModalVisible(true)}
+            fontSize={fixwidth * 0.03}
+            lineHeight={fixwidth * 0.042}
+            borderRadius={fixwidth * 0.007}
+          />
+        </View>
       </View>
 
       <TouchableOpacity
         style={styles.menuButton}
         onPress={() =>
           navigation.navigate('ShelfBookDetailSettingScreen', {
-            isbn13,
-            onUpdateShelfBookInfo, // ✅ DetailScreen으로 전달
+            shelfBook: book.shelfInfo,
+            isbn13: isbn13,
+            onUpdateShelfBookInfo,
           })
         }
       >
@@ -82,11 +123,17 @@ const ShelfBookCard = ({ book, parentWidth, onUpdateShelfBookInfo }) => {
           <View style={styles.modalBox}>
             {statusOptions.map((option) => (
               <TouchableOpacity
+                activeOpacity={0.7}
                 key={option.id}
                 onPress={() => handleStatusChange(option.id)}
                 style={styles.optionItem}
               >
-                <Text style={styles.optionText}>
+                <Text
+                  style={[
+                    styles.optionText,
+                    status === option.id && { fontFamily: 'NotoSansKR-Medium' },
+                  ]}
+                >
                   {option.name}
                 </Text>
               </TouchableOpacity>
@@ -98,8 +145,9 @@ const ShelfBookCard = ({ book, parentWidth, onUpdateShelfBookInfo }) => {
   );
 };
 
-
 export default ShelfBookCard;
+
+
 
 const styles = StyleSheet.create({
   card: {

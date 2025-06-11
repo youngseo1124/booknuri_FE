@@ -17,7 +17,6 @@ import Header from '../../components/public/publicHeader/Header';
 import BookMiniHeaderBlock from '../../components/public/bookpublic/BookMiniHeaderBlock';
 import TitleOnlyPopup from '../../components/public/publicPopup_Alert_etc/TitleOnlyPopup';
 
-import { getMyReflectionsByBookIsbn } from '../../apis/apiFunction_myShelf';
 import {
   deleteReflection,
   getMyReflectionById,
@@ -144,10 +143,10 @@ const DetailReflectionScreen = () => {
 
         <Text
           style={{
-            marginVertical: fixwidth * 0.03,
-            fontSize: fixwidth * 0.047,
+            marginVertical: fixwidth * 0.0337,
+            fontSize: fixwidth * 0.051,
             fontFamily: 'NotoSansKR-Bold',
-            lineHeight: fixwidth * 0.07,
+            lineHeight: fixwidth * 0.06,
             color: '#222',
           }}
         >

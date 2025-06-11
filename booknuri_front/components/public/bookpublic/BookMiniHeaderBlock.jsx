@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     gap: fixwidth * 0.04,
     padding: fixwidth * 0.03,
     backgroundColor: '#fffaf1',
-    borderColor: '#f3e4c9',
+    borderColor: '#e0cdaa',
     borderWidth: fixwidth * 0.001,
     borderRadius: fixwidth * 0.03,
   },

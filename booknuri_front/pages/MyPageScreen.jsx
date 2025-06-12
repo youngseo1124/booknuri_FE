@@ -11,9 +11,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LoginContext } from '../contexts/LoginContextProvider';
 import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
 import CommonLayout from '../components/public/publicUtil/CommonLayout';
+import MyProfileHeader from '../components/mypage/MyProfileHeader';
+import Header from '../components/public/publicHeader/Header';
+import HomeHeader from '../components/public/publicHeader/HomeHeader';
 
-const { width, height } = Dimensions.get('window');
 
+const { width: fixwidth } = Dimensions.get("window");
 const MyPageScreen = () => {
   const { logout } = useContext(LoginContext);
   const insets = useSafeAreaInsets();
@@ -25,8 +28,10 @@ const MyPageScreen = () => {
 
   return (
     <CommonLayout>
+      <HomeHeader title={'마이페이지'} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.pageTitle}>마이페이지</Text>
+
+        <MyProfileHeader />
 
 
       </ScrollView>
@@ -46,36 +51,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     alignItems: 'center',
-    paddingTop: width * 0.04,
-    minHeight: height * 1,
-  },
-  pageTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  logoutButton: {
-    backgroundColor: '#ff4444',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  logoutText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  toastButton: {
-    backgroundColor: '#4444ff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 30,
-  },
-  toastText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+    paddingBottom: fixwidth * 0.04,
+  }
 });

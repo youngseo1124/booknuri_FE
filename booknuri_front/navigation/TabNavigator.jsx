@@ -2,7 +2,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MyLibrarySettingScreen from '../pages/setting/MyLibrarySettingScreen';
-import MyPageScreen from '../pages/dummy/MyPageScreen';
+import MyPageScreen from '../pages/MyPageScreen';
 import CurvedTabBar from '../components/CurvedTabBar';
 import MyShelfStack from './MyShelfStack';
 import HomeStack from './HomeStack';

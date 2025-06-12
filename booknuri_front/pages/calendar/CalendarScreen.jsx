@@ -101,7 +101,7 @@ const CalendarScreen = () => {
     const todayMonthStr = today.toISOString().slice(0, 7);
     const monthList = [];
 
-    for (let i = -11; i <= 2; i++) {
+    for (let i = -9; i <= 2; i++) {
       const d = new Date(today.getFullYear(), today.getMonth() + i);
       const monthStr = d.toISOString().slice(0, 7);
       monthList.push(monthStr);

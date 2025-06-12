@@ -8,8 +8,9 @@ import {
   ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LoginContext } from '../../contexts/LoginContextProvider';
-import ToastPopup from '../../components/public/publicPopup_Alert_etc/ToastPopup';
+import { LoginContext } from '../contexts/LoginContextProvider';
+import ToastPopup from '../components/public/publicPopup_Alert_etc/ToastPopup';
+import CommonLayout from '../components/public/publicUtil/CommonLayout';
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,29 +24,16 @@ const MyPageScreen = () => {
   };
 
   return (
-    <View style={[styles.safeContainer, { paddingTop: insets.top }]}>
+    <CommonLayout>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.pageTitle}>👤 마이페이지 (더미)</Text>
+        <Text style={styles.pageTitle}>마이페이지</Text>
 
-        {/* 로그아웃 버튼 */}
-        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
-          <Text style={styles.logoutText}>로그아웃 하기</Text>
-        </TouchableOpacity>
 
-        {/* 토스트 테스트용 버튼 */}
-        <TouchableOpacity onPress={handleShowToast} style={styles.toastButton}>
-          <Text style={styles.toastText}>토스트 테스트 버튼</Text>
-        </TouchableOpacity>
       </ScrollView>
 
-      {/* 토스트 팝업 */}
-      {showToast && (
-        <ToastPopup
-          message="테스트 테스트"
-          onClose={() => setShowToast(false)}
-        />
-      )}
-    </View>
+
+
+    </CommonLayout>
   );
 };
 

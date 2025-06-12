@@ -29,11 +29,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import {BannerRefreshContext} from '../contexts/BannerRefreshContext';
 import {addBookToShelf} from '../apis/apiFunction_myShelf';
 import {useShelf} from '../contexts/ShelfContext';
+import DPRecomendCategoryBestsellerBlock from '../components/bookDetailpage/DPRecomendCategoryBestsellerBlock';
+import DPRecomendOtherUserBlockJsx from '../components/bookDetailpage/DPRecomendOtherUserBlock.jsx';
+import DPRecomendOtherUserBlock from '../components/bookDetailpage/DPRecomendOtherUserBlock.jsx';
 
 const { width: fixwidth } = Dimensions.get('window');
 
 const BookDetailScreen = ({ route, navigation }) => {
-    const { isbn } = route.params;
+    const { isbn, scrollToTop } = route.params;
     const scrollRef = useRef(null);
     const { addToShelf } = useShelf();
     const [bookData, setBookData] = useState(null);
@@ -58,6 +61,7 @@ const BookDetailScreen = ({ route, navigation }) => {
     const { increaseViewedBookCount } = useContext(BannerRefreshContext);
     const didScrollTopRef = useRef(false);
     const [isInShelf, setIsInShelf] = useState(false);
+    const hasScrolledRef = useRef(false);
 
 
 
@@ -109,19 +113,21 @@ const BookDetailScreen = ({ route, navigation }) => {
                 fetchSortedReflections(),
                 fetchSortedQuotes(),
             ]);
+
             await new Promise((r) => setTimeout(r, 150));
 
-            // ✅ 한 번만 scrollTo 실행
-            if (!didScrollTopRef.current) {
-                scrollRef.current?.scrollTo({ y: 0, animated: false });
-                didScrollTopRef.current = true; // ✅ 이후에는 안함
-            }
 
             setIsReady(true);
         } catch (err) {
             console.error('❌ 데이터 로딩 실패:', err);
         }
     };
+
+
+
+
+
+
 
 
     const handleLike = async (reviewId) => {
@@ -183,6 +189,13 @@ const BookDetailScreen = ({ route, navigation }) => {
             ref={scrollRef}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
+            onContentSizeChange={() => {
+                if (scrollToTop === true && !hasScrolledRef.current) {
+                    scrollRef.current?.scrollTo({ y: 0, animated: false });
+                    navigation.setParams({ scrollToTop: false });
+                    hasScrolledRef.current = true;
+                }
+            }}
           >
               {bookData?.bookInfo?.isbn13 ? (
                 <DPBookInfoHeaderBlock
@@ -240,6 +253,15 @@ const BookDetailScreen = ({ route, navigation }) => {
                 isbn13={isbn}
                 navigation={navigation}
               />
+
+              <DividerBlock />
+
+              <DPRecomendOtherUserBlock bookInfo={bookData.bookInfo} />
+
+              <DividerBlock />
+
+              <DPRecomendCategoryBestsellerBlock bookInfo={bookData.bookInfo} />
+
           </ScrollView>
 
           <ScrollToTopButton bottom={fixwidth * 0.17} right={fixwidth * 0.05} onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} />

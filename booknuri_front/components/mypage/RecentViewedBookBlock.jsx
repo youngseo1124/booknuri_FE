@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingHorizontal: fixwidth * 0.037,
+    paddingVertical: fixwidth * 0.037,
   },
   emptyText: {
     textAlign: 'center',

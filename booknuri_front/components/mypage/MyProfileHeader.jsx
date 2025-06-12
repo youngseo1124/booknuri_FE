@@ -18,7 +18,7 @@ const MyProfileHeader = () => {
       <View style={styles.textBox}>
         <View style={styles.textLine}>
           <Text style={styles.greeting}>
-            {userInfo.nickname}님
+            {userInfo.nickname}님, 반가워요
           </Text>
         </View>
       </View>
@@ -34,26 +34,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: "100%",
     marginBottom: fixwidth * 0.04,
-    backgroundColor: '#f3f3f3',
-    paddingHorizontal: fixwidth * 0.04,
-    paddingVertical: fixwidth * 0.0477,
-    borderWidth:fixwidth * 0.01,
-    borderColor: '#f3f3f3',
+  /*  backgroundColor: '#f3f3f3',*/
+    paddingHorizontal: fixwidth * 0.057,
+    paddingVertical: fixwidth * 0.017,
+
   },
   profileImage: {
-    width: fixwidth * 0.237,
-    height: fixwidth * 0.237,
+    width: fixwidth * 0.22,
+    height: fixwidth * 0.22,
     borderRadius: fixwidth * 1,
-    marginRight: fixwidth * 0.04,
-    borderWidth: fixwidth * 0.0037,
-    borderColor: 'rgba(0,0,0,0)',
+    marginRight: fixwidth * 0.022,
+    borderWidth: fixwidth * 0.0017,
+    borderColor: 'rgba(0,0,0,0.37)',
   },
   textBox: {
     justifyContent: 'center',
   },
   greeting: {
-    fontSize: fixwidth * 0.05,
-    fontFamily: 'NotoSansKR-Bold',
+    fontSize: fixwidth * 0.047,
+    fontFamily: 'NotoSansKR-SemiBold',
     color: '#000',
     marginBottom: fixwidth * 0.01,
   },

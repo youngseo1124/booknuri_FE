@@ -41,6 +41,8 @@ import MyReflectionsScreen from './pages/shelf/MyReflectionsScreen';
 import DetailReflectionScreen from './pages/shelf/DetailReflectionScreen';
 import MyReviewsScreen from './pages/shelf/MyReviewsScreen';
 import {ShelfProvider} from './contexts/ShelfContext';
+import CalendarScreen from './pages/calendar/CalendarScreen';
+import DayDetailScreen from './pages/calendar/DayDetailScreen';
 
 const Stack = createStackNavigator();
 
@@ -108,6 +110,10 @@ const AppInner = () => {
                   <Stack.Screen name="DetailReflectionScreen" component={DetailReflectionScreen} />
 
                   <Stack.Screen name="MyReviewsScreen" component={MyReviewsScreen} />
+
+                  <Stack.Screen name="DayDetailScreen" component={DayDetailScreen} />
+
+
 
 
 

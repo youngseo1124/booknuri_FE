@@ -24,6 +24,7 @@ import {
 } from '../../apis/apiFunction_bookReflection';
 import { getBookTotalInfo } from '../../apis/apiFunction_book';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
+import {useShelf} from '../../contexts/ShelfContext';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -32,7 +33,7 @@ const DetailReflectionScreen = () => {
   const navigation = useNavigation();
   const [bookInfo, setBookInfo] = useState(null);
   const { reflectionId, isbn13 } = route.params;
-
+  const { removeFromShelf } = useShelf();
   const [reflection, setReflection] = useState(null);
   const [deletePopupVisible, setDeletePopupVisible] = useState(false);
 

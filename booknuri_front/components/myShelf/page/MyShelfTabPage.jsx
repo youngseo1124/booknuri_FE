@@ -5,7 +5,7 @@ import {
   Text,
   RefreshControl,
   ActivityIndicator,
-  StyleSheet,
+  StyleSheet, Dimensions,
 } from 'react-native';
 
 import ShelfBookCard from '../ShelfBookCard';
@@ -121,6 +121,7 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
               if (!update) {
                 //  삭제된 경우: 리스트에서 제거
                 setBookList(prev => prev.filter(b => b.shelfInfo.isbn13 !== isbn13));
+                setTotalCount((prev) => Math.max(0, prev - 1));
               } else {
                 // 업데이트된 필드 반영 (status, lifeBook 등)
                 setBookList(prev =>
@@ -181,13 +182,17 @@ const MyShelfTabPage = ({ parentWidth, scrollRef, scrollOffsetY, setScrollOffset
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         onEndReached={fetchNextPage}
         onEndReachedThreshold={0.01}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>책장에 추가된 책이 없습니다 📚</Text>
-        }
+        ListEmptyComponent={() => (
+          <View style={styles.emptyWrapper}>
+            <Text style={styles.emptyText}>책장에 추가된 책이 없습니다</Text>
+          </View>
+        )}
       />
     </View>
   );
 };
+
+const { height} = Dimensions.get('window');
 
 export default MyShelfTabPage;
 
@@ -199,10 +204,11 @@ const getStyles = (width) =>
       paddingHorizontal: width * 0.007,
     },
     emptyText: {
-      fontSize: width * 0.035,
+      fontSize: width * 0.037,
       textAlign: 'center',
-      marginTop: width * 0.2,
       fontFamily: 'NotoSansKR-Regular',
+      color:  'rgba(41,41,41,0.77)',
+
     },
     overlayBackground: {
       position: 'absolute',
@@ -219,4 +225,13 @@ const getStyles = (width) =>
       alignItems: 'center',
       backgroundColor: 'white',
     },
+    // 스타일 추가
+    emptyWrapper: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: height*0.62,
+      paddingVertical: 50,
+    },
+
   });

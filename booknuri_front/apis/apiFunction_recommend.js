@@ -46,3 +46,28 @@ export const getMainCategoryList = () => {
   return api.get('/recommend/categories');
 };
 
+
+/**
+ * 📌 카테고리 기반 베스트셀러 추천 API
+ * 사용자의 대표 도서관 기준으로, 하위 → 중간 → 메인 카테고리 순서로 인기 책을 필터링하여 추천함
+ * (도서관에 실제로 있는 책만 반환되며, 최대 7권)
+ *
+ * @param {object} params
+ * @param {string} params.mainCategoryName - ✅ 필수: 메인 카테고리 이름 (예: "문학", "철학")
+ * @param {string} [params.middleCategoryName] - ❌ 선택: 중간 카테고리 이름 (예: "심리학")
+ * @param {string} [params.subCategoryName] - ❌ 선택: 서브 카테고리 이름 (예: "응용 심리학 일반")
+ * @returns {Promise<RecommendBookDto[]>}
+ */
+export const getCategoryBasedRecommendations = ({
+                                                  mainCategoryName,
+                                                  middleCategoryName,
+                                                  subCategoryName,
+                                                }) => {
+  return api.get('/recommend/bestseller/category', {
+    params: {
+      mainCategoryName,
+      ...(middleCategoryName && { middleCategoryName }),
+      ...(subCategoryName && { subCategoryName }),
+    },
+  });
+};

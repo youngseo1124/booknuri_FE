@@ -30,6 +30,7 @@ const MyShelfSettingBar = ({
                              onFilterReset,
                              onSettingPress,
                              showSetting = true,
+                             showSearch = true, // ✅ 검색 버튼 보이기 여부 (기본값 true)
                            }) => {
   const { width: fixwidth } = useWindowDimensions();
   const [searching, setSearching] = useState(false);
@@ -39,8 +40,8 @@ const MyShelfSettingBar = ({
     if (!searching) {
       setSearching(true);
     } else {
-      onSearch?.(keyword);    // 검색 실행만!
-      Keyboard.dismiss();     // 키보드만 닫고
+      onSearch?.(keyword);
+      Keyboard.dismiss();
     }
   };
 
@@ -67,7 +68,7 @@ const MyShelfSettingBar = ({
       )}
 
       <View style={styles.iconGroup}>
-        {searching && (
+        {showSearch && searching && (
           <TextInput
             placeholder="책 제목 검색"
             placeholderTextColor="#888"
@@ -80,13 +81,15 @@ const MyShelfSettingBar = ({
           />
         )}
 
-        <TouchableOpacity onPress={handleSearchPress} style={styles.iconBtn}>
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            size={fixwidth * 0.0427}
-            color="rgba(149,149,149,0.77)"
-          />
-        </TouchableOpacity>
+        {showSearch && (
+          <TouchableOpacity onPress={handleSearchPress} style={styles.iconBtn}>
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              size={fixwidth * 0.0427}
+              color="rgba(149,149,149,0.77)"
+            />
+          </TouchableOpacity>
+        )}
 
         {showSetting && (
           <TouchableOpacity onPress={onSettingPress} style={styles.iconBtn}>
@@ -100,6 +103,7 @@ const MyShelfSettingBar = ({
     </View>
   );
 };
+
 
 export default MyShelfSettingBar;
 

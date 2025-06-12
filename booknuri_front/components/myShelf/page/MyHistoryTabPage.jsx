@@ -121,8 +121,8 @@ const MyHistoryTabPage = ({ scrollRef }) => {
         }
         ListEmptyComponent={
           !loading && (
-            <View style={styles.centered}>
-              <Text style={styles.emptyText}>작성한 기록이 없어요</Text>
+            <View style={styles.emptyWrapper}>
+              <Text style={styles.emptyText}>작성한 기록이 없습니다</Text>
             </View>
           )
         }
@@ -137,7 +137,7 @@ const MyHistoryTabPage = ({ scrollRef }) => {
     </View>
   );
 };
-
+const { height} = Dimensions.get('window');
 export default MyHistoryTabPage;
 
 const styles = StyleSheet.create({
@@ -158,12 +158,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: fixwidth * 0.3,
   },
-  emptyText: {
-    fontSize: fixwidth * 0.037,
-    fontFamily: 'NotoSansKR-Regular',
-    color: '#555',
-    textAlign: 'center',
-  },
   overlay: {
     position: 'absolute',
     top: 0,
@@ -174,5 +168,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
     zIndex: 10,
+  },
+
+  // 기존 스타일에 추가 또는 수정
+  emptyWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: height*0.5,
+  },
+  emptyText: {
+    fontSize: fixwidth * 0.034,
+    fontFamily: 'NotoSansKR-Regular',
+    color: '#555',
+    textAlign: 'center',
   },
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     View,
     StatusBar,
@@ -9,6 +9,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CommonLayout = ({ children }) => {
+    console.log('[CommonLayout] 렌더 시작');
+    useEffect(() => {
+        console.log('[CommonLayout] 마운트 완료');
+    }, []);
+
+
+
     return (
         <>
             <StatusBar />

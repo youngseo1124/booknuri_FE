@@ -20,6 +20,7 @@ import WriteButton from '../../components/public/publicButton/WriteButton';
 import VerticalGap from '../../components/public/publicUtil/VerticalGap';
 import ConfirmPopup from '../../components/public/publicPopup_Alert_etc/ConfirmPopup';
 import CategorySelector_two from '../../components/public/selector/CategorySelector_two';
+import {useShelf} from '../../contexts/ShelfContext';
 
 const fixwidth = require('react-native').Dimensions.get('window').width;
 
@@ -36,6 +37,8 @@ const ShelfBookDetailSettingScreen = () => {
   const [book, setBook] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const { removeFromShelf } = useShelf()
+  const { updateShelfBook } = useShelf(); //
 
   const fetchBook = async () => {
     try {
@@ -54,12 +57,19 @@ const ShelfBookDetailSettingScreen = () => {
     try {
       await updateBookStatus(isbn13, newStatus);
       setBook((prev) => ({ ...prev, status: newStatus }));
-      onUpdateShelfBookInfo?.(isbn13, { status: newStatus }); // ✅ 반영
+      onUpdateShelfBookInfo?.(isbn13, { status: newStatus });
+
+      // ✅ 완독일 경우 ShelfContext에도 알림 → 캘린더 갱신 유도
+      if (newStatus === 'FINISHED') {
+        updateShelfBook(isbn13, { status: newStatus });
+      }
+
       setModalVisible(false);
     } catch {
       alert('상태 변경 실패');
     }
   };
+
 
   const handleToggleLife = async () => {
     try {
@@ -75,13 +85,17 @@ const ShelfBookDetailSettingScreen = () => {
   const handleDelete = async () => {
     try {
       await removeBookFromShelf(isbn13);
-      onUpdateShelfBookInfo?.(isbn13, null); // 삭제는 null로 전달
+
+      removeFromShelf(isbn13); // ✅ 캘린더에게 삭제 알림 보내기!
+
+      onUpdateShelfBookInfo?.(isbn13, null); // 기존 처리 유지
       setConfirmVisible(false);
       navigation.goBack();
     } catch {
       alert('삭제 실패');
     }
   };
+
 
   const InfoRow = ({ label, value, onPress }) => (
     <TouchableOpacity style={styles.infoItemRow} onPress={onPress} activeOpacity={0.8}>

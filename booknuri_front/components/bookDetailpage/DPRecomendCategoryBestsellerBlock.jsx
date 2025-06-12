@@ -56,7 +56,7 @@ const DPRecomendCategoryBestsellerBlock = ({ bookInfo }) => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingHorizontal: fixwidth * 0.02 }}
           renderItem={({ item }) => <BookVerticalItem book={item} />}
-          ItemSeparatorComponent={() => <View style={{ width: fixwidth * 0.02 }} />}
+          ItemSeparatorComponent={() => <View style={{ width: fixwidth * 0.027 }} />}
         />
       )}
     </View>
@@ -69,6 +69,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingVertical: fixwidth * 0.05,
-    paddingHorizontal:fixwidth*0.03
+    paddingHorizontal:fixwidth*0.037
   },
 });

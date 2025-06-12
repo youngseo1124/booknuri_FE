@@ -5,11 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const BookVerticalItem = ({ book, width = fixwidth * 0.287, height = fixwidth * 0.407 }) => {
+const BookVerticalItem = ({ book, width = fixwidth * 0.29, height = fixwidth * 0.417 }) => {
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={() =>
 
         navigation.push('BookDetailScreen', {

@@ -36,7 +36,9 @@ const styles = StyleSheet.create({
     marginBottom: fixwidth * 0.04,
     backgroundColor: '#f3f3f3',
     paddingHorizontal: fixwidth * 0.04,
-    paddingVertical: fixwidth * 0.057,
+    paddingVertical: fixwidth * 0.0477,
+    borderWidth:fixwidth * 0.01,
+    borderColor: '#f3f3f3',
   },
   profileImage: {
     width: fixwidth * 0.237,
@@ -58,6 +60,6 @@ const styles = StyleSheet.create({
   subInfo: {
     fontSize: fixwidth * 0.035,
     fontFamily: 'NotoSansKR-Regular',
-    color: '#666',
+    color: '#f3f3f3',
   },
 });

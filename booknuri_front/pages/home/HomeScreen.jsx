@@ -51,24 +51,53 @@ const HomeScreen = () => {
 
     const [libName, setLibName] = useState('');
     const [libCode, setLibCode] = useState('');
-    const [ageGroup, setAgeGroup] = useState('');
-    const [gender, setGender] = useState('');
 
-    // 🧠 유저 정보에서 연령/성별/도서관 추출
+    // 📌 도서관 정보 추출 및 반영
     useEffect(() => {
-        if (userInfo) {
-            const birthYear = Math.floor(userInfo.birth / 10000);
-            const age = new Date().getFullYear() - birthYear;
-            const decade = Math.floor(age / 10) * 10;
-            setAgeGroup(`${decade}`);
-            setGender(userInfo.gender);
-            setLibName(userInfo.myLibrary?.libName || '');
-            setLibCode(userInfo.myLibrary?.libCode || '');
+        if (userInfo?.myLibrary) {
+            setLibName(userInfo.myLibrary.libName || '');
+            setLibCode(userInfo.myLibrary.libCode || '');
+            setBestsellerCategory(null); // 도서관 바뀌면 카테고리 초기화
         }
-    }, [userInfo]);
+    }, [userInfo?.myLibrary?.libCode]);
 
+    // 📌 도서관 바뀌면 추천 데이터 다시 로딩
+    useEffect(() => {
+        if (!userInfo?.myLibrary?.libCode) return;
 
-    // 책 5권보면 배너 api 재호출
+        const refetch = async () => {
+            try {
+                const [
+                    categoryRes,
+                    personalRes,
+                    bestsellerRes,
+                    quoteRes,
+                    demographicRes,
+                ] = await Promise.all([
+                    getMainCategoryList(),
+                    getPersonalRecommendations(),
+                    getBestsellerBooks({ period: bestsellerPeriod }),
+                    getPopularBookQuotes(0, 10),
+                    getDemographicRecommendations({
+                        gender: userInfo.gender,
+                        birthYearGroup: Math.floor((new Date().getFullYear() - Math.floor(userInfo.birth / 10000)) / 10) * 10,
+                    }),
+                ]);
+
+                setCategoryList(categoryRes.data);
+                setPersonalBooks(personalRes.data);
+                setBestsellerBooks(bestsellerRes.data);
+                setTodayQuotes(quoteRes.data.quotes);
+                setDemographicBooks(demographicRes.data);
+            } catch (err) {
+                console.error('도서관 변경 후 홈 리렌더링 실패❌:', err);
+            }
+        };
+
+        refetch();
+    }, [userInfo?.myLibrary?.libCode]);
+
+    // 📌 책 5권 보면 배너 리렌더링
     useEffect(() => {
         if (!userInfo) return;
 
@@ -84,7 +113,7 @@ const HomeScreen = () => {
         fetchUpdatedPersonal();
     }, [bannerTrigger]);
 
-    // ✅ 초기 데이터 한꺼번에 로딩
+    // 📌 최초 로딩
     useEffect(() => {
         if (!userInfo) return;
 
@@ -122,7 +151,7 @@ const HomeScreen = () => {
         fetchInitial();
     }, [userInfo]);
 
-    // ✅ 베스트셀러 필터 변경 시 재요청
+    // 📌 베스트셀러 필터 바뀌면 재요청
     useEffect(() => {
         if (!userInfo) return;
         const fetchFilteredBestseller = async () => {
@@ -140,7 +169,7 @@ const HomeScreen = () => {
         fetchFilteredBestseller();
     }, [bestsellerPeriod, bestsellerCategory]);
 
-    // ✅ 인용 좋아요/삭제/수정 핸들러
+    // 📌 인용 핸들러
     const handleLikePress = async (quoteId) => {
         try {
             await toggleBookQuoteLike(quoteId);
@@ -198,7 +227,7 @@ const HomeScreen = () => {
 
                       <View style={{ height: fixwidth * 0.47, justifyContent: 'flex-start' }}>
                           <PrivateRecommendBannerCarousel
-                            key={bannerTrigger ? 'A' : 'B'}
+                            key={`banner-${userInfo?.myLibrary?.libCode || ''}-${personalBooks.length}`}
                             bookList={personalBooks}
                           />
                       </View>
@@ -215,6 +244,7 @@ const HomeScreen = () => {
 
                       <View style={styles.horizontalLine} />
                       <TodayQuoteRecommendationBlock
+                        key={`quote-${userInfo?.myLibrary?.libCode || ''}-${todayQuotes.length}`}
                         quotes={todayQuotes}
                         onLikePress={handleLikePress}
                         onDeletePress={handleDeletePress}

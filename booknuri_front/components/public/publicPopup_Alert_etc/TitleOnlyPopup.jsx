@@ -45,10 +45,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingVertical: fixwidth * 0.077,
     paddingHorizontal: fixwidth * 0.08,
-    borderRadius: fixwidth * 0.03,
+    borderRadius: fixwidth * 0.017,
     width: fixwidth * 0.77,
     alignItems: 'center',
-    borderWidth: fixwidth * 0.001,
+    borderWidth: fixwidth * 0.0007,
   },
   title: {
     fontSize: fixwidth * 0.044,

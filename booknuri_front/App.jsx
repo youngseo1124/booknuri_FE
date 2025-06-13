@@ -43,6 +43,7 @@ import MyReviewsScreen from './pages/shelf/MyReviewsScreen';
 import {ShelfProvider} from './contexts/ShelfContext';
 import CalendarScreen from './pages/calendar/CalendarScreen';
 import DayDetailScreen from './pages/calendar/DayDetailScreen';
+import MyLibraryEditScreen from './pages/mypage/MyLibraryEditScreen';
 
 const Stack = createStackNavigator();
 
@@ -111,12 +112,9 @@ const AppInner = () => {
 
                   <Stack.Screen name="MyReviewsScreen" component={MyReviewsScreen} />
 
-                  <Stack.Screen name="DayDetailScreen" component={DayDetailScreen} />
+                  <Stack.Screen name="DayDetailScreen" component={DayDetailScreen}/>
 
-
-
-
-
+                  <Stack.Screen name="MyLibraryEditScreen" component={MyLibraryEditScreen}/>
                 </>
             )}
         </Stack.Navigator>

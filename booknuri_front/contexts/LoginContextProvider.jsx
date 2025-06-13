@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from "../apis/api";
@@ -6,6 +6,7 @@ import AlertPopup from '../apis/AlertPopup';
 import ConfirmPopup from '../apis/ConfirmPopup';
 import { login as loginAPI, userinfo } from '../apis/apiFunction';
 import { reset } from '../navigation/RootNavigation';
+import {BannerPageContext} from './BannerPageContext';
 
 export const LoginContext = createContext();
 
@@ -13,6 +14,7 @@ const LoginContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const { resetBannerPage } = useContext(BannerPageContext);
 
   const [alertData, setAlertData] = useState({ visible: false, title: "", message: "", onClose: null });
   const [confirmData, setConfirmData] = useState({ visible: false, title: "", message: "", onConfirm: null, onCancel: null });
@@ -30,6 +32,7 @@ const LoginContextProvider = ({ children }) => {
       message: "로그아웃을 진행합니다.",
       onConfirm: async () => {
         await logoutSetting();
+        resetBannerPage();
         reset("LoginScreen_sf");
       },
       onCancel: () => {},
@@ -90,6 +93,7 @@ const LoginContextProvider = ({ children }) => {
     setUserInfo(null);
     await AsyncStorage.removeItem("accessToken");
     await EncryptedStorage.removeItem("refreshToken");
+    resetBannerPage();
   };
 
   return (

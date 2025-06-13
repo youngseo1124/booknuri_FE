@@ -20,6 +20,14 @@ export const BannerPageProvider = ({ children }) => {
     });
   };
 
+
+  // ✅ 추가: 강제 리셋용
+  const resetBannerPage = () => {
+    setCurrentBannerPage(1);
+    setViewedCount(0);
+  };
+
+
   return (
     <BannerPageContext.Provider
       value={{ currentBannerPage, setCurrentBannerPage, increaseViewedBookCount }}

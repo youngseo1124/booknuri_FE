@@ -69,6 +69,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingVertical: fixwidth * 0.05,
-    paddingHorizontal:fixwidth*0.037
+    paddingHorizontal:fixwidth*0.035
   },
 });

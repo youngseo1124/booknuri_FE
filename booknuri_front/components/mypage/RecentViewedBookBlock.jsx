@@ -42,7 +42,7 @@ export default RecentViewedBookBlock;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: fixwidth * 0.037,
+    paddingHorizontal: fixwidth * 0.03,
     paddingVertical: fixwidth * 0.037,
   },
   emptyText: {

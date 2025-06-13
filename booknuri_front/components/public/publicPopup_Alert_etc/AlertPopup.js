@@ -29,13 +29,12 @@ const styles = StyleSheet.create({
     },
     popup: {
         backgroundColor: 'white',
-        paddingVertical: fixwidth * 0.06,
-        paddingHorizontal: fixwidth * 0.06,
-        borderRadius: fixwidth * 0.03,
-        width: fixwidth * 0.8,
+        paddingVertical: fixwidth * 0.077,
+        paddingHorizontal: fixwidth * 0.08,
+        borderRadius: fixwidth * 0.017,
+        width: fixwidth * 0.77,
         alignItems: 'center',
-        borderWidth: fixwidth * 0.001,
-        borderColor:'rgba(0,0,0,0.38)',
+        borderWidth: fixwidth * 0.0007,
 
     },
     title: {

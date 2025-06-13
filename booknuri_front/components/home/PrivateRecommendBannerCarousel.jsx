@@ -44,6 +44,8 @@ const PrivateRecommendBannerCarousel = ({ bookList = [], onReady }) => {
   const intervalRef = useRef(null);
   const navigation = useNavigation();
 
+
+
   useEffect(() => {
     if (bookList.length > 0) {
       const extended = [bookList[bookList.length - 1], ...bookList, bookList[0]];

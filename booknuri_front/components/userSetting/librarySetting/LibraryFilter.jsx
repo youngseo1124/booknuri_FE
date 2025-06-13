@@ -12,21 +12,25 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const LibraryFilter = ({ setFilter }) => {
-  const { width } = useWindowDimensions();
-
+const LibraryFilter = ({ setFilter, defaultSi = '', defaultGu = '', defaultKeyword = '' }) => {
   const [regions, setRegions] = useState([]);
-  const [selectedSi, setSelectedSi] = useState('');
-  const [selectedGu, setSelectedGu] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const [selectedSi, setSelectedSi] = useState(defaultSi);
+  const [selectedGu, setSelectedGu] = useState(defaultGu);
+  const [keyword, setKeyword] = useState(defaultKeyword);
+
+  useEffect(() => {
+    console.log('🟡 기본값 반영됨:', { defaultSi, defaultGu, defaultKeyword });
+    setSelectedSi(defaultSi);
+    setSelectedGu(defaultGu);
+    setKeyword(defaultKeyword);
+  }, [defaultSi, defaultGu, defaultKeyword]);
 
   useEffect(() => {
     const fetchRegions = async () => {
       try {
         const res = await getRegionList();
         const data = res.data;
-        if (Array.isArray(data)) setRegions(data);
-        else setRegions([]);
+        setRegions(Array.isArray(data) ? data : []);
       } catch (err) {
         setRegions([]);
       }
@@ -35,6 +39,7 @@ const LibraryFilter = ({ setFilter }) => {
   }, []);
 
   useEffect(() => {
+    console.log('🔁 필터 변경됨:', { selectedSi, selectedGu, keyword });
     setFilter({ si: selectedSi, gu: selectedGu, keyword });
   }, [selectedSi, selectedGu, keyword]);
 
@@ -43,7 +48,6 @@ const LibraryFilter = ({ setFilter }) => {
 
   return (
     <View style={styles.filterContainer}>
-      {/* 시 선택 */}
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={selectedSi}
@@ -61,7 +65,6 @@ const LibraryFilter = ({ setFilter }) => {
         </Picker>
       </View>
 
-      {/* 구 선택 */}
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={selectedGu}
@@ -76,7 +79,6 @@ const LibraryFilter = ({ setFilter }) => {
         </Picker>
       </View>
 
-      {/* 검색어 입력 */}
       <View style={styles.searchWrapper}>
         <TextInput
           style={styles.input}
@@ -90,6 +92,8 @@ const LibraryFilter = ({ setFilter }) => {
     </View>
   );
 };
+
+export default LibraryFilter;
 
 const styles = StyleSheet.create({
   filterContainer: {
@@ -129,5 +133,3 @@ const styles = StyleSheet.create({
     color: '#000',
   },
 });
-
-export default LibraryFilter;

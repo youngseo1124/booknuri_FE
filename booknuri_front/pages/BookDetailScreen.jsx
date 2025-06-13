@@ -32,6 +32,7 @@ import {useShelf} from '../contexts/ShelfContext';
 import DPRecomendCategoryBestsellerBlock from '../components/bookDetailpage/DPRecomendCategoryBestsellerBlock';
 import DPRecomendOtherUserBlockJsx from '../components/bookDetailpage/DPRecomendOtherUserBlock.jsx';
 import DPRecomendOtherUserBlock from '../components/bookDetailpage/DPRecomendOtherUserBlock.jsx';
+import {RecentViewedBooksContext} from '../contexts/RecentViewedBooksContextProvider';
 
 const { width: fixwidth } = Dimensions.get('window');
 
@@ -62,15 +63,26 @@ const BookDetailScreen = ({ route, navigation }) => {
     const didScrollTopRef = useRef(false);
     const [isInShelf, setIsInShelf] = useState(false);
     const hasScrolledRef = useRef(false);
+    const { refreshRecentBooks } = useContext(RecentViewedBooksContext);
 
 
 
     useFocusEffect(
       useCallback(() => {
-          increaseViewedBookCount();
-          initLoad();
+          const run = async () => {
+              try {
+                  await increaseViewedBookCount();  //  책 본 기록 저장 (서버/Redis/DB)
+                  await initLoad();                 //  책 상세 데이터 로딩
+                  await refreshRecentBooks();       //  최신 상태 가져오기 (최근 본 책 갱신)
+              } catch (err) {
+                  console.error('📛 북디테일 진입 중 오류 발생:', err);
+              }
+          };
+
+          run();
       }, [isbn])
     );
+
 
     const fetchBookData = async () => {
         const res = await getBookTotalInfo(isbn);

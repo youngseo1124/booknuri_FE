@@ -16,26 +16,16 @@ import RecentViewedBookBlock from '../../components/mypage/RecentViewedBookBlock
 import DividerBlock from '../../components/public/publicUtil/DividerBlock';
 import SettingItem from '../../components/mypage/SettingItem';
 import {useNavigation} from '@react-navigation/native';
+import {RecentViewedBooksContext} from '../../contexts/RecentViewedBooksContextProvider';
 
 const { width: fixwidth } = Dimensions.get("window");
 
 const MyPageScreen = () => {
   const { logout } = useContext(LoginContext);
-  const [recentBooks, setRecentBooks] = useState([]);
   const navigation = useNavigation();
+  const { recentBooks } = useContext(RecentViewedBooksContext);
 
-  useEffect(() => {
-    const fetchRecentBooks = async () => {
-      try {
-        const res = await getRecentViewedBooks();
-        setRecentBooks(res.data || []);
-      } catch (err) {
-        console.error('최근 본 책 불러오기 실패 ❌', err);
-      }
-    };
 
-    fetchRecentBooks();
-  }, []);
 
   return (
     <CommonLayout>

@@ -44,6 +44,7 @@ import {ShelfProvider} from './contexts/ShelfContext';
 import CalendarScreen from './pages/calendar/CalendarScreen';
 import DayDetailScreen from './pages/calendar/DayDetailScreen';
 import MyLibraryEditScreen from './pages/mypage/MyLibraryEditScreen';
+import {RecentViewedBooksProvider} from './contexts/RecentViewedBooksContextProvider';
 
 const Stack = createStackNavigator();
 
@@ -123,22 +124,23 @@ const AppInner = () => {
 
 // 최종 App (Provider만 감쌈)
 const App = () => {
-    return (
-        <NavigationContainer ref={navigationRef}>
-            <SafeAreaProvider>
-                <LoginContextProvider>
-
-                    <BannerRefreshProvider>
-                        <BannerPageProvider>
-                          <ShelfProvider>
-                            <AppInner />
-                          </ShelfProvider>
-                        </BannerPageProvider>
-                    </BannerRefreshProvider>
-                </LoginContextProvider>
-            </SafeAreaProvider>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer ref={navigationRef}>
+      <SafeAreaProvider>
+        <BannerPageProvider>
+          <LoginContextProvider>
+            <BannerRefreshProvider>
+              <RecentViewedBooksProvider>
+                <ShelfProvider>
+                  <AppInner />
+                </ShelfProvider>
+              </RecentViewedBooksProvider>
+            </BannerRefreshProvider>
+          </LoginContextProvider>
+        </BannerPageProvider>
+      </SafeAreaProvider>
+    </NavigationContainer>
+  );
 };
 
 export default App;

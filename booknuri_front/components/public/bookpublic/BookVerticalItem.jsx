@@ -1,18 +1,26 @@
-
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
+//  기본 커버 이미지
+const DEFAULT_BOOK_COVER = require('../../../image/book/bookcover.png');
+
 const BookVerticalItem = ({ book, width = fixwidth * 0.29, height = fixwidth * 0.417 }) => {
   const navigation = useNavigation();
+
+  const getImageSource = () => {
+    if (!book.bookImageURL || book.bookImageURL.trim() === '') {
+      return DEFAULT_BOOK_COVER;
+    }
+    return { uri: book.bookImageURL };
+  };
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={() =>
-
         navigation.push('BookDetailScreen', {
           isbn: book.isbn13,
           scrollToTop: true,
@@ -20,15 +28,16 @@ const BookVerticalItem = ({ book, width = fixwidth * 0.29, height = fixwidth * 0
       }
       style={styles.container}
     >
-      <Image source={{ uri: book.bookImageURL }} style={[styles.image, { width, height }]} />
+      <Image source={getImageSource()} style={[styles.image, { width, height }]} />
 
       <View style={{ width: '100%' }}>
         <Text style={styles.title} numberOfLines={2}>
           {book.bookname}
         </Text>
-        <Text style={styles.author} numberOfLines={1}>{book.authors}</Text>
+        <Text style={styles.author} numberOfLines={1}>
+          {book.authors}
+        </Text>
       </View>
-
     </TouchableOpacity>
   );
 };
@@ -48,15 +57,15 @@ const styles = StyleSheet.create({
     marginTop: fixwidth * 0.01,
     fontSize: fixwidth * 0.033,
     fontFamily: 'NotoSansKR-SemiBold',
-    lineHeight: fixwidth * 0.047
+    lineHeight: fixwidth * 0.047,
   },
   author: {
-    paddingTop:fixwidth * 0.007,
+    paddingTop: fixwidth * 0.007,
     fontSize: fixwidth * 0.0297,
     color: '#555',
     fontFamily: 'NotoSansKR-Light',
     textAlign: 'left',
-    lineHeight: fixwidth * 0.045
+    lineHeight: fixwidth * 0.045,
   },
 });
 

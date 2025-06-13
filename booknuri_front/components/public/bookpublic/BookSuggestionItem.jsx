@@ -4,6 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
+// ✅ 기본 커버 이미지 로컬 경로
+const DEFAULT_BOOK_COVER = require('../../../image/book/bookcover.png');
+
 const BookSuggestionItem = ({ book, thumbnailWidth = fixwidth * 0.167, thumbnailHeight = fixwidth * 0.23 }) => {
   const navigation = useNavigation();
 
@@ -11,10 +14,18 @@ const BookSuggestionItem = ({ book, thumbnailWidth = fixwidth * 0.167, thumbnail
     navigation.navigate('BookDetailScreen', { isbn: book.isbn13 });
   };
 
+  // ✅ 이미지 URL이 유효하지 않으면 기본 커버 이미지 사용
+  const getImageSource = () => {
+    if (!book.bookImageURL || book.bookImageURL.trim() === '') {
+      return DEFAULT_BOOK_COVER;
+    }
+    return { uri: book.bookImageURL };
+  };
+
   return (
-    <TouchableOpacity onPress={handlePress} style={styles.itemContainer} activeOpacity={0.77} >
+    <TouchableOpacity onPress={handlePress} style={styles.itemContainer} activeOpacity={0.77}>
       <Image
-        source={{ uri: book.bookImageURL }}
+        source={getImageSource()}
         style={[styles.thumbnail, { width: thumbnailWidth, height: thumbnailHeight }]}
       />
       <View style={styles.infoBox}>
@@ -26,7 +37,6 @@ const BookSuggestionItem = ({ book, thumbnailWidth = fixwidth * 0.167, thumbnail
 };
 
 export default BookSuggestionItem;
-
 
 const styles = StyleSheet.create({
   itemContainer: {

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   TextInput,
   StyleSheet,
-  useWindowDimensions,
   Dimensions,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -18,13 +17,9 @@ const LibraryFilter = ({ setFilter, defaultSi = '', defaultGu = '', defaultKeywo
   const [selectedGu, setSelectedGu] = useState(defaultGu);
   const [keyword, setKeyword] = useState(defaultKeyword);
 
-  useEffect(() => {
-    console.log('🟡 기본값 반영됨:', { defaultSi, defaultGu, defaultKeyword });
-    setSelectedSi(defaultSi);
-    setSelectedGu(defaultGu);
-    setKeyword(defaultKeyword);
-  }, [defaultSi, defaultGu, defaultKeyword]);
+  const isFirstRender = useRef(true); // ✅ 최초 렌더 감지
 
+  // ✅ 지역 정보 받아오기
   useEffect(() => {
     const fetchRegions = async () => {
       try {
@@ -38,13 +33,34 @@ const LibraryFilter = ({ setFilter, defaultSi = '', defaultGu = '', defaultKeywo
     fetchRegions();
   }, []);
 
+  // ✅ default 값 반영
   useEffect(() => {
-    console.log('🔁 필터 변경됨:', { selectedSi, selectedGu, keyword });
-    setFilter({ si: selectedSi, gu: selectedGu, keyword });
+    setSelectedSi(defaultSi);
+    setSelectedGu(defaultGu);
+    setKeyword(defaultKeyword);
+  }, [defaultSi, defaultGu, defaultKeyword]);
+
+  // ✅ 필터 상태 변경 감지 (무한 루프 방지)
+  useEffect(() => {
+    const newFilter = { si: selectedSi, gu: selectedGu, keyword };
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      setFilter(newFilter);
+      return;
+    }
+
+    setFilter(prev => {
+      const isSame =
+        prev.si === newFilter.si &&
+        prev.gu === newFilter.gu &&
+        prev.keyword === newFilter.keyword;
+      return isSame ? prev : newFilter;
+    });
   }, [selectedSi, selectedGu, keyword]);
 
-  const siList = [...new Set((regions || []).map((r) => r.si))];
-  const guList = (regions || []).filter((r) => r.si === selectedSi).map((r) => r.gu);
+  const siList = [...new Set(regions.map((r) => r.si))];
+  const guList = regions.filter((r) => r.si === selectedSi).map((r) => r.gu);
 
   return (
     <View style={styles.filterContainer}>
@@ -53,7 +69,7 @@ const LibraryFilter = ({ setFilter, defaultSi = '', defaultGu = '', defaultKeywo
           selectedValue={selectedSi}
           onValueChange={(newSi) => {
             setSelectedSi(newSi);
-            setSelectedGu('');
+            setSelectedGu(''); // 시 바뀌면 군/구 초기화
           }}
           style={styles.picker}
           dropdownIconColor="#000"

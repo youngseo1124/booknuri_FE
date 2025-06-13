@@ -1,14 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
-import BookFallbackCover from './BookFallbackCover';
 import AddToBookshelfButton from './AddToBookshelfButton';
 
 const { width: fixwidth } = Dimensions.get('window');
+const DEFAULT_BOOK_COVER = require('../../image/book/bookcover.png');
 
-const DPBookInfoHeaderBlock = ({ bookInfo,  isInShelf,onAddToBookshelf }) => {
-  const [aspectRatio, setAspectRatio] = useState(0.7); // 📐 기본 비율
+const DPBookInfoHeaderBlock = ({ bookInfo, isInShelf, onAddToBookshelf }) => {
+  const [aspectRatio, setAspectRatio] = useState(0.7);
 
+  const {
+    bookname = '제목 없음',
+    authors = '저자 미상',
+    publisher,
+    publicationDate,
+    bookImageURL,
+    mainCategory,
+    middleCategory,
+    subCategory,
+  } = bookInfo || {};
 
+  const isValidImage = bookImageURL && bookImageURL.trim() !== '';
+  const imageSource = isValidImage ? { uri: bookImageURL } : DEFAULT_BOOK_COVER;
+  const finalAspectRatio = isValidImage ? aspectRatio : 0.7;
+
+  useEffect(() => {
+    if (isValidImage) {
+      Image.getSize(
+        bookImageURL,
+        (w, h) => setAspectRatio(w / h),
+        () => setAspectRatio(0.7)
+      );
+    } else {
+      setAspectRatio(0.7); // ✅ 기본 이미지일 때도 비율 고정
+    }
+  }, [bookImageURL]);
+
+  if (!bookInfo) return null;
 
   const categoryColors = {
     문학: '#cdf3ee',
@@ -21,40 +48,8 @@ const DPBookInfoHeaderBlock = ({ bookInfo,  isInShelf,onAddToBookshelf }) => {
     자연과학: '#e1f5fe',
     언어: '#f9fbe7',
     종교: '#fbe9e7',
-    default: '#ece5e5', // 널 또는 매칭 안되는 경우
+    default: '#ece5e5',
   };
-
-
-
-  //  이미지 비율 자동 계산
-  useEffect(() => {
-    if (bookImageURL) {
-      Image.getSize(
-        bookImageURL,
-        (w, h) => {
-          if (w && h) {
-            setAspectRatio(w / h); // 가로 ÷ 세로
-          }
-        },
-        () => {
-          setAspectRatio(0.7); // 실패시 기본값
-        }
-      );
-    }
-  }, [bookImageURL]);
-
-  if (!bookInfo) return null;
-
-  const {
-    bookname = '제목 없음',
-    authors = '저자 미상',
-    publisher,
-    publicationDate,
-    bookImageURL,
-    mainCategory,
-    middleCategory,
-    subCategory,
-  } = bookInfo;
 
   const categoryText =
     mainCategory && middleCategory && subCategory
@@ -63,37 +58,29 @@ const DPBookInfoHeaderBlock = ({ bookInfo,  isInShelf,onAddToBookshelf }) => {
 
   return (
     <View style={styles.container}>
-      {/*  책 표지 이미지 감싸는 뷰 박스 추가 */}
       <View
         style={[
           styles.imageWrapper,
-          { backgroundColor: categoryColors[mainCategory] || categoryColors.default }
+          { backgroundColor: categoryColors[mainCategory] || categoryColors.default },
         ]}
       >
+        <Image
+          source={imageSource}
+          style={
+            isValidImage
+              ? [styles.image, { aspectRatio }] // ✅ 외부 이미지: 비율 기반
+              : [styles.image, styles.fallbackImage] // ✅ 기본 이미지: 고정 크기
+          }
+          resizeMode="cover"
+        />
 
-      {bookImageURL ? (
-          <Image
-            source={{ uri: bookImageURL }}
-            style={[styles.image, { aspectRatio }]}
-            resizeMode="cover"
-          />
-        ) : (
-          <BookFallbackCover title={bookname} />
-        )}
-
-        {/*책장담기버튼*/}
         <AddToBookshelfButton
           onPress={onAddToBookshelf}
           isInShelf={isInShelf}
         />
-
-
-
       </View>
 
-      {/*  책 기본 정보 텍스트 */}
       <View style={styles.textBlock}>
-
         <Text style={styles.title}>{bookname}</Text>
         <Text style={styles.author}>{authors}</Text>
         <Text style={styles.publisher}>
@@ -103,7 +90,6 @@ const DPBookInfoHeaderBlock = ({ bookInfo,  isInShelf,onAddToBookshelf }) => {
       </View>
     </View>
   );
-
 };
 
 export default DPBookInfoHeaderBlock;
@@ -115,18 +101,17 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: '100%',
-    borderRadius: fixwidth*0.0,
+    borderRadius: fixwidth * 0.0,
     overflow: 'hidden',
     backgroundColor: '#e0f3de',
     alignItems: 'center',
-    paddingVertical: fixwidth*0.04,
+    paddingVertical: fixwidth * 0.04,
   },
-
   image: {
     width: '62.7%',
-    borderWidth: fixwidth*0.0017,
+    borderWidth: fixwidth * 0.0017,
     borderColor: '#878787',
-    borderRadius:fixwidth*0.0099,
+    borderRadius: fixwidth * 0.0099,
   },
   textBlock: {
     width: '90%',
@@ -137,8 +122,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: 'NotoSansKR-Bold',
     lineHeight: fixwidth * 0.067,
-    paddingVertical:fixwidth*0.02
-
+    paddingVertical: fixwidth * 0.02,
   },
   author: {
     fontSize: fixwidth * 0.037,
@@ -159,5 +143,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: 'NotoSansKR-Light',
     lineHeight: fixwidth * 0.07,
+  },
+  fallbackImage: {
+    height: fixwidth * 0.97,
+    width: fixwidth * 0.67,
   },
 });

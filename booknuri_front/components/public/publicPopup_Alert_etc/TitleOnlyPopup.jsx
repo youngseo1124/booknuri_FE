@@ -51,12 +51,13 @@ const styles = StyleSheet.create({
     borderWidth: fixwidth * 0.0007,
   },
   title: {
-    fontSize: fixwidth * 0.044,
-    fontFamily: 'NotoSansKR-Medium',
-    color: '#000000',
+    fontSize: fixwidth * 0.045,
+    fontFamily: 'NotoSansKR-SemiBold',
+    color: '#000',
+    marginBottom: fixwidth * 0.02,
     textAlign: 'center',
-    lineHeight: fixwidth * 0.07,
-    paddingBottom: fixwidth * 0.05,
+    lineHeight: fixwidth * 0.05,
+    paddingVertical: fixwidth * 0.02,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -73,9 +74,9 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     backgroundColor: 'rgb(97,156,245)',
-    paddingVertical: fixwidth * 0.025,
+    paddingVertical: fixwidth * 0.0197,
     borderRadius: fixwidth * 0.02,
-    width: fixwidth * 0.2,
+    width: fixwidth * 0.22,
     alignItems: 'center',
   },
   buttonText: {

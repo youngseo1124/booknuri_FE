@@ -1,53 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import SectionHeader from '../public/publicHeader/SectionHeader';
-import { getCategoryBasedRecommendations } from '../../apis/apiFunction_recommend';
+import { getRelatedBooksByIsbn } from '../../apis/apiFunction_recommend';
 import BookVerticalItem from '../public/bookpublic/BookVerticalItem';
 import VerticalGap from '../public/publicUtil/VerticalGap';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const shuffleArray = (array) => {
-  // 배열 복사 후 Fisher-Yates 방식으로 셔플
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
-
 const DPAlsoViewedBooksBlock = ({ bookInfo }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { mainCategory, middleCategory, subCategory } = bookInfo || {};
-
   useEffect(() => {
-    if (mainCategory) {
+    if (bookInfo?.isbn13) {
       fetchRecommendations();
     }
-  }, [mainCategory, middleCategory, subCategory]);
+  }, [bookInfo?.isbn13]);
 
   const fetchRecommendations = async () => {
     try {
       setLoading(true);
-      const res = await getCategoryBasedRecommendations({
-        mainCategoryName: mainCategory,
-        middleCategoryName: middleCategory,
-        subCategoryName: subCategory,
-      });
-
-      const filteredBooks = res.data.filter(
+      const res = await getRelatedBooksByIsbn(bookInfo.isbn13); // ✅ ISBN 기반으로 호출
+      const filteredBooks = res.filter(
         (item) => item.isbn13 !== bookInfo?.isbn13
       );
-
-      // 👉 랜덤 섞기
-      const shuffled = shuffleArray(filteredBooks);
-
-      setBooks(shuffled);
+      setBooks(filteredBooks);
     } catch (err) {
-      console.error('📛 관련 유저 추천 실패:', err);
+      console.error('📛 연관 도서 추천 실패:', err);
     } finally {
       setLoading(false);
     }
@@ -67,7 +46,7 @@ const DPAlsoViewedBooksBlock = ({ bookInfo }) => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingHorizontal: fixwidth * 0.02 }}
           renderItem={({ item }) => <BookVerticalItem book={item} />}
-          ItemSeparatorComponent={() => <View style={{ width: fixwidth * 0.027}} />}
+          ItemSeparatorComponent={() => <View style={{ width: fixwidth * 0.027 }} />}
         />
       )}
     </View>
@@ -80,6 +59,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingVertical: fixwidth * 0.05,
-    paddingHorizontal:fixwidth*0.035
+    paddingHorizontal: fixwidth * 0.035,
   },
 });

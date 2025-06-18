@@ -104,7 +104,7 @@ const DetailReflectionScreen = () => {
   if (!reflection) {
     return (
       <CommonLayout>
-        <Header title="내 독후감" />
+        <Header title="독후감 상세페이지"  />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ fontSize: fixwidth * 0.035, color: '#999' }}>독후감을 불러오는 중입니다...</Text>
         </View>
@@ -114,7 +114,7 @@ const DetailReflectionScreen = () => {
 
   return (
     <CommonLayout>
-      <Header title="내 독후감" />
+      <Header title="독후감 상세페이지" />
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: fixwidth * 0.047,

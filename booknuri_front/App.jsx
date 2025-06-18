@@ -1,7 +1,7 @@
 import { enableScreens } from 'react-native-screens';
 enableScreens();
 
-import React, { useContext } from 'react';
+import React, {useContext, useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -45,6 +45,7 @@ import CalendarScreen from './pages/calendar/CalendarScreen';
 import DayDetailScreen from './pages/calendar/DayDetailScreen';
 import MyLibraryEditScreen from './pages/mypage/MyLibraryEditScreen';
 import {RecentViewedBooksProvider} from './contexts/RecentViewedBooksContextProvider';
+import {LogBox} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -124,6 +125,12 @@ const AppInner = () => {
 
 // 최종 App (Provider만 감쌈)
 const App = () => {
+
+
+  useEffect(() => {
+    LogBox.ignoreAllLogs(true);
+  }, []);
+
   return (
     <NavigationContainer ref={navigationRef}>
       <SafeAreaProvider>

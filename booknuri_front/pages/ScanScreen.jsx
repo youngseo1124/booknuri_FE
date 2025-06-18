@@ -10,7 +10,7 @@ import { WebView } from 'react-native-webview';
 import ConfirmPopup from '../components/public/publicPopup_Alert_etc/ConfirmPopup';
 import AlertPopup from '../components/public/publicPopup_Alert_etc/AlertPopup'; // ✅ 추가
 import { useNavigation } from '@react-navigation/native';
-import { checkBookExists } from '../apis/apiFunction_book';
+import {checkBookExists, getBookTotalInfo} from '../apis/apiFunction_book';
 
 const ScanScreen = () => {
     const navigation = useNavigation();
@@ -21,6 +21,7 @@ const ScanScreen = () => {
     const [isLandscapeFromWebView, setIsLandscapeFromWebView] = useState(false);
     const [failCount, setFailCount] = useState(0); // ❌ 실패 카운트
     const [showAlertPopup, setShowAlertPopup] = useState(false); // ⚠️ 안내 팝업
+    const [bookTitle, setBookTitle] = useState('');
 
     // ✅ 카메라 권한 요청
     useEffect(() => {
@@ -51,13 +52,18 @@ const ScanScreen = () => {
                 return;
             }
 
-            const { data } = await checkBookExists(isbn);
+            const { data: exists } = await checkBookExists(isbn);
 
-            if (data === true) {
+            if (exists === true) {
                 console.log('✅ 존재하는 ISBN:', isbn);
+
+                // 👉 제목도 가져오기
+                const { data: bookDetail } = await getBookTotalInfo(isbn);
+                setBookTitle(bookDetail.bookInfo.bookname); // ✅ 제목 상태 저장
+
                 setScannedData(isbn);
                 setPopupVisible(true);
-                setFailCount(0); // 성공 시 실패 카운트 초기화
+                setFailCount(0);
             } else {
                 console.warn('📕 DB에 없는 ISBN:', isbn);
                 setFailCount(prev => {
@@ -109,8 +115,8 @@ const ScanScreen = () => {
           {/* ✅ 유효 ISBN일 때 */}
           <ConfirmPopup
             visible={popupVisible}
-            title="스캔 완료"
-            message={`이 ISBN(바코드 번호)로 진행할까요?\n\n ${scannedData}`}
+            title="책 스캔 완료"
+            message={`『${bookTitle}』의 상세페이지로 이동할까요?`}
             onConfirm={handleConfirm}
             onCancel={handleCancel}
             isLandscape={isLandscapeFromWebView}

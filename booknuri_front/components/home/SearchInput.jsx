@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width: fixwidth } = Dimensions.get('window');
 
-const SearchInput = ({ libCode, onFocusChange }) => {
+const SearchInput = ({ libCode, onFocusChange, initialKeyword = '' }) => {
   const navigation = useNavigation();
 
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -27,6 +27,10 @@ const SearchInput = ({ libCode, onFocusChange }) => {
       if (data) setRecentKeywords(JSON.parse(data));
     });
   }, []);
+
+  useEffect(() => {
+    setSearchKeyword(initialKeyword);
+  }, [initialKeyword]);
 
   useEffect(() => {
     if (!searchKeyword.trim()) {

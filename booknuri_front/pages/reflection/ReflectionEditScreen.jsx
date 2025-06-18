@@ -122,7 +122,7 @@ const ReflectionEditScreen = ({ route, navigation }) => {
           console.log("📤 삭제 요청 전송:", imageId);
           await axios({
             method: 'delete',
-            url: `http://172.18.8.19:8080/book/reflection/image/${imageId}`,
+            url: `http://192.168.53.109/book/reflection/image/${imageId}`,
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -145,7 +145,7 @@ const ReflectionEditScreen = ({ route, navigation }) => {
         });
 
         await axios.post(
-          `http://172.18.8.19:8080/book/reflection/image/${reflectionId}/upload`,
+          `http://192.168.53.109:8080/book/reflection/image/${reflectionId}/upload`,
           formData,
           {
             headers: {

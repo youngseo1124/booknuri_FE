@@ -105,7 +105,7 @@ const ReflectionCreateScreen = ({ route, navigation }) => {
     const accessToken = await AsyncStorage.getItem('accessToken');
 
     const response = await axios.post(
-      `http://172.18.8.19:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
+      `http://192.168.0.13:8080/book/reflection/image/${reflectionId}/upload`, // 절대경로
       formData,
       {
         headers: {

@@ -2,11 +2,13 @@ import React, {createContext, useContext, useEffect, useState} from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from "../apis/api";
-import AlertPopup from '../apis/AlertPopup';
-import ConfirmPopup from '../apis/ConfirmPopup';
+
+
 import { login as loginAPI, userinfo } from '../apis/apiFunction';
 import { reset } from '../navigation/RootNavigation';
 import {BannerPageContext} from './BannerPageContext';
+import AlertPopup from '../components/public/publicPopup_Alert_etc/AlertPopup';
+import ConfirmPopup from '../components/public/publicPopup_Alert_etc/ConfirmPopup';
 
 export const LoginContext = createContext();
 

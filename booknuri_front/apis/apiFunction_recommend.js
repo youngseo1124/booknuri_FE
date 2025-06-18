@@ -71,3 +71,20 @@ export const getCategoryBasedRecommendations = ({
     },
   });
 };
+
+
+
+
+/**
+ * 🔗 연관 도서 추천 API (ISBN 기준)
+ * 특정 도서를 본 유저들의 열람 패턴을 분석해 유사한 도서를 추천함
+ * A책 기준으로 최대 10권, 도서관에 실제 존재하는 책만 반환됨
+ *
+ * @param {string} isbn13 - 기준 도서의 ISBN13
+ * @returns {Promise<RecommendBookDto[]>}
+ */
+export const getRelatedBooksByIsbn = (isbn13) => {
+  return api.get('/recommend/related', {
+    params: { isbn13 },
+  }).then(res => res.data);
+};
